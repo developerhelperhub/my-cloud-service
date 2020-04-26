@@ -1,6 +1,6 @@
 spring:
   application:
-    name: my-cloud-circuit-breaker-service
+    name: my-cloud-circuit-breaker
   security:
     user:
       name: breaker
