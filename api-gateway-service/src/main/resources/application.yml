@@ -1,0 +1,27 @@
+spring:
+  application:
+    name: api-gateway-service
+
+logging:
+  level:
+    org:
+      springframework: DEBUG
+
+server:
+  port: 8085
+
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://discovery:discoverypass@localhost:8761/eureka/
+      
+zuul:
+  routes:
+    inventory:
+      path: /inventory/**
+      sensitiveHeaders: Cookie,Set-Cookie
+      serviceId: inventory-service
+    sales:
+      path: /sales/**
+      sensitiveHeaders: Cookie,Set-Cookie
+      serviceId: sales-service

@@ -1,0 +1,32 @@
+
+spring:
+  application:
+    name: my-cloud-discovery
+  security:
+    user:
+      name: discovery
+      password: discoverypass
+
+logging:
+  level:
+    org:
+      springframework: DEBUG
+    com:
+      developerhelperhub: DEBUG
+      netflix:
+        eureka: OFF
+        discovery: OFF
+
+server:
+  port: 8761
+  
+
+eureka:
+  dashboard:
+    enabled: true
+  client:
+    register-with-eureka: false
+    fetch-registry: false
+
+
+  
