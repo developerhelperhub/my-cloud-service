@@ -27,9 +27,9 @@ $(function () {
     Morris.Donut({
         element: 'dashboard-donut-1',
         data: [
-            {label: "Returned", value: 2513},
-            {label: "New", value: 764},
-            {label: "Registred", value: 311}
+            { label: "Returned", value: 2513 },
+            { label: "New", value: 764 },
+            { label: "Registred", value: 311 }
         ],
         colors: ['#33414E', '#1caf9a', '#FEA223'],
         resize: true
@@ -40,23 +40,24 @@ $(function () {
     Morris.Line({
         element: 'dashboard-line-1',
         data: [
-          { y: '2014-10-10', a: 2,b: 4},
-          { y: '2014-10-11', a: 4,b: 6},
-          { y: '2014-10-12', a: 7,b: 10},
-          { y: '2014-10-13', a: 5,b: 7},
-          { y: '2014-10-14', a: 6,b: 9},
-          { y: '2014-10-15', a: 9,b: 12},
-          { y: '2014-10-16', a: 18,b: 20}
+            { y: '2014-10-10', a: 2, b: 4 },
+            { y: '2014-10-11', a: 4, b: 6 },
+            { y: '2014-10-12', a: 7, b: 10 },
+            { y: '2014-10-13', a: 5, b: 7 },
+            { y: '2014-10-14', a: 6, b: 9 },
+            { y: '2014-10-15', a: 9, b: 12 },
+            { y: '2014-10-16', a: 18, b: 20 }
         ],
         xkey: 'y',
-        ykeys: ['a','b'],
-        labels: ['Sales','Event'],
+        ykeys: ['a', 'b'],
+        labels: ['Sales', 'Event'],
         resize: true,
         hideHover: true,
         xLabels: 'day',
         gridTextSize: '10px',
-        lineColors: ['#1caf9a','#33414E'],
+        lineColors: ['#1caf9a', '#33414E'],
         gridLineColor: '#E5E5E5'
-      });   
-      /* EMD Line dashboard chart */
+    });
+    /* EMD Line dashboard chart */
+
 })

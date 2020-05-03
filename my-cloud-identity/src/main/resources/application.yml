@@ -18,7 +18,7 @@ logging:
 server:
   port: 8081
   servlet:
-    context-path: /auth
+    context-path: /identity
 
 eureka:
   client:

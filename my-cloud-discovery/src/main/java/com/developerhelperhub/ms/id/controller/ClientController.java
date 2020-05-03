@@ -9,12 +9,13 @@ import com.netflix.discovery.shared.Applications;
 import com.netflix.eureka.EurekaServerContext;
 
 @RestController
+@RequestMapping(value = "/discovery")
 public class ClientController {
 
 	@Autowired
 	private EurekaServerContext discoveryClient;
 
-	@RequestMapping(value = "/clients/applications", method = RequestMethod.GET)
+	@RequestMapping(value = "/applications", method = RequestMethod.GET)
 	public Applications applications() {
 		return discoveryClient.getRegistry().getApplications();
 	}

@@ -7,6 +7,82 @@
     overflow-x: hidden;
   }  
 
+  /*-------------------- select ----------------------*/
+  select {
+
+    /* styling */
+    border-radius: 4px;
+    display: inline-block;
+    font: inherit;
+    line-height: 1.5em;
+    padding: 0.5em 3.5em 0.5em 1em;
+  
+    /* reset */
+  
+    margin: 0;      
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+  }
+  
+  select.custom-select {
+    background-position:
+      calc(100% - 15px) calc(1em),
+      calc(100% - 10px) calc(1em),
+      100% 0;
+    background-size:
+      5px 5px,
+      5px 5px,
+      2.5em 2.5em;
+    background-repeat: no-repeat;
+  }
+
+  /*-------------------- data table ----------------------*/
+ 
+  .dataTables_wrapper label,
+  div.dataTables_wrapper div.dataTables_paginate a.page-link {
+    font-size: 12px;
+  }
+
+  div.dataTables_wrapper div.dataTables_paginate a.page-link {
+    border-width: thin;
+  }
+
+  div.dataTables_wrapper div.dataTables_length select {
+    border-radius: 4px;
+    display: inline-block;
+    font: inherit;
+    line-height: 1.5em;
+    padding: 0.5em 3.5em 0.5em 1em;
+  
+    /* reset */
+  
+    margin: 0;      
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+  }
+  
+  div.dataTables_wrapper div.dataTables_length select.custom-select {
+    background-position:
+      calc(100% - 15px) calc(1em),
+      calc(100% - 10px) calc(1em),
+      100% 0;
+    background-size:
+      5px 5px,
+      5px 5px,
+      2.5em 2.5em;
+    background-repeat: no-repeat;
+  }
+
+  div.dataTables_wrapper div.dataTables_info {
+    font-size: 12px;
+  }
+
   /*-------------------- table ----------------------*/
 
   table .table {
@@ -487,26 +563,29 @@
     background-color: #E04B4A;
   }
 
-  /*-------------------- theme: chiller - nav side bar ----------------------*/  
+  /*-------------------- theme: chiller -background color ----------------------*/  
 
   .chiller-theme .sidebar-wrapper,
-  .chiller-theme .sidebar-wrapper .navbar.bg-light {
+  .chiller-theme .sidebar-wrapper .navbar.bg-light,
+  .chiller-theme div.dataTables_wrapper div.dataTables_info,
+  .chiller-theme .page-content-wrapper .page-content .page-panel .body {
     background-color: #31353D!important;
   }
 
+  /*-------------------- theme: chiller - font color ----------------------*/  
+
+  .chiller-theme .page-content-wrapper .page-content .page-panel .title,
+  .chiller-theme .dataTables_wrapper label,
+  .chiller-theme div.dataTables_wrapper div.dataTables_info  {
+    color: #56688A!important;
+  }
+
+  /*-------------------- theme: chiller - page-content-wrapper color ----------------------*/  
   .chiller-theme .page-content-wrapper {
     background-color: #414348!important;
   }
 
-  .chiller-theme .page-content-wrapper .page-content .page-panel .body {
-    background-color: #31353d!important;
-  }
-
-  .chiller-theme .page-content-wrapper .page-content .page-panel .title {
-    color: #ffffff!important;
-    border-bottom-color: #252629;
-  }
-
+  /*-------------------- theme: chiller - menu color ----------------------*/  
   .chiller-theme .sidebar-wrapper .navbar .navbar-nav.menu-bar a {
       color: #818896!important;
   }
@@ -543,15 +622,12 @@
   .chiller-theme .table > thead > tr > th, .table > tbody > tr > th, 
   .table > tfoot > tr > th, .table > thead > tr > td, 
   .table > tbody > tr > td, 
-  .table > tfoot > tr > td {
+  .table > tfoot > tr > td,
+  .chiller-theme .table {
     border-color: #383c44;
-  }
-
-  .chiller-theme .table > tbody > tr > td {
-    background: #3a3f48;
     color: #56688A;
   }
-
+  
   .chiller-theme .table .table tr > td:first-child, .table tr > th:first-child {
     border-left: 0px;
   }
@@ -567,3 +643,24 @@
   .table-striped > tbody > tr:nth-child(odd) > th {
     background: #3a3d44;
   }
+
+
+  /*-------------------- theme: chiller - input table ----------------------*/  
+
+  .chiller-theme div.dataTables_wrapper div.dataTables_length select,
+  .chiller-theme div.dataTables_wrapper div.dataTables_filter input,
+  .chiller-theme div.dataTables_wrapper div.dataTables_paginate li.paginate_button,
+  .chiller-theme div.dataTables_wrapper div.dataTables_paginate a.page-link {
+    /* styling */
+    background-color: #2f3136;
+    color: #56688A;
+    border: thin solid #2c2f33;
+  }
+
+  .chiller-theme div.dataTables_wrapper div.dataTables_length select.custom-select {
+    background-image:
+      linear-gradient(45deg, transparent 50%, #3a3d44 50%),
+      linear-gradient(135deg, #3a3d44 50%, transparent 50%),
+      linear-gradient(to right, #2f3136, #2f3136);
+  }
+

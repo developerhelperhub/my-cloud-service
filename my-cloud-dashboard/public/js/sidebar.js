@@ -1,5 +1,7 @@
 jQuery(function ($) {
 
+    
+    
     $(".sidebar-dropdown > a").click(function () {
         $(".sidebar-submenu").slideUp(200);
         if (
@@ -45,4 +47,6 @@ jQuery(function ($) {
         e.preventDefault();
         $("#wrapper").toggleClass("toggled");
     });
+
+    
 });
