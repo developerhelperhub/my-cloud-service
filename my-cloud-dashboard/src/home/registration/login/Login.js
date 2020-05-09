@@ -1,5 +1,6 @@
 import React from 'react';
 import { Redirect } from 'react-router-dom';
+import { Repo } from '../../../components/Repo'
 
 import './Login.css'
 import '../Registration.css'
@@ -9,52 +10,64 @@ class Login extends React.Component {
   constructor(props) {
     super(props)
 
+    this.state = {
+      isAuthenticated: false,
+      isError: false,
+      errorMessage: ''
+    }
+
     this.handleSubmit = this.handleSubmit.bind(this);
+
+    this.username = React.createRef();
+    this.password = React.createRef();
   }
 
   async handleSubmit(event) {
     event.preventDefault();
 
-    let details = {
+    const response = await Repo.fetch('http://localhost:8085/identity/oauth/token', 'POST', {
+      'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8',
+      'Authorization': 'Basic bXktY2xvdWQtaWRlbnRpdHk6VmtacHp6S2EzdU1xNHZxZw==',
+    }, {
       'grant_type': 'password',
-      'username': 'mycloud',
-      'password': 'mycloud@1234'
-    };
+      'username': this.username.current.value,
+      'password': this.password.current.value
+    })
 
-    let formBody = [];
-    for (let property in details) {
-      let encodedKey = encodeURIComponent(property);
-      let encodedValue = encodeURIComponent(details[property]);
-      formBody.push(encodedKey + "=" + encodedValue);
+    var isAuthenticated = false;
+    var errorMessage = '';
+    var isError = false;
+
+    if (response.status == 200) {
+
+      isAuthenticated = true;
+      localStorage.setItem('authentiction', JSON.stringify(response.data));
+
+    } else {
+      isError = true;
+      errorMessage = response.errorMessage;
     }
-    formBody = formBody.join("&");
 
+    this.setState({
+      isAuthenticated: isAuthenticated,
+      isError: isError,
+      errorMessage: errorMessage,
+    });
 
-    const requestOptions = {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8',
-        'Authorization': 'Basic bXktY2xvdWQtaWRlbnRpdHk6VmtacHp6S2EzdU1xNHZxZw==',
-      },
-      body: formBody
-    };
-
-    const data = await fetch('http://localhost:8085/identity/oauth/token', requestOptions)
-      .then(response => response.json())
-      .then(data => {
-        return data;
-      });
-
-    localStorage.setItem('authentiction', JSON.stringify(data));
-
-    window.location.reload(true);    
+    window.location.reload(true);
   }
 
   render() {
 
-    if (localStorage.getItem('authentiction') != null) {
+    var errorMessage = '';
 
-      return <Redirect to="/"/>
+    if (this.state.isError) {
+      errorMessage = <div class="error"> {this.state.errorMessage} </div>
+    }
+
+    if (this.state.isAuthenticated) {
+
+      return <Redirect to="/" />
 
     } else {
 
@@ -73,15 +86,17 @@ class Login extends React.Component {
                 <div class="input-group-prepend">
                   <span class="input-group-text"><i class="fas fa-user"></i></span>
                 </div>
-                <input type="text" class="form-control" placeholder="username" />
+                <input type="text" ref={this.username} name="username" class="form-control" placeholder="username" />
               </div>
 
               <div class="input-group form-group">
                 <div class="input-group-prepend">
                   <span class="input-group-text"><i class="fas fa-key"></i></span>
                 </div>
-                <input type="password" class="form-control" placeholder="password" />
+                <input type="password" ref={this.password} name="password" class="form-control" placeholder="password" />
               </div>
+
+              {errorMessage}
 
               <div class="row align-items-center remember">
                 <input type="checkbox" />Remember Me
@@ -90,6 +105,8 @@ class Login extends React.Component {
               <div class="form-group">
                 <input type="submit" value="Login" class="btn float-right login_btn" />
               </div>
+
+
 
             </form>
           </div>
@@ -102,9 +119,9 @@ class Login extends React.Component {
               <a href="#">Forgot your password?</a>
             </div>
           </div>
-      </div >
+        </div >
 
-    );
+      );
     }
   }
 }
