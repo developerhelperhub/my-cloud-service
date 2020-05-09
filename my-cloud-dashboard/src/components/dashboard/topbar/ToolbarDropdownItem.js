@@ -22,8 +22,13 @@ class ToolbarDropdownItem extends React.Component {
       </span>;
     }
 
+    var hrefLink = "#";
+    if(this.props.href!=null){
+      hrefLink = this.props.href;
+    }
+
     var itemClass = "dropdown-item";
-    var display = <a class="dropdown-item" href="#">
+    var display = <a class="dropdown-item" href={hrefLink}>
       <i class={this.props.icon} aria-hidden="true"></i>
       {this.props.label}</a>;
 
