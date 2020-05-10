@@ -13,23 +13,12 @@ class DataTable extends React.Component {
 
     constructor(props) {
         super(props);
-
-        //console.log("constructor.....");
     }
 
     componentDidMount() {
-
         if (this.props.id != null) {
             window.refreshDatatable("#" + this.props.id);
         }
-
-        //console.log("componentDidMount.....");
-    }
-
-    componentDidUpdate(prevProps) {
-
-        //console.log("componentDidUpdate.....");
-
     }
 
     render() {

@@ -1,6 +1,7 @@
 import React from 'react';
 import { Redirect } from 'react-router-dom';
-import { Repo } from '../../../components/Repo'
+import AppApiRepo from '../../../common/AppApiRepo';
+
 
 import './Login.css'
 import '../Registration.css'
@@ -25,9 +26,9 @@ class Login extends React.Component {
   async handleSubmit(event) {
     event.preventDefault();
 
-    const response = await Repo.fetch('http://localhost:8085/identity/oauth/token', 'POST', {
+    const response = await AppApiRepo.post('/identity/oauth/token', 'POST', {
       'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8',
-      'Authorization': 'Basic bXktY2xvdWQtaWRlbnRpdHk6VmtacHp6S2EzdU1xNHZxZw==',
+      'Authorization': AppApiRepo.getBasicToken(),
     }, {
       'grant_type': 'password',
       'username': this.username.current.value,
@@ -54,7 +55,9 @@ class Login extends React.Component {
       errorMessage: errorMessage,
     });
 
-    window.location.reload(true);
+    if (isAuthenticated) {
+      window.location.reload(true);
+    }
   }
 
   render() {
