@@ -6,7 +6,7 @@ This repostiry contains the development of the my cloud service.
 
 ## Screens
 * Login Page
-<img src="docs/screenshots/login.png" width="700" height="300">
+<img src="docs/screenshots/login.png" width="1000" height="800">
 
 * Dashboard Page
 <img src="/docs/screenshots/dashboard.png" width="700" height="300">
