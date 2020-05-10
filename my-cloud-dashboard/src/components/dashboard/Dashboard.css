@@ -134,12 +134,32 @@
   .page-content-wrapper .page-content .page-panel {
     padding: 0px;
   }
+
+  .page-content-wrapper .page-content .page-panel .header {
+    display: flex;
+    border-bottom-style: solid;
+    border-bottom-width: 1px;
+    padding: 0px;
+  }
+
+  .page-content-wrapper .page-content .page-panel .header .panel-icon {
+    border-radius: 2px;
+    border-style: solid;
+    border-width: 1px;
+    margin: 5px 5px 5px 0px;
+    width: 30px;
+  }
+
+  .page-content-wrapper .page-content .page-panel .header .panel-icon .panel-icon-font{
+    width: 100%;
+    text-align: center;
+  }
   
   .page-content-wrapper .page-content .page-panel .body .title {
     padding: 10px 0px 5px 10px;
-    border-bottom-style: solid;
-    border-bottom-width: 1px;
+    width: 95%;
   }
+
 
   .page-content-wrapper .page-content .page-panel .body .detail {
     padding: 10px 10px 5px 10px;
@@ -574,12 +594,14 @@
 
   /*-------------------- theme: chiller - font color ----------------------*/  
 
-  .chiller-theme .page-content-wrapper .page-content .page-panel .title,
+  .chiller-theme .page-content-wrapper .page-content .page-panel .header,
   .chiller-theme .dataTables_wrapper label,
-  .chiller-theme div.dataTables_wrapper div.dataTables_info  {
+  .chiller-theme div.dataTables_wrapper div.dataTables_info,
+  .chiller-theme .page-content-wrapper .page-content .page-panel .header .panel-icon .panel-icon-font {
     color: #56688A!important;
   }
 
+  
   /*-------------------- theme: chiller - page-content-wrapper color ----------------------*/  
   .chiller-theme .page-content-wrapper {
     background-color: #414348!important;
@@ -641,6 +663,11 @@
 
   .chiller-theme .table-striped > tbody > tr:nth-child(odd) > td, 
   .table-striped > tbody > tr:nth-child(odd) > th {
+    background: #3a3d44;
+  }
+
+  .chiller-theme .page-content-wrapper .page-content .page-panel .header .panel-icon {
+    color:  #2c2f33;
     background: #3a3d44;
   }
 

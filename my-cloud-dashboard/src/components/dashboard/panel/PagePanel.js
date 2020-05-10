@@ -18,22 +18,31 @@ class PagePanel extends React.Component {
     var detailHeight;
 
     if (this.props.height != null) {
-      detailHeight =  this.props.height.value - 50;
+      detailHeight = this.props.height.value - 50;
       detailHeight = detailHeight + this.props.height.unit;
     } else {
       detailHeight = "100%";
     }
 
     return (
+      // <div class={panelClass}>
+
+      //   <div class="body" style={{ height: bodyHeight }}>
+      //     <div class="header">
+      //       <div class="title">{this.props.title}</div>
+      //       <div class="panel-icon"><span class="panel-icon-font fa fa-refresh"></span></div>
+      //     </div>
+      //     <div class="detail" style={{ height: detailHeight }} id={this.props.id}>
+      //       {childrens}
+      //     </div>
+      //   </div>
+
+      // </div>
+
       <div class={panelClass}>
-
         <div class="body" style={{ height: bodyHeight }}>
-          <div class="title">{this.props.title}</div>
-          <div class="detail" style={{ height: detailHeight }} id={this.props.id}>
-            {childrens}
-          </div>
+          {childrens}
         </div>
-
       </div>
 
     );

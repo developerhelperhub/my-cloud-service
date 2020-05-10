@@ -1,16 +1,16 @@
-
 import React from 'react';
-import Moment from 'react-moment';
 
-import Label from '../../components/dashboard/Label'
-import PagePanel from '../../components/dashboard/PagePanel'
 import PageContent from '../../components/dashboard/PageContent'
 import Row from '../../components/dashboard/Row'
-import Widget from '../../components/dashboard/Widget'
 
-import AppApiRepo from '../../common/AppApiRepo'
+import PagePanel from '../../components/dashboard/panel/PagePanel'
+import PagePanelHead from '../../components/dashboard/panel/PagePanelHead'
+import PagePanelBody from '../../components/dashboard/panel/PagePanelBody'
+import PagePanelIcon from '../../components/dashboard/panel/PagePanelIcon'
 
 import DataTable from '../../components/table/DataTable'
+
+import AppApiRepo from '../../common/AppApiRepo'
 
 class UserPage extends React.Component {
 
@@ -40,14 +40,15 @@ class UserPage extends React.Component {
                 ]
             }
         }
+
+        this.refreshTable = this.refreshTable.bind(this);
     }
 
     convertBoolString(value){
         return value? 'True': 'False';
     }
 
-    async componentDidMount() {
-
+    async refreshTable() {
         const response = await AppApiRepo.fetch('/identity/user/', 'GET', {
             'Content-Type': 'application/json',
             'Authorization': AppApiRepo.getToken(),
@@ -56,11 +57,7 @@ class UserPage extends React.Component {
         const tableData = this.state.tableData;
         const body = [];
 
-        console.log(response);
-
         if (response.status == 200) {
-
-            
 
             response.data.forEach(data => {
 
@@ -78,19 +75,26 @@ class UserPage extends React.Component {
             tableData.body = body;
         }
 
-
-
         this.setState({
             tableData: tableData
         })
+    }
+
+    async componentDidMount() {
+        this.refreshTable();
     }
 
     render() {
         return (
             <PageContent>
                 <Row>
-                    <PagePanel title="Users" cols="col-xxl-7 col-lg-12" >
+                    <PagePanel cols="col-xxl-7 col-lg-12" >
+                        <PagePanelHead title="User">
+                            <PagePanelIcon icon="fa fa-refresh" event={this.refreshTable}></PagePanelIcon>
+                        </PagePanelHead>
+                        <PagePanelBody>
                         <DataTable id="example1" width="100%" data={this.state.tableData}></DataTable>
+                        </PagePanelBody>
                     </PagePanel>
                 </Row>
             </PageContent>

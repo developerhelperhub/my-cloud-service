@@ -3,10 +3,14 @@ import React from 'react';
 import Moment from 'react-moment';
 
 import Label from '../components/dashboard/Label'
-import PagePanel from '../components/dashboard/PagePanel'
 import PageContent from '../components/dashboard/PageContent'
 import Row from '../components/dashboard/Row'
 import Widget from '../components/dashboard/Widget'
+
+import PagePanel from '../components/dashboard/panel/PagePanel'
+import PagePanelHead from '../components/dashboard/panel/PagePanelHead'
+import PagePanelBody from '../components/dashboard/panel/PagePanelBody'
+import PagePanelIcon from '../components/dashboard/panel/PagePanelIcon'
 
 import AppApiRepo from '../common/AppApiRepo'
 
@@ -44,10 +48,12 @@ class DiscoveryPage extends React.Component {
                 ]
             }
         }
+
+        this.refreshTable = this.refreshTable.bind(this);
     }
 
-    async componentDidMount() {
-
+    async refreshTable() {
+        
         const response = await AppApiRepo.fetch('/discovery/details', 'GET', {
             'Content-Type': 'application/json',
             'Authorization': AppApiRepo.getToken(),
@@ -99,6 +105,10 @@ class DiscoveryPage extends React.Component {
         })
     }
 
+    async componentDidMount() {
+        this.refreshTable();
+    }
+
     render() {
         return (
             <PageContent>
@@ -107,8 +117,13 @@ class DiscoveryPage extends React.Component {
                     <Widget icon="fa fa-cubes" numcount={this.state.totalInstances} title="Instances" subtitle="Running instances" cols="col-xxl-7 col-lg-3" />
                 </Row>
                 <Row>
-                    <PagePanel title="Applications" cols="col-xxl-7 col-lg-12" >
-                        <DataTable id="example1" width="100%" data={this.state.tableData}></DataTable>
+                    <PagePanel cols="col-xxl-7 col-lg-12" >
+                        <PagePanelHead title="Applications">
+                            <PagePanelIcon icon="fa fa-refresh" event={this.refreshTable}></PagePanelIcon>
+                        </PagePanelHead>
+                        <PagePanelBody>
+                            <DataTable id="example1" width="100%" data={this.state.tableData}></DataTable>
+                        </PagePanelBody>
                     </PagePanel>
                 </Row>
             </PageContent>
