@@ -6,6 +6,7 @@ import Label from '../components/dashboard/Label'
 import PagePanel from '../components/dashboard/PagePanel'
 import PageContent from '../components/dashboard/PageContent'
 import Row from '../components/dashboard/Row'
+import Widget from '../components/dashboard/Widget'
 
 import AppApiRepo from '../common/AppApiRepo'
 
@@ -17,6 +18,8 @@ class DiscoveryPage extends React.Component {
         super(props);
 
         this.state = {
+            totalApplications: "0",
+            totalInstances: "0",
             tableData: {
                 head: [
                     { title: "Name", width: "20%" },
@@ -45,41 +48,53 @@ class DiscoveryPage extends React.Component {
 
     async componentDidMount() {
 
-        const response = await AppApiRepo.fetch('/discovery/applications', 'GET', {
+        const response = await AppApiRepo.fetch('/discovery/details', 'GET', {
             'Content-Type': 'application/json',
             'Authorization': AppApiRepo.getToken(),
         })
 
         const tableData = this.state.tableData;
         const body = [];
+        var totalApplications = "0";
+        var totalInstances = "0"
 
-        response.data.application.forEach(app => {
+        if (response.status == 200) {
 
-            app.instance.forEach(instance => {
-                const timestamp = Date(instance.lastUpdatedTimestamp);
-                var labelClass = "label-warning";
-                
-                if(instance.status=="UP"){
-                    labelClass = "label-success";
-                } else if(instance.status=="DOWN"){
-                    labelClass = "label-danger";
-                }
+            response.data.applications.application.forEach(app => {
 
-                body.push([
-                    { value: app.name },
-                    { value: <Label class="label-success"> {instance.status} </Label>},
-                    { value: instance.homePageUrl },
-                    { value: instance.ipAddr },
-                    { value: instance.leaseInfo.renewalIntervalInSecs },
-                    { value: instance.leaseInfo.durationInSecs },
-                    { value: <Moment format="YYYY/MM/DD hh:mm:ss">{timestamp}</Moment> },
-                ]);
-            })
-        });
+                app.instance.forEach(instance => {
+                    const timestamp = Date(instance.lastUpdatedTimestamp);
+                    var labelClass = "label-warning";
 
-        tableData.body = body;
+                    if (instance.status == "UP") {
+                        labelClass = "label-success";
+                    } else if (instance.status == "DOWN") {
+                        labelClass = "label-danger";
+                    }
+
+                    body.push([
+                        { value: app.name },
+                        { value: <Label class="label-success"> {instance.status} </Label> },
+                        { value: instance.homePageUrl },
+                        { value: instance.ipAddr },
+                        { value: instance.leaseInfo.renewalIntervalInSecs },
+                        { value: instance.leaseInfo.durationInSecs },
+                        { value: <Moment format="YYYY/MM/DD hh:mm:ss">{timestamp}</Moment> },
+                    ]);
+                })
+            });
+
+            tableData.body = body;
+
+            totalApplications = response.data.totalApplications;
+            totalInstances = response.data.totalInstances;
+        }
+
+
 
         this.setState({
+            totalApplications: totalApplications,
+            totalInstances: totalInstances,
             tableData: tableData
         })
     }
@@ -87,6 +102,10 @@ class DiscoveryPage extends React.Component {
     render() {
         return (
             <PageContent>
+                <Row>
+                    <Widget icon="fa fa-cube" numcount={this.state.totalApplications} title="Applications" subtitle="Running applications" cols="col-xxl-7 col-lg-3" />
+                    <Widget icon="fa fa-cubes" numcount={this.state.totalInstances} title="Instances" subtitle="Running instances" cols="col-xxl-7 col-lg-3" />
+                </Row>
                 <Row>
                     <PagePanel title="Applications" cols="col-xxl-7 col-lg-12" >
                         <DataTable id="example1" width="100%" data={this.state.tableData}></DataTable>

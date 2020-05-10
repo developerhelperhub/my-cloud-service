@@ -30,6 +30,7 @@ import ToolbarDropdownProfile from '../components/dashboard/topbar/ToolbarDropdo
 import ToolbarDropdownDivider from '../components/dashboard/topbar/ToolbarDropdownDivider'
 
 import DiscoveryPage from './DiscoveryPage'
+import DiscoveryHomePage from './DiscoveryHomePage'
 import CircuitBreakerPage from './CircuitBreakerPage'
 
 class DashboardPage extends React.Component {
@@ -208,12 +209,14 @@ class DashboardPage extends React.Component {
 
                     </Topbar>
 
-
                     <Route exact path="/discovery">
                         <DiscoveryPage />
                     </Route>
                     <Route exact path="/circuit-breaker">
                         <CircuitBreakerPage />
+                    </Route>
+                    <Route exact path="/">
+                        <DiscoveryHomePage />
                     </Route>
 
                 </PageContentWrapper>
