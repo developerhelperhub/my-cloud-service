@@ -1,4 +1,4 @@
-package com.developerhelperhub.ms.id.data;
+package com.developerhelperhub.ms.id.trans.client;
 
 import java.util.Collection;
 import java.util.HashMap;
@@ -20,9 +20,6 @@ import org.springframework.security.oauth2.provider.ClientDetails;
 import org.springframework.security.oauth2.provider.ClientDetailsService;
 import org.springframework.security.oauth2.provider.ClientRegistrationException;
 import org.springframework.stereotype.Component;
-
-import com.developerhelperhub.ms.id.entity.OauthClientEntity;
-import com.developerhelperhub.ms.id.repository.OauthClientRepository;
 
 import lombok.Getter;
 import lombok.Setter;

@@ -9,8 +9,8 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
 
-import com.developerhelperhub.ms.id.data.OauthClient;
-import com.developerhelperhub.ms.id.data.User;
+import com.developerhelperhub.ms.id.trans.client.OauthClient;
+import com.developerhelperhub.ms.id.trans.user.User;
 
 @SpringBootApplication
 @EnableDiscoveryClient

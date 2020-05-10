@@ -58,7 +58,7 @@ class DashboardPage extends React.Component {
                                     <SidebarMenuitem label="Discovery" href="/discovery"
                                     // badge={{ label: "Pro", type: "badge-success" }} 
                                     />
-                                    <SidebarMenuitem label="Circuit Breaker" href="/circuit-breaker" />
+                                    {/* <SidebarMenuitem label="Circuit Breaker" href="/circuit-breaker" /> */}
                                 </SidebarSubmenu>
                             </SidebarDropdown>
 
@@ -74,7 +74,7 @@ class DashboardPage extends React.Component {
                                 </SidebarSubmenu>
                             </SidebarDropdown>
 
-                            <SidemenubarHeader>React Admin UI</SidemenubarHeader>
+                            <SidemenubarHeader>React Admin UI Samples</SidemenubarHeader>
                             
                             <SidebarMenuitem label="Dashboard" font="fa fa-book" href="/admin-dashboard" badge={{ label: "Beta", type: "badge-primary" }} />
                             <SidebarMenuitem label="Data Table" font="fa fa-calendar" href="/admin-datatable" />

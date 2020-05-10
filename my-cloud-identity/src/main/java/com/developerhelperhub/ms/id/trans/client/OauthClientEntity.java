@@ -1,4 +1,4 @@
-package com.developerhelperhub.ms.id.entity;
+package com.developerhelperhub.ms.id.trans.client;
 
 import java.util.Set;
 

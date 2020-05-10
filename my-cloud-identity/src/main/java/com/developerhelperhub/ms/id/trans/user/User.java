@@ -1,4 +1,4 @@
-package com.developerhelperhub.ms.id.data;
+package com.developerhelperhub.ms.id.trans.user;
 
 import java.util.Collection;
 import java.util.HashSet;
@@ -17,9 +17,6 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
-
-import com.developerhelperhub.ms.id.entity.UserEntity;
-import com.developerhelperhub.ms.id.repository.UserRepository;
 
 import lombok.Getter;
 import lombok.Setter;

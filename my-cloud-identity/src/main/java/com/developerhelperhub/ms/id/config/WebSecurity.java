@@ -10,7 +10,7 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 
-import com.developerhelperhub.ms.id.data.User;
+import com.developerhelperhub.ms.id.trans.user.User;
 
 @Order(1)
 @Configuration
