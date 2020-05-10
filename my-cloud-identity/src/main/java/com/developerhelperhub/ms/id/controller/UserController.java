@@ -41,6 +41,8 @@ public class UserController {
 			model.setCredentialsNonExpired(entity.isCredentialsNonExpired());
 			model.setEnabled(entity.isEnabled());
 			model.setUsername(entity.getUsername());
+			
+			list.add(model);
 		}
 
 		return list;

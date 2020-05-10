@@ -37,6 +37,7 @@ public class ClientController {
 			model.setScoped(entity.isScoped());
 			model.setSecretRequired(entity.isSecretRequired());
 
+			list.add(model);
 		}
 
 		return list;

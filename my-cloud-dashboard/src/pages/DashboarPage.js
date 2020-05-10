@@ -34,6 +34,8 @@ import DashboardHomePage from './DashboardHomePage'
 import CircuitBreakerPage from './CircuitBreakerPage'
 import AdminUiDashboard from './reactadminuis/AdminUiDashboard'
 import AdminUiDataTablePage from './reactadminuis/AdminUiDataTablePage'
+import ClientPage from './identity/ClientPage'
+import UserPage from './identity/UserPage'
 
 class DashboardPage extends React.Component {
 
@@ -70,7 +72,7 @@ class DashboardPage extends React.Component {
                                     <SidebarMenuitem label="Client" href="/client"
                                     // badge={{ label: "Pro", type: "badge-success" }} 
                                     />
-                                    <SidebarMenuitem label="Users" href="/users" />
+                                    <SidebarMenuitem label="User" href="/user" />
                                 </SidebarSubmenu>
                             </SidebarDropdown>
 
@@ -199,12 +201,21 @@ class DashboardPage extends React.Component {
                     <Route exact path="/circuit-breaker">
                         <CircuitBreakerPage />
                     </Route>
+                    
+                    <Route exact path="/client">
+                        <ClientPage />
+                    </Route>
+                    <Route exact path="/user">
+                        <UserPage />
+                    </Route>
+                            
                     <Route exact path="/admin-dashboard">
                         <AdminUiDashboard />
                     </Route>
                     <Route exact path="/admin-datatable">
                         <AdminUiDataTablePage />
                     </Route>
+                    
                     <Route exact path="/">
                         <DashboardHomePage />
                     </Route>
