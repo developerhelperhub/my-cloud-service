@@ -7,7 +7,7 @@ import Widget from '../components/dashboard/Widget'
 
 import AppApiRepo from '../common/AppApiRepo'
 
-class DiscoveryHomePage extends React.Component {
+class DashboardHomePage extends React.Component {
 
     constructor(props) {
         super(props);
@@ -50,4 +50,4 @@ class DiscoveryHomePage extends React.Component {
     }
 }
 
-export default DiscoveryHomePage;
+export default DashboardHomePage;

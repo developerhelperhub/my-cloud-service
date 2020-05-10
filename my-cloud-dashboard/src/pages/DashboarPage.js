@@ -30,8 +30,10 @@ import ToolbarDropdownProfile from '../components/dashboard/topbar/ToolbarDropdo
 import ToolbarDropdownDivider from '../components/dashboard/topbar/ToolbarDropdownDivider'
 
 import DiscoveryPage from './DiscoveryPage'
-import DiscoveryHomePage from './DiscoveryHomePage'
+import DashboardHomePage from './DashboardHomePage'
 import CircuitBreakerPage from './CircuitBreakerPage'
+import AdminUiDashboard from './reactadminuis/AdminUiDashboard'
+import AdminUiDataTablePage from './reactadminuis/AdminUiDataTablePage'
 
 class DashboardPage extends React.Component {
 
@@ -60,40 +62,22 @@ class DashboardPage extends React.Component {
                                 </SidebarSubmenu>
                             </SidebarDropdown>
 
+                            <SidebarDropdown title="Identity Services" font="fa fa-shield"
+                             badge={{ label: "New", type: "badge-warning" }}
+                            >
 
-                            {/* <SidebarDropdown title="E-commerce" font="fa fa-shopping-cart"
-                                badge={{ label: "3", type: "badge-danger" }}>
                                 <SidebarSubmenu>
-                                    <SidebarMenuitem label="Products" />
-                                    <SidebarMenuitem label="Orders" />
-                                    <SidebarMenuitem label="Credit cart" />
+                                    <SidebarMenuitem label="Client" href="/client"
+                                    // badge={{ label: "Pro", type: "badge-success" }} 
+                                    />
+                                    <SidebarMenuitem label="Users" href="/users" />
                                 </SidebarSubmenu>
                             </SidebarDropdown>
 
-                            <SidebarDropdown title="Components" font="far fa-gem">
-                                <SidebarSubmenu>
-                                    <SidebarMenuitem label="General" />
-                                    <SidebarMenuitem label="Panels" />
-                                    <SidebarMenuitem label="Tables" />
-                                    <SidebarMenuitem label="Icons" />
-                                    <SidebarMenuitem label="Forms" />
-                                </SidebarSubmenu>
-                            </SidebarDropdown>
-
-                            <SidebarDropdown title="Charts" font="fa fa-chart-line">
-                                <SidebarSubmenu>
-                                    <SidebarMenuitem label="Pie chart" />
-                                    <SidebarMenuitem label="Line chart" />
-                                    <SidebarMenuitem label="Bar chart" />
-                                    <SidebarMenuitem label="Histogram" />
-                                </SidebarSubmenu>
-                            </SidebarDropdown> */}
-
-                            {/* <SidemenubarHeader>Charts</SidemenubarHeader>
-
-                            <SidebarMenuitem label="Documentation" font="fa fa-book" badge={{ label: "Beta", type: "badge-primary" }} />
-                            <SidebarMenuitem label="Calendar" font="fa fa-calendar" />
-                            <SidebarMenuitem label="Examples" font="fa fa-folder" /> */}
+                            <SidemenubarHeader>React Admin UI</SidemenubarHeader>
+                            
+                            <SidebarMenuitem label="Dashboard" font="fa fa-book" href="/admin-dashboard" badge={{ label: "Beta", type: "badge-primary" }} />
+                            <SidebarMenuitem label="Data Table" font="fa fa-calendar" href="/admin-datatable" />
 
                         </Sidemenubar>
 
@@ -215,8 +199,14 @@ class DashboardPage extends React.Component {
                     <Route exact path="/circuit-breaker">
                         <CircuitBreakerPage />
                     </Route>
+                    <Route exact path="/admin-dashboard">
+                        <AdminUiDashboard />
+                    </Route>
+                    <Route exact path="/admin-datatable">
+                        <AdminUiDataTablePage />
+                    </Route>
                     <Route exact path="/">
-                        <DiscoveryHomePage />
+                        <DashboardHomePage />
                     </Route>
 
                 </PageContentWrapper>
