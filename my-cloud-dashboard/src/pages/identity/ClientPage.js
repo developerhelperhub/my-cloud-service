@@ -85,7 +85,7 @@ class ClientPage extends React.Component {
         return (
             <PageContent>
                 <Row>
-                    <PagePanel title="Applications" cols="col-xxl-7 col-lg-12" >
+                    <PagePanel title="Clients" cols="col-xxl-7 col-lg-12" >
                         <DataTable id="example1" width="100%" data={this.state.tableData}></DataTable>
                     </PagePanel>
                 </Row>
