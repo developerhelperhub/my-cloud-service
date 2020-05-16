@@ -1,11 +1,10 @@
-
 spring:
   application:
-    name: my-cloud-discovery
+    name: my-cloud-monitor
   security:
     user:
-      name: discovery
-      password: discoverypass
+      name: breaker
+      password: breaker
 
 logging:
   level:
@@ -18,19 +17,16 @@ logging:
         discovery: OFF
 
 server:
-  port: 8761
-  
+  port: 8087
+  #servlet:
+  #  context-path: /monitor  
 
 eureka:
-  dashboard:
-    enabled: false
   client:
     serviceUrl:
       defaultZone: http://discovery:discoverypass@localhost:8761/eureka/
-    #register-with-eureka: false
-    #fetch-registry: false
-  
 
+      
 management:
   endpoint:
     health:
@@ -38,4 +34,4 @@ management:
   endpoints:
     web:
       exposure:
-        include: info, health, metrics  
+        include: info, health, metrics

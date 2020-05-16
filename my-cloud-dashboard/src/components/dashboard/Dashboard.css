@@ -598,7 +598,7 @@
   .chiller-theme .dataTables_wrapper label,
   .chiller-theme div.dataTables_wrapper div.dataTables_info,
   .chiller-theme .page-content-wrapper .page-content .page-panel .header .panel-icon .panel-icon-font {
-    color: #56688A!important;
+    color: #818896!important;
   }
 
   
@@ -638,7 +638,7 @@
   /*-------------------- theme: chiller - table ----------------------*/  
   .chiller-theme .table > thead > tr > th {
     background: rgb(48, 50, 56, 1);
-    color: #56688A;
+    color: #818896!important;
   }
 
   .chiller-theme .table > thead > tr > th, .table > tbody > tr > th, 
@@ -647,7 +647,7 @@
   .table > tfoot > tr > td,
   .chiller-theme .table {
     border-color: #383c44;
-    color: #56688A;
+    color: #818896!important;
   }
   
   .chiller-theme .table .table tr > td:first-child, .table tr > th:first-child {
@@ -680,7 +680,7 @@
   .chiller-theme div.dataTables_wrapper div.dataTables_paginate a.page-link {
     /* styling */
     background-color: #2f3136;
-    color: #56688A;
+    color: #818896!important;
     border: thin solid #2c2f33;
   }
 

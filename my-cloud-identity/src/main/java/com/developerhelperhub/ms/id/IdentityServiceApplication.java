@@ -8,14 +8,12 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
-import org.springframework.cloud.netflix.eureka.EnableEurekaClient;
 
 import com.developerhelperhub.ms.id.trans.client.OauthClient;
 import com.developerhelperhub.ms.id.trans.user.User;
 
 @SpringBootApplication
 @EnableDiscoveryClient
-@EnableEurekaClient
 public class IdentityServiceApplication implements CommandLineRunner {
 
 	@Autowired
@@ -70,7 +68,7 @@ public class IdentityServiceApplication implements CommandLineRunner {
 		// Added the new resources id's
 		client.setResourceIds(new HashSet<String>(Arrays.asList("my_cloud_identity_id", "my_cloud_api_gateway_id",
 				"my_cloud_discovery_id", "my_cloud_circuit_breaker_id", "inventory_service_resource_id",
-				"api_gateway_resource_id", "sales_service_resource_id")));
+				"api_gateway_resource_id", "sales_service_resource_id", "my_cloud_monitor_id")));
 
 		client.addGrantedAuthority("ADMIN");
 

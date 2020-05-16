@@ -14,7 +14,7 @@ import com.developerhelperhub.ms.id.trans.user.UserModel;
 import com.developerhelperhub.ms.id.trans.user.UserRepository;
 
 @RestController
-@RequestMapping("/user")
+@RequestMapping("/identity/user")
 public class UserController {
 
 	@Autowired

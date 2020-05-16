@@ -26,7 +26,7 @@ class Login extends React.Component {
   async handleSubmit(event) {
     event.preventDefault();
 
-    const response = await AppApiRepo.fetch('/identity/oauth/token', 'POST', {
+    const response = await AppApiRepo.fetch('/oauth/token', 'POST', {
       'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8',
       'Authorization': AppApiRepo.getBasicToken(),
     }, {

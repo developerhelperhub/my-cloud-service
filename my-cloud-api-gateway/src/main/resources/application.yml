@@ -17,14 +17,33 @@ eureka:
     
 zuul:
   routes:
+    oauth:
+      path: /oauth/**
+      sensitiveHeaders: Cookie,Set-Cookie
+      serviceId: my-cloud-identity
+      stripPrefix: false
     identity:
       path: /identity/**
       sensitiveHeaders: Cookie,Set-Cookie
       serviceId: my-cloud-identity
       stripPrefix: false
+    monitor:
+      path: /monitor/**
+      sensitiveHeaders: Cookie,Set-Cookie
+      serviceId: my-cloud-monitor
+      stripPrefix: false
     discovery:
       path: /discovery/**
       sensitiveHeaders: Cookie,Set-Cookie
-      #serviceId: my-cloud-discovery
-      url: http://localhost:8761
+      serviceId: my-cloud-discovery
+      #url: http://localhost:8761
       stripPrefix: false
+
+management:
+  endpoint:
+    health:
+      show-details: always
+  endpoints:
+    web:
+      exposure:
+        include: info, health, metrics

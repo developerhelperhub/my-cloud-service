@@ -13,7 +13,7 @@ import com.developerhelperhub.ms.id.trans.client.OauthClientModel;
 import com.developerhelperhub.ms.id.trans.client.OauthClientRepository;
 
 @RestController
-@RequestMapping("/clients")
+@RequestMapping("/identity/clients")
 public class ClientController {
 
 	@Autowired
