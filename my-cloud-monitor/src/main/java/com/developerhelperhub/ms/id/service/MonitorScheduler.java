@@ -13,7 +13,7 @@ public class MonitorScheduler {
 	@Autowired
 	private OAuth2RestTemplate restTemplate;
 
-	@Scheduled(fixedDelay = 1000)
+	//@Scheduled(fixedDelay = 1000)
 	public void monitor() {
 
 		ResponseEntity<DiscoveryResponseModel> entity = restTemplate
