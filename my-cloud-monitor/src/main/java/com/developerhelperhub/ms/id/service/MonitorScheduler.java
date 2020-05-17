@@ -58,7 +58,7 @@ public class MonitorScheduler {
 		return matrics;
 	}
 
-	//@Scheduled(fixedDelay = 1000)
+	@Scheduled(fixedDelay = 1000)
 	public void monitor() {
 
 		List<String> applications = getApplications();
