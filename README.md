@@ -10,8 +10,14 @@ This repostiry contains the development of the my cloud service.
     * Netflix Circuit Breaker
     * Netflix Loadbalancer
     * Oauth2 Server and Resource
-  * MongoDB
-  * Influxdb
+    * MongoDB Repository
+    * Security
+      * Basic Security
+      * Oauth2 
+      * JWT Token
+  * Database
+    * MongoDB
+    * Influxdb
   * My Cloud Service 
     * Identity Service
     * Discovery Service
