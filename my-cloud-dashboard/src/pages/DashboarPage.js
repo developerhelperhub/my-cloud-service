@@ -30,6 +30,7 @@ import ToolbarDropdownProfile from '../components/dashboard/topbar/ToolbarDropdo
 import ToolbarDropdownDivider from '../components/dashboard/topbar/ToolbarDropdownDivider'
 
 import DiscoveryPage from './DiscoveryPage'
+import MonitorPage from './MonitorPage'
 import DashboardHomePage from './DashboardHomePage'
 import CircuitBreakerPage from './CircuitBreakerPage'
 import AdminUiDashboard from './reactadminuis/AdminUiDashboard'
@@ -60,7 +61,7 @@ class DashboardPage extends React.Component {
                                     <SidebarMenuitem label="Discovery" href="/discovery"
                                     // badge={{ label: "Pro", type: "badge-success" }} 
                                     />
-                                    {/* <SidebarMenuitem label="Circuit Breaker" href="/circuit-breaker" /> */}
+                                    <SidebarMenuitem label="Monitor" href="/monitor" />
                                 </SidebarSubmenu>
                             </SidebarDropdown>
 
@@ -201,6 +202,10 @@ class DashboardPage extends React.Component {
                     <Route exact path="/circuit-breaker">
                         <CircuitBreakerPage />
                     </Route>
+                    <Route exact path="/monitor">
+                        <MonitorPage />
+                    </Route>
+                    
                     
                     <Route exact path="/client">
                         <ClientPage />

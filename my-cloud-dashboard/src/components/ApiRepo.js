@@ -1,7 +1,8 @@
 import React from 'react';
+import { NativeEventSource, EventSourcePolyfill } from 'event-source-polyfill';
 
 class ApiRepo extends React.Component {
-    
+
     static getBasePath() {
         return "-";
     }
@@ -12,6 +13,23 @@ class ApiRepo extends React.Component {
 
     static getGenerateUrl(endPoint) {
         return this.getBasePath() + endPoint;
+    }
+
+    static eventSource(endPoint, headers, onmessage, onerror) {
+        const evtSource = new EventSourcePolyfill(this.getGenerateUrl(endPoint),
+            {
+                headers: headers
+            });
+
+        evtSource.onmessage = function (event) {
+            onmessage(event);
+        }
+
+        evtSource.onerror = function (err) {
+            if (err.error != undefined) {
+                onerror(err);
+            }
+        };
     }
 
     static async fetch(endPoint, method, headers, body) {
