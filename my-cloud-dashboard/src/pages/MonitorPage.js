@@ -27,50 +27,134 @@ class MonitorPage extends React.Component {
 
         }
 
-        this.refreshTable = this.refreshTable.bind(this);
-        this.populate = this.populate.bind(this);
+        this.formatDate = this.formatDate.bind(this);
+        this.populateAll = this.populateAll.bind(this);
+        this.sampleGroupedData = this.sampleGroupedData.bind(this);
+        this.populateGrouped = this.populateGrouped.bind(this);
+        this.jvmMemoryUsedStreamAll = this.jvmMemoryUsedStreamAll.bind(this);
+        this.jvmMemoryUsedStreamGrouped = this.jvmMemoryUsedStreamGrouped.bind(this);
+        this.colours = this.colours.bind(this);
+        
     }
 
-    async refreshTable() {
-
+    componentDidMount() {
+        // this.jvmMemoryUsedStreamAll();
+        this.jvmMemoryUsedStreamGrouped();
     }
 
+    formatDate(date) {
+        return window.d3.timeParse("%Y-%m-%d %H:%M:%S")(date);
+    }
 
+    jvmMemoryUsedStreamAll() {
+        let self = this;
 
-
-    async componentDidMount() {
-
-        let slef = this;
-
-        AppApiRepo.eventSource("/monitor/jvm-memory-used/stream",
+        AppApiRepo.eventSource("/monitor/jvm-memory-used/stream-all",
             {
                 'Authorization': AppApiRepo.getToken()
             }, function (event) {
 
-                const data=[];
+                const data = [];
                 const eventData = JSON.parse(event.data);
                 eventData.forEach(d => {
                     const val = {
-                        date: window.d3.timeParse("%Y-%m-%d %H:%M:%S")(d.time),
-                        value: (d.value / 1024/ 1024)
+                        date: self.formatDate(d.time),
+                        value: (d.value / 1024 / 1024)
                     };
                     data.push(val);
 
                     //console.log(d.time + ": " + val.date);
                 });
 
-                slef.populate(data);
+                self.populateAll(data);
 
             }, function (err) {
-                slef.populate([]);
+                self.populateAll([]);
 
                 console.log("Monitor Event Source Error : " + err.error);
             }
         );
+    }
+
+    jvmMemoryUsedStreamGrouped() {
+
+        let self = this;
+
+        let values = [];
+        let items = [];
+
+        let data = {
+            items: items,
+            values: values
+        }
+
+        let colours = self.colours();
+
+        //let data = this.sampleGroupedData();
+
+        AppApiRepo.eventSource("/monitor/jvm-memory-used/stream-grouped",
+            {
+                'Authorization': AppApiRepo.getToken()
+            }, function (event) {
+
+                const eventData = JSON.parse(event.data);
+
+                var colourIndex = 0;
+
+                eventData.forEach(app => {
+
+                    let itemData = []
+
+                    app.data.forEach(d => {
+                        
+                        let dataObj = {
+                            date: self.formatDate(d.time),
+                            value: (d.value / 1024 / 1024)
+                        };
+
+                        itemData.push(dataObj);
+                        data.values.push(dataObj);
+
+                    });
+                    
+                    data.items.push({
+                        fill: 'none',
+                        stroke: colours[colourIndex],
+                        strokeWidth: 1.5,
+                        data: itemData,
+                        x: function (d) { return d.date },
+                        y: function (d) { return d.value }
+                    })
+
+                    colourIndex = colourIndex + 1;
+                });
+
+                self.populateGrouped(data);
+
+            }, function (err) {
+                self.populateGrouped(data);
+
+                console.log("Monitor Event Source Error : " + err.error);
+            }
+        );
+    }
+
+
+
+    populateGrouped(data) {
+
+        window.d3LinesChart({
+            id: "#my_dataviz",
+            margin: { top: 10, right: 30, bottom: 30, left: 60 },
+            items: data.items,
+            values: data.values,
+            extent: function (d) { return d.date; },
+            max: function (d) { return d.value; },
+        });
 
     }
 
-    async populate(data) {
+    populateAll(data) {
 
         window.d3LineChart({
             id: "#my_dataviz",
@@ -102,6 +186,61 @@ class MonitorPage extends React.Component {
             </PageContent>
         );
 
+    }
+
+    colours() {
+        return ["ORCHID", "GOLD", "ORANGERED", "LIMEGREEN", "HOTPINK", "MEDIUMVIOLETRED", "DARKVIOLET"];
+    }
+
+    sampleGroupedData() {
+
+        let self = this;
+
+        var values = [
+            { date: self.formatDate("2020-05-17 09:10:20"), value: 200 },
+            { date: self.formatDate("2020-05-17 09:12:20"), value: 100 },
+            { date: self.formatDate("2020-05-17 09:40:20"), value: 300 },
+            { date: self.formatDate("2020-05-17 09:55:20"), value: 600 },
+            { date: self.formatDate("2020-05-17 10:10:20"), value: 150 },
+            { date: self.formatDate("2020-05-17 09:10:20"), value: 50 },
+            { date: self.formatDate("2020-05-17 09:12:20"), value: 70 },
+            { date: self.formatDate("2020-05-17 09:40:20"), value: 90 },
+            { date: self.formatDate("2020-05-17 09:55:20"), value: 400 },
+            { date: self.formatDate("2020-05-17 10:10:20"), value: 40 }
+        ]
+
+        var items = [
+            {
+                fill: 'none',
+                stroke: "steelblue",
+                strokeWidth: 1.5,
+                data: [
+                    { date: self.formatDate("2020-05-17 09:10:20"), value: 200 },
+                    { date: self.formatDate("2020-05-17 09:12:20"), value: 100 },
+                    { date: self.formatDate("2020-05-17 09:40:20"), value: 300 },
+                    { date: self.formatDate("2020-05-17 09:55:20"), value: 600 },
+                    { date: self.formatDate("2020-05-17 10:10:20"), value: 150 },
+                ],
+                x: function (d) { return d.date },
+                y: function (d) { return d.value }
+            },
+            {
+                fill: 'none',
+                stroke: "red",
+                strokeWidth: 1.5,
+                data: [
+                    { date: self.formatDate("2020-05-17 09:10:20"), value: 50 },
+                    { date: self.formatDate("2020-05-17 09:12:20"), value: 70 },
+                    { date: self.formatDate("2020-05-17 09:40:20"), value: 90 },
+                    { date: self.formatDate("2020-05-17 09:55:20"), value: 400 },
+                    { date: self.formatDate("2020-05-17 10:10:20"), value: 40 },
+                ],
+                x: function (d) { return d.date },
+                y: function (d) { return d.value }
+            }
+        ]
+
+        return { values: values, items: items };
     }
 }
 

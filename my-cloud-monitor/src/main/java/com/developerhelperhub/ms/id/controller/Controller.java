@@ -26,7 +26,7 @@ public class Controller {
 		return service.streamJvmMemoryUsed();
 	}
 
-	@GetMapping(value = "/jvm-memory-used/stream", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
+	@GetMapping(value = "/jvm-memory-used/stream-grouped", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
 	public Flux<List<JvmMemoryUsedGroupedResponseModel>> streamJvmMemoryUsedGrouped() {
 		return service.streamJvmMemoryUsedGrouped();
 	}
