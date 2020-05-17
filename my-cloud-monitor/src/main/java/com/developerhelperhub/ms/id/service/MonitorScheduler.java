@@ -1,5 +1,9 @@
 package com.developerhelperhub.ms.id.service;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
+import java.util.TreeSet;
 import java.util.concurrent.TimeUnit;
 
 import org.influxdb.InfluxDB;
@@ -26,43 +30,61 @@ public class MonitorScheduler {
 	@Autowired
 	private InfluxDB influxDB;
 
-	// @Scheduled(fixedDelay = 1000)
-	public void monitor() {
+	private List<String> getApplications() {
+		List<String> applications = new ArrayList<>();
 
 		ResponseEntity<DiscoveryResponseModel> entity = restTemplate
 				.getForEntity("http://my-cloud-discovery/discovery/applications", DiscoveryResponseModel.class);
 
 		if (entity.getStatusCode() == HttpStatus.OK) {
 
-			entity.getBody().getApplication().parallelStream().forEach(app -> {
+			entity.getBody().getApplication().forEach(app -> {
+				applications.add(app.getName());
+			});
 
-				System.err.println("--------> " + app.getName());
+		} else {
+			LOGGER.error("Discovery application response error {} ", entity.getStatusCode());
+		}
+		return applications;
+	}
 
-				ResponseEntity<String> health = restTemplate
-						.getForEntity("http://" + app.getName() + "/actuator/health", String.class);
+	private final String MATRIX_JVM_MEMORY_USED = "jvm.memory.used";
 
-				if (health.getStatusCode() == HttpStatus.OK) {
+	private Set<String> getMatrics() {
+		Set<String> matrics = new TreeSet<>();
 
-					System.err.println("= " + health.getBody());
+		matrics.add(MATRIX_JVM_MEMORY_USED);
 
-				} else {
-					System.err.print(health.getStatusCode());
+		return matrics;
+	}
+
+	//@Scheduled(fixedDelay = 1000)
+	public void monitor() {
+
+		List<String> applications = getApplications();
+		Set<String> matrics = getMatrics();
+
+		applications.parallelStream().forEach(app -> {
+
+			matrics.parallelStream().forEach(matric -> {
+
+				if (matric.equals(MATRIX_JVM_MEMORY_USED)) {
+					jvmMmemoryUsed(app, matric);
 				}
 
 			});
-		} else {
-			System.err.print(entity.getStatusCode());
-		}
+
+		});
+
+		System.out.println(applications);
 	}
 
-	@Scheduled(fixedDelay = 1000)
-	public void jvmMmemoryUsed() {
-		String serviceName = "my-cloud-discovery";
-		String matricName = "jvm.memory.used";
+	public void jvmMmemoryUsed(String application, String metric) {
+
 		String measurementName = "memory";
 
 		ResponseEntity<JvmMemoryUsedModel> response = restTemplate
-				.getForEntity("http://" + serviceName + "/actuator/metrics/" + matricName, JvmMemoryUsedModel.class);
+				.getForEntity("http://" + application + "/actuator/metrics/" + metric, JvmMemoryUsedModel.class);
 
 		if (response.getStatusCode() == HttpStatus.OK) {
 
@@ -70,20 +92,23 @@ public class MonitorScheduler {
 
 			for (JvmMemoryUsedModel.Measurement measurement : body.getMeasurements()) {
 
-				LOGGER.debug("Inserting value into {}...", measurementName);
-
-				LOGGER.debug("statistic: {}, value: {}", measurement.getStatistic(), measurement.getValue());
-
 				Point point = Point.measurement(measurementName).time(System.currentTimeMillis(), TimeUnit.MILLISECONDS)
+						.addField("metric", metric).addField("application", application)
 						.addField("statistic", measurement.getStatistic()).addField("value", measurement.getValue())
 						.build();
 
 				influxDB.write(point);
 
-				LOGGER.debug("Inserted value into {}!", measurementName);
+				LOGGER.debug("Inserted value into {} {} {} !", measurementName, application, metric);
 			}
 
 			influxDB.close();
+
+		} else {
+
+			LOGGER.error("Matrix response error {} {} {}", application, metric, response.getStatusCode());
+
 		}
 	}
+
 }

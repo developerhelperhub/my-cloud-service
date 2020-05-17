@@ -42,7 +42,7 @@ class MonitorPage extends React.Component {
 
         let slef = this;
 
-        AppApiRepo.eventSource("/monitor/jvm-memory-used",
+        AppApiRepo.eventSource("/monitor/jvm-memory-used/stream",
             {
                 'Authorization': AppApiRepo.getToken()
             }, function (event) {
@@ -60,16 +60,11 @@ class MonitorPage extends React.Component {
                 });
 
                 slef.populate(data);
-                
-                // slef.populate([
-                //     { date: window.d3.timeParse("%Y-%m-%d")("2013-04-28"), value: 135.98 },
-                //     { date: window.d3.timeParse("%Y-%m-%d")("2013-04-28"), value: 147.49 },
-                //     { date: window.d3.timeParse("%Y-%m-%d")("2013-04-29"), value: 146.93 },
-                //     { date: window.d3.timeParse("%Y-%m-%d")("2013-04-30"), value: 139.89 },
-                //     { date: window.d3.timeParse("%Y-%m-%d")("2013-05-01"), value: 108.13 }]);
 
             }, function (err) {
                 slef.populate([]);
+
+                console.log("Monitor Event Source Error : " + err.error);
             }
         );
 

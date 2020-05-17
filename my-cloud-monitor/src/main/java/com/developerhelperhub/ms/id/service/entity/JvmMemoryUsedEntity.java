@@ -17,6 +17,13 @@ public class JvmMemoryUsedEntity {
 	@Column(name = "statistic")
 	private String statistic;
 
+	@Column(name = "application")
+	private String application;
+
+	@Column(name = "metric")
+	private String metric;
+
 	@Column(name = "value")
 	private Double value;
+
 }
