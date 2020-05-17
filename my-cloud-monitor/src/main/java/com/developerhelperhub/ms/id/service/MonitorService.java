@@ -1,6 +1,9 @@
 package com.developerhelperhub.ms.id.service;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.influxdb.InfluxDB;
 import org.influxdb.dto.Query;
@@ -12,6 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.developerhelperhub.ms.id.service.entity.JvmMemoryUsedEntity;
+import com.developerhelperhub.ms.id.service.metrics.JvmMemoryUsedResponseModel;
 
 import reactor.core.publisher.Flux;
 
@@ -23,7 +27,7 @@ public class MonitorService {
 	@Autowired
 	private InfluxDB influxDB;
 
-	public List<JvmMemoryUsedEntity> getJvmMemoryUsed() {
+	public List<JvmMemoryUsedResponseModel> getJvmMemoryUsed() {
 		LOGGER.info("getJvmMemoryUsed ............");
 
 		Query query = new Query("Select * from memory", "mycloudmonitordb");
@@ -35,11 +39,18 @@ public class MonitorService {
 
 		influxDB.close();
 
-		return memoryPointList;
+		return memoryPointList.stream().map(d -> {
+
+			SimpleDateFormat sdfDate = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+			String date = sdfDate.format(new Date(d.getTime().toEpochMilli()));
+
+			return new JvmMemoryUsedResponseModel(date, d.getStatistic(), d.getValue());
+
+		}).collect(Collectors.toList());
 	}
 
-	public Flux<List<JvmMemoryUsedEntity>> streamJvmMemoryUsed() {
-		List<JvmMemoryUsedEntity> memoryPointList = getJvmMemoryUsed();
+	public Flux<List<JvmMemoryUsedResponseModel>> streamJvmMemoryUsed() {
+		List<JvmMemoryUsedResponseModel> memoryPointList = getJvmMemoryUsed();
 		return Flux.just(memoryPointList);
 	}
 

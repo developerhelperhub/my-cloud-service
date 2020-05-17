@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.developerhelperhub.ms.id.service.MonitorService;
-import com.developerhelperhub.ms.id.service.entity.JvmMemoryUsedEntity;
+import com.developerhelperhub.ms.id.service.metrics.JvmMemoryUsedResponseModel;
 
 import reactor.core.publisher.Flux;
 
@@ -21,7 +21,7 @@ public class Controller {
 	private MonitorService service;
 
 	@GetMapping(value = "/jvm-memory-used", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
-	public Flux<List<JvmMemoryUsedEntity>> applications() {
+	public Flux<List<JvmMemoryUsedResponseModel>> applications() {
 		return service.streamJvmMemoryUsed();
 	}
 

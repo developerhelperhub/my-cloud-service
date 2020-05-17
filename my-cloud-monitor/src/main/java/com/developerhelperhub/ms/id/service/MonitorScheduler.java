@@ -55,7 +55,7 @@ public class MonitorScheduler {
 		}
 	}
 
-	//@Scheduled(fixedDelay = 1000)
+	@Scheduled(fixedDelay = 1000)
 	public void jvmMmemoryUsed() {
 		String serviceName = "my-cloud-discovery";
 		String matricName = "jvm.memory.used";

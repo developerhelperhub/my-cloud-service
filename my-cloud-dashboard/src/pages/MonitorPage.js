@@ -46,12 +46,27 @@ class MonitorPage extends React.Component {
             {
                 'Authorization': AppApiRepo.getToken()
             }, function (event) {
-                slef.populate([
-                    { date: window.d3.timeParse("%Y-%m-%d")("2013-04-28"), value: 135.98 },
-                    { date: window.d3.timeParse("%Y-%m-%d")("2013-04-28"), value: 147.49 },
-                    { date: window.d3.timeParse("%Y-%m-%d")("2013-04-29"), value: 146.93 },
-                    { date: window.d3.timeParse("%Y-%m-%d")("2013-04-30"), value: 139.89 },
-                    { date: window.d3.timeParse("%Y-%m-%d")("2013-05-01"), value: 108.13 }]);
+
+                const data=[];
+                const eventData = JSON.parse(event.data);
+                eventData.forEach(d => {
+                    const val = {
+                        date: window.d3.timeParse("%Y-%m-%d %H:%M:%S")(d.time),
+                        value: (d.value / 1024/ 1024)
+                    };
+                    data.push(val);
+
+                    //console.log(d.time + ": " + val.date);
+                });
+
+                slef.populate(data);
+                
+                // slef.populate([
+                //     { date: window.d3.timeParse("%Y-%m-%d")("2013-04-28"), value: 135.98 },
+                //     { date: window.d3.timeParse("%Y-%m-%d")("2013-04-28"), value: 147.49 },
+                //     { date: window.d3.timeParse("%Y-%m-%d")("2013-04-29"), value: 146.93 },
+                //     { date: window.d3.timeParse("%Y-%m-%d")("2013-04-30"), value: 139.89 },
+                //     { date: window.d3.timeParse("%Y-%m-%d")("2013-05-01"), value: 108.13 }]);
 
             }, function (err) {
                 slef.populate([]);
@@ -68,7 +83,11 @@ class MonitorPage extends React.Component {
             fill: 'none',
             stroke: "steelblue",
             strokeWidth: 1.5,
-            data: data
+            data: data,
+            extent: function (d) { return d.date; },
+            max: function (d) { return d.value; },
+            x: function (d) { return d.date },
+            y: function (d) { return d.value }
         });
 
     }
