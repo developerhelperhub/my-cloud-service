@@ -2,6 +2,38 @@
 
 This repostiry contains the development of the my cloud service.
 
+## Technology
+* Backend 
+  * Spring Boot Framework 
+    * Netflix Discovery Pattern
+    * Netflix Zuul API Gateway
+    * Netflix Circuit Breaker
+    * Netflix Loadbalancer
+    * Oauth2 Server and Resource
+    * MongoDB Repository
+    * Security
+      * Basic Security
+      * Oauth2 
+      * JWT Token
+  * Database
+    * MongoDB
+    * Influxdb
+  * My Cloud Service 
+    * Identity Service
+    * Discovery Service
+    * Monitor Service
+    * API Gateway
+* Frontend 
+  * React JS
+  * Server Sent Event (Event Source)
+  * D3 & Morris js chart
+  * Bootstrap
+  * Awesome Font
+  * CSS
+  * JQueries
+  * HTML
+
+
 #### In progress .....
 
 ## Screens
