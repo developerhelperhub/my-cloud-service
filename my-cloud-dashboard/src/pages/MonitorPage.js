@@ -34,7 +34,7 @@ class MonitorPage extends React.Component {
         this.jvmMemoryUsedStreamAll = this.jvmMemoryUsedStreamAll.bind(this);
         this.jvmMemoryUsedStreamGrouped = this.jvmMemoryUsedStreamGrouped.bind(this);
         this.colours = this.colours.bind(this);
-        
+
     }
 
     componentDidMount() {
@@ -82,15 +82,18 @@ class MonitorPage extends React.Component {
 
         let values = [];
         let items = [];
+        var legends = [];
 
         let data = {
             items: items,
-            values: values
+            values: values,
+            legends: legends
         }
 
         let colours = self.colours();
 
-        //let data = this.sampleGroupedData();
+        // data = this.sampleGroupedData();
+        // self.populateGrouped(data);
 
         AppApiRepo.eventSource("/monitor/jvm-memory-used/stream-grouped",
             {
@@ -101,12 +104,16 @@ class MonitorPage extends React.Component {
 
                 var colourIndex = 0;
 
+                legends = [];
+
                 eventData.forEach(app => {
+
+                    legends.push({ value: app.application, fill: colours[colourIndex], stroke: colours[colourIndex], strokeWidth: 1.5 });
 
                     let itemData = []
 
                     app.data.forEach(d => {
-                        
+
                         let dataObj = {
                             date: self.formatDate(d.time),
                             value: (d.value / 1024 / 1024)
@@ -116,7 +123,7 @@ class MonitorPage extends React.Component {
                         data.values.push(dataObj);
 
                     });
-                    
+
                     data.items.push({
                         fill: 'none',
                         stroke: colours[colourIndex],
@@ -128,6 +135,12 @@ class MonitorPage extends React.Component {
 
                     colourIndex = colourIndex + 1;
                 });
+
+                data = {
+                    items: items,
+                    values: values,
+                    legends: legends
+                }
 
                 self.populateGrouped(data);
 
@@ -147,6 +160,38 @@ class MonitorPage extends React.Component {
             id: "#my_dataviz",
             margin: { top: 10, right: 30, bottom: 30, left: 60 },
             items: data.items,
+            axis: {
+                stroke: "#818896",
+                fill: "none",
+                text: "#818896",
+                font: "10px Arial"
+            },
+            legend: {
+                rect: {
+                    width: 10,
+                    height: 10,
+                    x: function (width, height) {
+                        return width - 180;
+                    },
+                    y: function (width, height) {
+                        return 0;
+                    }
+                },
+                text: {
+                    x: function (width, height) {
+                        return width - 160;
+                    },
+                    y: function (width, height) {
+                        return 10;
+                    },
+                    value: function (d) {
+                        return d.value;
+                    },
+                    font: "10px arial",
+                    fill: "#818896"
+                },
+                data: data.legends,
+            },
             values: data.values,
             extent: function (d) { return d.date; },
             max: function (d) { return d.value; },
@@ -196,6 +241,11 @@ class MonitorPage extends React.Component {
 
         let self = this;
 
+        var legends = [
+            { value: "Application 1", fill: 'steelblue', stroke: "steelblue", strokeWidth: 1.5 },
+            { value: "Application 2", fill: 'red', stroke: "steelblue", strokeWidth: 1.5 }
+        ]
+
         var values = [
             { date: self.formatDate("2020-05-17 09:10:20"), value: 200 },
             { date: self.formatDate("2020-05-17 09:12:20"), value: 100 },
@@ -240,7 +290,7 @@ class MonitorPage extends React.Component {
             }
         ]
 
-        return { values: values, items: items };
+        return { values: values, items: items, legends: legends };
     }
 }
 
