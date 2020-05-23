@@ -9,8 +9,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.developerhelperhub.ms.id.service.MonitorService;
-import com.developerhelperhub.ms.id.service.metrics.JvmMemoryUsedGroupedResponseModel;
-import com.developerhelperhub.ms.id.service.metrics.JvmMemoryUsedResponseModel;
+import com.developerhelperhub.ms.id.service.application.ApplicationEntity;
+import com.developerhelperhub.ms.id.service.application.MonitorApplication;
+import com.developerhelperhub.ms.id.service.metrics.MatricsGroupedResponseModel;
+import com.developerhelperhub.ms.id.service.metrics.MemoryResponseModel;
 
 import reactor.core.publisher.Flux;
 
@@ -21,19 +23,27 @@ public class Controller {
 	@Autowired
 	private MonitorService service;
 
+	@Autowired
+	private MonitorApplication application;
+
 	@GetMapping(value = "/jvm-memory-used/stream-all", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
-	public Flux<List<JvmMemoryUsedResponseModel>> jvmMemoryUsedStream() {
+	public Flux<List<MemoryResponseModel>> jvmMemoryUsedStream() {
 		return service.streamJvmMemoryUsed();
 	}
 
 	@GetMapping(value = "/jvm-memory-used/stream-grouped", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
-	public Flux<List<JvmMemoryUsedGroupedResponseModel>> streamJvmMemoryUsedGrouped() {
-		return service.streamJvmMemoryUsedGrouped();
+	public Flux<List<MatricsGroupedResponseModel>> streamJvmMemoryUsedGrouped() {
+		return service.streamMemoryGrouped();
 	}
 
 	@GetMapping(value = "/jvm-memory-used")
-	public List<JvmMemoryUsedGroupedResponseModel> getJvmMemoryUsed() {
-		return service.getJvmMemoryUsedGrouped();
+	public List<MatricsGroupedResponseModel> getJvmMemoryUsed() {
+		return service.getMemoryGrouped();
+	}
+
+	@GetMapping(value = "/applications")
+	public List<ApplicationEntity> getApplications() {
+		return application.get();
 	}
 
 }

@@ -5,6 +5,12 @@ spring:
     user:
       name: breaker
       password: breaker
+  data:
+    mongodb:
+      authentication-database: admin
+      database: myidsrvdb
+      port: 27017
+      host: localhost
 
 logging:
   level:

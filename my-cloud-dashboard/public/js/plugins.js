@@ -8,7 +8,8 @@ function refreshDatatable(id) {
 function d3LineChart(value) {
 
     // reset svg
-    d3.select("svg").remove();
+
+    d3.select(value.id).html("");
 
     // set the dimensions and margins of the graph
     var width = $(value.id).width() - value.margin.left - value.margin.right;
@@ -30,17 +31,36 @@ function d3LineChart(value) {
     // Add X axis --> it is a date format
     var x = d3.scaleTime()
         .domain(d3.extent(value.data, value.extent))
-        .range([0, width]);
-    svg.append("g")
-        .attr("transform", "translate(0," + height + ")")
+        .range(value.axis.x.range(width, height));
+
+    var xaxis = svg.append("g")
+        .attr("transform", value.axis.x.transform(width, height))
         .call(d3.axisBottom(x));
+
+    xaxis.selectAll("line")
+        .style("stroke", value.axis.stroke);
+    xaxis.selectAll("path")
+        .style("stroke", value.axis.stroke);
+    xaxis.selectAll("text")
+        .style("stroke", value.axis.text)
+        .style("font", value.axis.font);
 
     // Add Y axis
     var y = d3.scaleLinear()
         .domain([0, d3.max(value.data, value.max)])
-        .range([height, 0]);
-    svg.append("g")
+        .range(value.axis.y.range(width, height));
+
+    var yaxis = svg.append("g")
         .call(d3.axisLeft(y));
+
+    yaxis.selectAll("line")
+        .style("stroke", value.axis.stroke);
+    yaxis.selectAll("path")
+        .style("stroke", value.axis.stroke);
+    yaxis.selectAll("text")
+        .style("stroke", value.axis.text)
+        .style("font", value.axis.font);
+
 
     // Add the line
     svg.append("path")
@@ -58,7 +78,7 @@ function d3LineChart(value) {
 function d3LinesChart(value) {
 
     // reset svg
-    d3.select("svg").remove();
+    d3.select(value.id).html("");
 
     // set the dimensions and margins of the graph
     var width = $(value.id).width() - value.margin.left - value.margin.right;
@@ -80,10 +100,10 @@ function d3LinesChart(value) {
     // Add X axis --> it is a date format
     var x = d3.scaleTime()
         .domain(d3.extent(value.values, value.extent))
-        .range([0, width - 200]);
+        .range(value.axis.x.range(width, height));
 
     var xaxis = svg.append("g")
-        .attr("transform", "translate(0," + height + ")")
+        .attr("transform", value.axis.x.transform(width, height))
         .call(d3.axisBottom(x));
 
     xaxis.selectAll("line")
@@ -97,7 +117,7 @@ function d3LinesChart(value) {
     // Add Y axis
     var y = d3.scaleLinear()
         .domain([0, d3.max(value.values, value.max)])
-        .range([height, 0]);
+        .range(value.axis.y.range(width, height));
 
     var yaxis = svg.append("g")
         .call(d3.axisLeft(y));
@@ -133,7 +153,7 @@ function d3LinesChart(value) {
         .append('g')
         .attr('class', 'legend')
         .attr('transform', function (d, i) {
-            return 'translate(' + 0 + ',' + (i * 20) + ')';
+            return value.legend.transform(d, i, width, height)
         });
 
     legend.append('rect')

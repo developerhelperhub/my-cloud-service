@@ -5,14 +5,14 @@ import java.util.List;
 import lombok.Data;
 
 @Data
-public class JvmMemoryUsedGroupedResponseModel {
+public class MatricsGroupedResponseModel {
 
 	private String application;
 
-	private List<JvmMemoryUsedDataModel> data;
+	private List<MatricsDataModel> data;
 
 	@Data
-	public static class JvmMemoryUsedDataModel {
+	public static class MatricsDataModel {
 
 		private String time;
 

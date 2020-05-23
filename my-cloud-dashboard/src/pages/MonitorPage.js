@@ -157,16 +157,32 @@ class MonitorPage extends React.Component {
     populateGrouped(data) {
 
         window.d3LinesChart({
-            id: "#my_dataviz",
+            id: "#chart_2",
             margin: { top: 10, right: 30, bottom: 30, left: 60 },
             items: data.items,
             axis: {
+                x: {
+                    transform: function (width, height) {
+                        return "translate(0," + height + ")";
+                    },
+                    range: function (width, height) {
+                        return [0, width - 200];
+                    }
+                },
+                y: {
+                    range: function (width, height) {
+                        return [height, 0];
+                    }
+                },
                 stroke: "#818896",
                 fill: "none",
                 text: "#818896",
                 font: "10px Arial"
             },
             legend: {
+                transform: function (d, i, width, height) {
+                    return 'translate(' + 0 + ',' + (i * 20) + ')';
+                },
                 rect: {
                     width: 10,
                     height: 10,
@@ -202,18 +218,36 @@ class MonitorPage extends React.Component {
     populateAll(data) {
 
         window.d3LineChart({
-            id: "#my_dataviz",
+            id: "#chart_1",
             margin: { top: 10, right: 30, bottom: 30, left: 60 },
             fill: 'none',
             stroke: "steelblue",
-            strokeWidth: 1.5,
+            strokeWidth: "1px",
             data: data,
+            axis: {
+                x: {
+                    transform: function (width, height) {
+                        return "translate(0," + height + ")";
+                    },
+                    range: function (width, height) {
+                        return [0, width];
+                    }
+                },
+                y: {
+                    range: function (width, height) {
+                        return [height, 0];
+                    }
+                },
+                stroke: "#818896",
+                fill: "none",
+                text: "#818896",
+                font: "10px Arial"
+            },
             extent: function (d) { return d.date; },
             max: function (d) { return d.value; },
             x: function (d) { return d.date },
             y: function (d) { return d.value }
         });
-
     }
 
     render() {
@@ -221,10 +255,10 @@ class MonitorPage extends React.Component {
             <PageContent>
                 <Row>
                     <PagePanel cols="col-xxl-7 col-lg-12" >
-                        <PagePanelHead title="Monitor">
+                        <PagePanelHead title="Memory Usage">
                         </PagePanelHead>
                         <PagePanelBody>
-                            <div id="my_dataviz" style={{ height: "300px" }}></div>
+                            <div id="chart_2" style={{ height: "300px" }}></div>
                         </PagePanelBody>
                     </PagePanel>
                 </Row>

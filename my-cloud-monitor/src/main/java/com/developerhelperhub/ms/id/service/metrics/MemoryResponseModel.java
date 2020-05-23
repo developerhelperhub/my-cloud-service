@@ -3,7 +3,7 @@ package com.developerhelperhub.ms.id.service.metrics;
 import lombok.Data;
 
 @Data
-public class JvmMemoryUsedResponseModel {
+public class MemoryResponseModel {
 
 	private String time;
 
@@ -15,10 +15,10 @@ public class JvmMemoryUsedResponseModel {
 
 	private Double value;
 
-	public JvmMemoryUsedResponseModel() {
+	public MemoryResponseModel() {
 	}
 
-	public JvmMemoryUsedResponseModel(String time, String statistic, Double value, String application, String metric) {
+	public MemoryResponseModel(String time, String statistic, Double value, String application, String metric) {
 		super();
 		this.time = time;
 		this.statistic = statistic;

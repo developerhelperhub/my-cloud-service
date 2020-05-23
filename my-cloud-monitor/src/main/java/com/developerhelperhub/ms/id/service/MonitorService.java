@@ -16,9 +16,9 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.developerhelperhub.ms.id.service.entity.JvmMemoryUsedEntity;
-import com.developerhelperhub.ms.id.service.metrics.JvmMemoryUsedGroupedResponseModel;
-import com.developerhelperhub.ms.id.service.metrics.JvmMemoryUsedResponseModel;
+import com.developerhelperhub.ms.id.service.entity.MemoryUsedEntity;
+import com.developerhelperhub.ms.id.service.metrics.MatricsGroupedResponseModel;
+import com.developerhelperhub.ms.id.service.metrics.MemoryResponseModel;
 
 import reactor.core.publisher.Flux;
 
@@ -30,7 +30,7 @@ public class MonitorService {
 	@Autowired
 	private InfluxDB influxDB;
 
-	public List<JvmMemoryUsedResponseModel> getJvmMemoryUsed() {
+	public List<MemoryResponseModel> getMemory() {
 		LOGGER.info("getJvmMemoryUsed ............");
 
 		Query query = new Query("Select * from memory", "mycloudmonitordb");
@@ -38,7 +38,7 @@ public class MonitorService {
 		QueryResult queryResult = influxDB.query(query);
 
 		InfluxDBResultMapper resultMapper = new InfluxDBResultMapper();
-		List<JvmMemoryUsedEntity> memoryPointList = resultMapper.toPOJO(queryResult, JvmMemoryUsedEntity.class);
+		List<MemoryUsedEntity> memoryPointList = resultMapper.toPOJO(queryResult, MemoryUsedEntity.class);
 
 		influxDB.close();
 
@@ -47,13 +47,13 @@ public class MonitorService {
 			SimpleDateFormat sdfDate = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 			String date = sdfDate.format(new Date(d.getTime().toEpochMilli()));
 
-			return new JvmMemoryUsedResponseModel(date, d.getStatistic(), d.getValue(), d.getApplication(),
+			return new MemoryResponseModel(date, d.getStatistic(), d.getValue(), d.getApplication(),
 					d.getMetric());
 
 		}).collect(Collectors.toList());
 	}
 
-	public List<JvmMemoryUsedGroupedResponseModel> getJvmMemoryUsedGrouped() {
+	public List<MatricsGroupedResponseModel> getMemoryGrouped() {
 		LOGGER.info("getJvmMemoryUsedGrouped ............");
 
 		Query query = new Query("Select * from memory", "mycloudmonitordb");
@@ -61,23 +61,23 @@ public class MonitorService {
 		QueryResult queryResult = influxDB.query(query);
 
 		InfluxDBResultMapper resultMapper = new InfluxDBResultMapper();
-		List<JvmMemoryUsedEntity> memoryPointList = resultMapper.toPOJO(queryResult, JvmMemoryUsedEntity.class);
+		List<MemoryUsedEntity> memoryPointList = resultMapper.toPOJO(queryResult, MemoryUsedEntity.class);
 
-		Map<String, List<JvmMemoryUsedEntity>> groupedData = memoryPointList.stream()
-				.collect(Collectors.groupingBy(JvmMemoryUsedEntity::getApplication));
+		Map<String, List<MemoryUsedEntity>> groupedData = memoryPointList.stream()
+				.collect(Collectors.groupingBy(MemoryUsedEntity::getApplication));
 
-		List<JvmMemoryUsedGroupedResponseModel> list = new ArrayList<JvmMemoryUsedGroupedResponseModel>();
+		List<MatricsGroupedResponseModel> list = new ArrayList<MatricsGroupedResponseModel>();
 
 		for (String application : groupedData.keySet()) {
 
-			List<JvmMemoryUsedGroupedResponseModel.JvmMemoryUsedDataModel> data = new ArrayList<>();
+			List<MatricsGroupedResponseModel.MatricsDataModel> data = new ArrayList<>();
 
-			for (JvmMemoryUsedEntity entity : groupedData.get(application)) {
+			for (MemoryUsedEntity entity : groupedData.get(application)) {
 
 				SimpleDateFormat sdfDate = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 				String date = sdfDate.format(new Date(entity.getTime().toEpochMilli()));
 
-				JvmMemoryUsedGroupedResponseModel.JvmMemoryUsedDataModel dataModel = new JvmMemoryUsedGroupedResponseModel.JvmMemoryUsedDataModel();
+				MatricsGroupedResponseModel.MatricsDataModel dataModel = new MatricsGroupedResponseModel.MatricsDataModel();
 
 				dataModel.setMetric(entity.getMetric());
 				dataModel.setTime(date);
@@ -88,7 +88,7 @@ public class MonitorService {
 
 			}
 
-			JvmMemoryUsedGroupedResponseModel model = new JvmMemoryUsedGroupedResponseModel();
+			MatricsGroupedResponseModel model = new MatricsGroupedResponseModel();
 			model.setApplication(application);
 			model.setData(data);
 
@@ -100,16 +100,16 @@ public class MonitorService {
 		return list;
 	}
 
-	public Flux<List<JvmMemoryUsedResponseModel>> streamJvmMemoryUsed() {
+	public Flux<List<MemoryResponseModel>> streamJvmMemoryUsed() {
 
-		List<JvmMemoryUsedResponseModel> memoryPointList = getJvmMemoryUsed();
+		List<MemoryResponseModel> memoryPointList = getMemory();
 
 		return Flux.just(memoryPointList);
 	}
 
-	public Flux<List<JvmMemoryUsedGroupedResponseModel>> streamJvmMemoryUsedGrouped() {
+	public Flux<List<MatricsGroupedResponseModel>> streamMemoryGrouped() {
 
-		List<JvmMemoryUsedGroupedResponseModel> memoryPointList = getJvmMemoryUsedGrouped();
+		List<MatricsGroupedResponseModel> memoryPointList = getMemoryGrouped();
 
 		return Flux.just(memoryPointList);
 	}

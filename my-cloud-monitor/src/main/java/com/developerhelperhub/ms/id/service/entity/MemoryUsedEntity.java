@@ -9,7 +9,7 @@ import lombok.Data;
 
 @Data
 @Measurement(name = "memory")
-public class JvmMemoryUsedEntity {
+public class MemoryUsedEntity {
 
 	@Column(name = "time")
 	private Instant time;

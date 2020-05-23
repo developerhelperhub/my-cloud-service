@@ -42,9 +42,6 @@ class DashboardPage extends React.Component {
 
 
     render() {
-
-        console.log("DashboardPage ---------------")
-
         return (
             <Dashboard>
                 <SidebarWrapper>

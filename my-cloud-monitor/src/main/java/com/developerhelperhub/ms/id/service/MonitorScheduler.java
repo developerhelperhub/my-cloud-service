@@ -1,7 +1,5 @@
 package com.developerhelperhub.ms.id.service;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
 import java.util.concurrent.TimeUnit;
@@ -17,7 +15,11 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.security.oauth2.client.OAuth2RestTemplate;
 import org.springframework.stereotype.Component;
 
-import com.developerhelperhub.ms.id.service.metrics.JvmMemoryUsedModel;
+import com.developerhelperhub.ms.id.service.application.ApplicationEntity;
+import com.developerhelperhub.ms.id.service.application.ApplicationEntity.ApplicationDiskSpace;
+import com.developerhelperhub.ms.id.service.application.MonitorApplication;
+import com.developerhelperhub.ms.id.service.health.HealthResponseModel;
+import com.developerhelperhub.ms.id.service.metrics.MemoryModel;
 
 @Component
 public class MonitorScheduler {
@@ -25,88 +27,158 @@ public class MonitorScheduler {
 	private static final Logger LOGGER = LoggerFactory.getLogger(MonitorScheduler.class);
 
 	@Autowired
+	private MonitorApplication applicationSerivice;
+
+	@Autowired
 	private OAuth2RestTemplate restTemplate;
 
 	@Autowired
 	private InfluxDB influxDB;
 
-	private List<String> getApplications() {
-		List<String> applications = new ArrayList<>();
-
-		ResponseEntity<DiscoveryResponseModel> entity = restTemplate
-				.getForEntity("http://my-cloud-discovery/discovery/applications", DiscoveryResponseModel.class);
-
-		if (entity.getStatusCode() == HttpStatus.OK) {
-
-			entity.getBody().getApplication().forEach(app -> {
-				applications.add(app.getName());
-			});
-
-		} else {
-			LOGGER.error("Discovery application response error {} ", entity.getStatusCode());
-		}
-		return applications;
-	}
-
 	private final String MATRIX_JVM_MEMORY_USED = "jvm.memory.used";
+	private final String MATRIX_JVM_MEMORY_MAX = "jvm.memory.max";
+	private final String MATRIX_JVM_MEMORY_COMMITED = "jvm.memory.committed";
+	private final String MATRIX_JVM_GC_MEMORY_PROMPTED = "jvm.gc.memory.promoted";
+	private final String MATRIX_JVM_BUFFER_MEMORY_PROMPTED = "jvm.buffer.memory.used";
+	private final String MATRIX_JVM_GC_MEMORY_ALLOCATED = "jvm.gc.memory.allocated";
 
 	private Set<String> getMatrics() {
 		Set<String> matrics = new TreeSet<>();
 
 		matrics.add(MATRIX_JVM_MEMORY_USED);
+		matrics.add(MATRIX_JVM_MEMORY_MAX);
+		matrics.add(MATRIX_JVM_MEMORY_COMMITED);
+		matrics.add(MATRIX_JVM_GC_MEMORY_PROMPTED);
+		matrics.add(MATRIX_JVM_BUFFER_MEMORY_PROMPTED);
+		matrics.add(MATRIX_JVM_GC_MEMORY_ALLOCATED);
 
 		return matrics;
 	}
 
 	@Scheduled(fixedDelay = 1000)
-	public void monitor() {
+	public void monitorHealth() {
 
-		List<String> applications = getApplications();
+		applicationSerivice.get().parallelStream().forEach(app -> {
+			writeHealth(app);
+		});
+	}
+
+	public void writeHealth(ApplicationEntity application) {
+
+		final String measurementName = "health";
+		final String STATUS_DOWN = "DOWN";
+
+		ResponseEntity<HealthResponseModel> response = restTemplate
+				.getForEntity("http://" + application.getName() + "/actuator/health", HealthResponseModel.class);
+
+		Point.Builder builder = Point.measurement(measurementName)
+				.time(System.currentTimeMillis(), TimeUnit.MILLISECONDS).addField("application", application.getName());
+
+		if (response.getStatusCode() == HttpStatus.OK) {
+
+			HealthResponseModel body = response.getBody();
+
+			LOGGER.debug("Helath of {} : {}", application, body.toString());
+
+			builder.addField("status", body.getStatus()).addField("disk_space_status",
+					body.getComponents().getDiskSpace().getStatus());
+
+			application.setStatus(body.getStatus());
+
+			if (body.getComponents() != null) {
+
+				if (body.getComponents().getDiskSpace() != null) {
+
+					ApplicationDiskSpace diskSpace = new ApplicationDiskSpace();
+
+					diskSpace.setFree(body.getComponents().getDiskSpace().getDetails().get("free"));
+					diskSpace.setThreshold(body.getComponents().getDiskSpace().getDetails().get("threshold"));
+					diskSpace.setTotal(body.getComponents().getDiskSpace().getDetails().get("total"));
+					diskSpace.setStatus(body.getComponents().getDiskSpace().getStatus());
+
+					builder.addField("disk_space_total", diskSpace.getTotal())
+							.addField("disk_space_free", diskSpace.getFree())
+							.addField("disk_space_threshold", diskSpace.getThreshold());
+
+					application.setDiskSpace(diskSpace);
+				}
+
+				if (body.getComponents().getHystrix() != null) {
+					builder.addField("hystrix_status", body.getComponents().getHystrix().getStatus());
+				}
+			}
+
+		} else {
+
+			builder.addField("status", STATUS_DOWN);
+
+			application.setStatus(STATUS_DOWN);
+
+			LOGGER.error("Health response error {} {}", application, response.getStatusCode());
+
+		}
+
+		influxDB.write(builder.build());
+
+		LOGGER.debug("Helath inserted value into {} {} !", measurementName, application);
+
+		influxDB.close();
+
+		applicationSerivice.update(application);
+	}
+
+	@Scheduled(fixedDelay = 1000)
+	public void monitorMatrics() {
+
 		Set<String> matrics = getMatrics();
 
-		applications.parallelStream().forEach(app -> {
+		applicationSerivice.get().parallelStream().forEach(app -> {
 
 			matrics.parallelStream().forEach(matric -> {
 
-				if (matric.equals(MATRIX_JVM_MEMORY_USED)) {
-					jvmMmemoryUsed(app, matric);
+				if (matric.equals(MATRIX_JVM_MEMORY_USED) || matric.equals(MATRIX_JVM_MEMORY_MAX)
+						|| matric.equals(MATRIX_JVM_MEMORY_COMMITED) || matric.equals(MATRIX_JVM_GC_MEMORY_PROMPTED)
+						|| matric.equals(MATRIX_JVM_BUFFER_MEMORY_PROMPTED)
+						|| matric.equals(MATRIX_JVM_GC_MEMORY_ALLOCATED)) {
+					writeMmemory(app, matric);
 				}
 
 			});
 
 		});
 
-		System.out.println(applications);
 	}
 
-	public void jvmMmemoryUsed(String application, String metric) {
+	public void writeMmemory(ApplicationEntity application, String metric) {
 
 		String measurementName = "memory";
 
-		ResponseEntity<JvmMemoryUsedModel> response = restTemplate
-				.getForEntity("http://" + application + "/actuator/metrics/" + metric, JvmMemoryUsedModel.class);
+		ResponseEntity<MemoryModel> response = restTemplate
+				.getForEntity("http://" + application.getName() + "/actuator/metrics/" + metric, MemoryModel.class);
 
 		if (response.getStatusCode() == HttpStatus.OK) {
 
-			JvmMemoryUsedModel body = response.getBody();
+			MemoryModel body = response.getBody();
 
-			for (JvmMemoryUsedModel.Measurement measurement : body.getMeasurements()) {
+			Point.Builder builder = Point.measurement(measurementName)
+					.time(System.currentTimeMillis(), TimeUnit.MILLISECONDS).addField("metric", metric)
+					.addField("application", application.getName()).addField("baseUnit", body.getBaseUnit());
 
-				Point point = Point.measurement(measurementName).time(System.currentTimeMillis(), TimeUnit.MILLISECONDS)
-						.addField("metric", metric).addField("application", application)
-						.addField("statistic", measurement.getStatistic()).addField("value", measurement.getValue())
-						.build();
+			for (MemoryModel.Measurement measurement : body.getMeasurements()) {
 
-				influxDB.write(point);
+				builder.addField("statistic", measurement.getStatistic()).addField("value", measurement.getValue());
 
-				LOGGER.debug("Inserted value into {} {} {} !", measurementName, application, metric);
 			}
+
+			influxDB.write(builder.build());
+
+			LOGGER.debug("Matrics inserted value into {} {} {} !", measurementName, application, metric);
 
 			influxDB.close();
 
 		} else {
 
-			LOGGER.error("Matrix response error {} {} {}", application, metric, response.getStatusCode());
+			LOGGER.error("Matrics response error {} {} {}", application, metric, response.getStatusCode());
 
 		}
 	}
