@@ -1,5 +1,7 @@
 package com.developerhelperhub.ms.id.service;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
 import java.util.concurrent.TimeUnit;
@@ -11,13 +13,13 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.security.oauth2.client.OAuth2RestTemplate;
 import org.springframework.stereotype.Component;
 
 import com.developerhelperhub.ms.id.service.application.ApplicationEntity;
 import com.developerhelperhub.ms.id.service.application.ApplicationEntity.ApplicationDiskSpace;
 import com.developerhelperhub.ms.id.service.application.MonitorApplication;
+import com.developerhelperhub.ms.id.service.discovery.DiscoveryResponseModel;
 import com.developerhelperhub.ms.id.service.health.HealthResponseModel;
 import com.developerhelperhub.ms.id.service.metrics.MemoryModel;
 
@@ -42,20 +44,47 @@ public class MonitorScheduler {
 	private final String MATRIX_JVM_BUFFER_MEMORY_PROMPTED = "jvm.buffer.memory.used";
 	private final String MATRIX_JVM_GC_MEMORY_ALLOCATED = "jvm.gc.memory.allocated";
 
-	private Set<String> getMatrics() {
-		Set<String> matrics = new TreeSet<>();
+	private Map<String, DiscoveryResponseModel.Application> getDiscoveryApplication() {
 
-		matrics.add(MATRIX_JVM_MEMORY_USED);
-		matrics.add(MATRIX_JVM_MEMORY_MAX);
-		matrics.add(MATRIX_JVM_MEMORY_COMMITED);
-		matrics.add(MATRIX_JVM_GC_MEMORY_PROMPTED);
-		matrics.add(MATRIX_JVM_BUFFER_MEMORY_PROMPTED);
-		matrics.add(MATRIX_JVM_GC_MEMORY_ALLOCATED);
+		ResponseEntity<DiscoveryResponseModel> entity = restTemplate
+				.getForEntity("http://my-cloud-discovery/discovery/applications", DiscoveryResponseModel.class);
 
-		return matrics;
+		Map<String, DiscoveryResponseModel.Application> model = new HashMap<String, DiscoveryResponseModel.Application>();
+
+		if (entity.getStatusCode() == HttpStatus.OK) {
+
+			for (DiscoveryResponseModel.Application appModel : entity.getBody().getApplication()) {
+				model.put(appModel.getName().toLowerCase(), appModel);
+			}
+
+		} else {
+			LOGGER.error("Discovery application response error {} ", entity.getStatusCode());
+		}
+
+		return model;
 	}
 
-	@Scheduled(fixedDelay = 1000)
+	// @Scheduled(fixedDelay = 1000)
+	public void updateDiscoverInformation() {
+
+		Map<String, DiscoveryResponseModel.Application> discovery = getDiscoveryApplication();
+
+		applicationSerivice.get().parallelStream().forEach(app -> {
+
+			DiscoveryResponseModel.Application application = discovery.get(app.getName());
+
+			if (application != null) {
+
+				app.setInstance(application.getInstance());
+
+				applicationSerivice.update(app);
+
+			}
+
+		});
+	}
+
+	// @Scheduled(fixedDelay = 1000)
 	public void monitorHealth() {
 
 		applicationSerivice.get().parallelStream().forEach(app -> {
@@ -127,7 +156,7 @@ public class MonitorScheduler {
 		applicationSerivice.update(application);
 	}
 
-	@Scheduled(fixedDelay = 1000)
+	// @Scheduled(fixedDelay = 1000)
 	public void monitorMatrics() {
 
 		Set<String> matrics = getMatrics();
@@ -147,6 +176,19 @@ public class MonitorScheduler {
 
 		});
 
+	}
+
+	private Set<String> getMatrics() {
+		Set<String> matrics = new TreeSet<>();
+
+		matrics.add(MATRIX_JVM_MEMORY_USED);
+		matrics.add(MATRIX_JVM_MEMORY_MAX);
+		matrics.add(MATRIX_JVM_MEMORY_COMMITED);
+		matrics.add(MATRIX_JVM_GC_MEMORY_PROMPTED);
+		matrics.add(MATRIX_JVM_BUFFER_MEMORY_PROMPTED);
+		matrics.add(MATRIX_JVM_GC_MEMORY_ALLOCATED);
+
+		return matrics;
 	}
 
 	public void writeMmemory(ApplicationEntity application, String metric) {

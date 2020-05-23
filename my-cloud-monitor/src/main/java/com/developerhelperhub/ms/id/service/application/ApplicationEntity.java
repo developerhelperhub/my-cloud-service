@@ -1,7 +1,11 @@
 package com.developerhelperhub.ms.id.service.application;
 
+import java.util.List;
+
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
+
+import com.developerhelperhub.ms.id.service.discovery.DiscoveryResponseModel;
 
 import lombok.Data;
 import lombok.Getter;
@@ -33,5 +37,7 @@ public class ApplicationEntity {
 	private ApplicationDiskSpace diskSpace;
 
 	private Long lastUpdated;
+
+	private List<DiscoveryResponseModel.Instance> instance;
 
 }

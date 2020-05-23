@@ -18,9 +18,10 @@ public class MonitorApplication {
 
 	public void add(String application) {
 
-		ApplicationEntity entity = new ApplicationEntity();
+		ApplicationEntity entity = repository.findById(application).orElse(new ApplicationEntity());
 
 		entity.setName(application);
+
 		entity.setLastUpdated(System.currentTimeMillis());
 
 		repository.save(entity);
