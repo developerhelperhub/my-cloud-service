@@ -46,7 +46,7 @@ public class MonitorScheduler {
 	private final String MATRIX_JVM_BUFFER_MEMORY_PROMPTED = "jvm.buffer.memory.used";
 	private final String MATRIX_JVM_GC_MEMORY_ALLOCATED = "jvm.gc.memory.allocated";
 
-	@Scheduled(fixedDelay = 1000)
+	//@Scheduled(fixedDelay = 1000)
 	public void monitorInfo() {
 
 		applicationSerivice.get().parallelStream().forEach(app -> {
@@ -54,7 +54,7 @@ public class MonitorScheduler {
 		});
 	}
 
-	@Scheduled(fixedDelay = 1000)
+	//@Scheduled(fixedDelay = 1000)
 	public void updateDiscoverInformation() {
 
 		Map<String, DiscoveryResponseModel.Application> discovery = getDiscoveryApplication();
@@ -92,7 +92,7 @@ public class MonitorScheduler {
 		});
 	}
 
-	@Scheduled(fixedDelay = 1000)
+	//@Scheduled(fixedDelay = 1000)
 	public void monitorHealth() {
 
 		applicationSerivice.get().parallelStream().forEach(app -> {
@@ -100,7 +100,7 @@ public class MonitorScheduler {
 		});
 	}
 
-	@Scheduled(fixedDelay = 1000)
+	//@Scheduled(fixedDelay = 1000)
 	public void monitorMatrics() {
 
 		Set<String> matrics = getMatrics();

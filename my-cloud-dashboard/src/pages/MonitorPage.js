@@ -24,10 +24,32 @@ class MonitorPage extends React.Component {
         super(props);
 
         this.state = {
+            tableData: {
+                head: [
+                    { title: "ID", width: "20%" },
+                    { title: "Name", width: "20%" },
+                    { title: "Version", width: "15%" },
+                    { title: "Status", width: "10%" },
+                    { title: "Build Time", width: "20%" },
+                    { title: "Last Updated", width: "40%" },
 
+                ],
+                body: [
+                    [
+                        { value: "-" },
+                        { value: "-" },
+                        { value: "-" },
+                        { value: "-" },
+                        { value: "-" },
+                        { value: "-" },
+                    ]
+                ]
+            }
         }
 
         this.formatDate = this.formatDate.bind(this);
+        this.streamApplications = this.streamApplications.bind(this);
+
         this.populateAll = this.populateAll.bind(this);
         this.sampleGroupedData = this.sampleGroupedData.bind(this);
         this.populateGrouped = this.populateGrouped.bind(this);
@@ -39,8 +61,52 @@ class MonitorPage extends React.Component {
 
     componentDidMount() {
         // this.jvmMemoryUsedStreamAll();
-        this.jvmMemoryUsedStreamGrouped();
+        this.streamApplications();
+
+        //this.jvmMemoryUsedStreamGrouped();
     }
+
+    streamApplications() {
+        let self = this;
+
+        AppApiRepo.eventSource("/monitor/stream/applications/basic-info",
+            {
+                'Authorization': AppApiRepo.getToken()
+            }, function (event) {
+
+                const data = [];
+                const eventData = JSON.parse(event.data);
+
+                const tableData = self.state.tableData;
+                const body = [];
+
+                eventData.forEach(app=>{
+
+                    body.push([
+                        { value: app.name },
+                        { value: app.build.name },
+                        { value: app.build.version },
+                        { value: <Label class="label-success"> {app.status} </Label> },
+                        { value: app.build.time },
+                        { value: <Moment format="YYYY/MM/DD hh:mm:ss">{app.lastUpdated}</Moment> },
+                    ]);
+
+                });
+
+                tableData.body = body;
+
+                self.setState({
+                    tableData: tableData
+                })
+
+            }, function (err) {
+                self.populateAll([]);
+
+                console.log("Monitor Event Source Error : " + err.error);
+            }
+        );
+    }
+
 
     formatDate(date) {
         return window.d3.timeParse("%Y-%m-%d %H:%M:%S")(date);
@@ -255,13 +321,23 @@ class MonitorPage extends React.Component {
             <PageContent>
                 <Row>
                     <PagePanel cols="col-xxl-7 col-lg-12" >
+                        <PagePanelHead title="Applications">
+                        </PagePanelHead>
+                        <PagePanelBody>
+                            <DataTable id="example1" width="100%" data={this.state.tableData}></DataTable>
+                        </PagePanelBody>
+                    </PagePanel>
+                </Row>
+
+                {/* <Row>
+                    <PagePanel cols="col-xxl-7 col-lg-12" >
                         <PagePanelHead title="Memory Usage">
                         </PagePanelHead>
                         <PagePanelBody>
                             <div id="chart_2" style={{ height: "300px" }}></div>
                         </PagePanelBody>
                     </PagePanel>
-                </Row>
+                </Row> */}
             </PageContent>
         );
 

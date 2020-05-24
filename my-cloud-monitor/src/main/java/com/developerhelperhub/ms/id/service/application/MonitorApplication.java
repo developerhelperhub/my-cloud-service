@@ -6,7 +6,10 @@ import java.util.function.Supplier;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.stereotype.Service;
+
+import reactor.core.publisher.Flux;
 
 @Service
 public class MonitorApplication {
@@ -15,6 +18,9 @@ public class MonitorApplication {
 
 	@Autowired
 	private ApplicationRepository repository;
+
+	@Autowired
+	private MongoTemplate template;
 
 	public void add(String application) {
 
@@ -31,6 +37,14 @@ public class MonitorApplication {
 
 	public List<ApplicationEntity> get() {
 		return repository.findAll();
+	}
+
+	public List<ApplicationModel> getBasicInfo() {
+		return template.findAll(ApplicationModel.class);
+	}
+
+	public Flux<List<ApplicationModel>> streamBasicInfo() {
+		return Flux.just(getBasicInfo());
 	}
 
 	public void update(ApplicationEntity entity) {
@@ -50,4 +64,5 @@ public class MonitorApplication {
 			}
 		});
 	}
+
 }
