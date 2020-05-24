@@ -46,8 +46,11 @@ This repostiry contains the development of the my cloud service.
 * Discovery Dashboard Page
 <img src="docs/screenshots/discovery-dashboard.png" width="1000" height="600">
 
-* Monitor Dashboard Page
+* Monitor Dashboard Page (Info Tab)
 <img src="docs/screenshots/monitor-dashboard.png" width="1000" height="600">
+
+* Monitor Dashboard Page (Info Instance)
+<img src="docs/screenshots/monitor-dashboard-instance.png" width="1000" height="600">
 
 * Identity Client Page
 <img src="docs/screenshots/identity-client.png" width="1000" height="600">
