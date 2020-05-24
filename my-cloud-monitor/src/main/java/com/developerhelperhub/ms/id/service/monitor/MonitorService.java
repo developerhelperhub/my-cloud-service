@@ -1,4 +1,4 @@
-package com.developerhelperhub.ms.id.service;
+package com.developerhelperhub.ms.id.service.monitor;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -16,6 +16,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.developerhelperhub.ms.id.service.application.ApplicationEntity;
+import com.developerhelperhub.ms.id.service.application.MonitorApplication;
 import com.developerhelperhub.ms.id.service.entity.MemoryUsedEntity;
 import com.developerhelperhub.ms.id.service.metrics.MatricsGroupedResponseModel;
 import com.developerhelperhub.ms.id.service.metrics.MemoryResponseModel;
@@ -29,6 +31,9 @@ public class MonitorService {
 
 	@Autowired
 	private InfluxDB influxDB;
+
+	@Autowired
+	private MonitorApplication monitorApplication;
 
 	public List<MemoryResponseModel> getMemory() {
 		LOGGER.info("getJvmMemoryUsed ............");
@@ -47,8 +52,7 @@ public class MonitorService {
 			SimpleDateFormat sdfDate = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 			String date = sdfDate.format(new Date(d.getTime().toEpochMilli()));
 
-			return new MemoryResponseModel(date, d.getStatistic(), d.getValue(), d.getApplication(),
-					d.getMetric());
+			return new MemoryResponseModel(date, d.getStatistic(), d.getValue(), d.getApplication(), d.getMetric());
 
 		}).collect(Collectors.toList());
 	}
@@ -114,4 +118,33 @@ public class MonitorService {
 		return Flux.just(memoryPointList);
 	}
 
+	public ApplicationMonitorModel getApplication(String application) {
+		ApplicationMonitorModel model = new ApplicationMonitorModel();
+
+		ApplicationEntity applicationEntity = monitorApplication.get(application);
+
+		model.setBuild(applicationEntity.getBuild());
+		model.setDiskSpace(applicationEntity.getDiskSpace());
+		model.setInstance(applicationEntity.getInstance());
+		model.setLastUpdated(applicationEntity.getLastUpdated());
+		model.setName(applicationEntity.getName());
+		model.setStatus(applicationEntity.getStatus());
+
+		return model;
+	}
+
+	public Flux<ApplicationMonitorModel> streamApplication(String application) {
+		ApplicationMonitorModel model = new ApplicationMonitorModel();
+
+		ApplicationEntity applicationEntity = monitorApplication.get(application);
+
+		model.setBuild(applicationEntity.getBuild());
+		model.setDiskSpace(applicationEntity.getDiskSpace());
+		model.setInstance(applicationEntity.getInstance());
+		model.setLastUpdated(applicationEntity.getLastUpdated());
+		model.setName(applicationEntity.getName());
+		model.setStatus(applicationEntity.getStatus());
+
+		return Flux.just(model);
+	}
 }

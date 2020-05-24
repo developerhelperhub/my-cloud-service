@@ -12,11 +12,18 @@ import Widget from '../components/dashboard/Widget'
 import PagePanel from '../components/dashboard/panel/PagePanel'
 import PagePanelHead from '../components/dashboard/panel/PagePanelHead'
 import PagePanelBody from '../components/dashboard/panel/PagePanelBody'
-import PagePanelIcon from '../components/dashboard/panel/PagePanelIcon'
+
+import PageTabPanel from '../components/dashboard/panel/PageTabPanel'
+import PageTabHead from '../components/dashboard/panel/PageTabHead'
+import PageTab from '../components/dashboard/panel/PageTab'
+import PageTabContent from '../components/dashboard/panel/PageTabContent'
+import PageTabPane from '../components/dashboard/panel/PageTabPane'
 
 import AppApiRepo from '../common/AppApiRepo'
 
 import DataTable from '../components/table/DataTable'
+
+import './MonitorPage.css'
 
 class MonitorPage extends React.Component {
 
@@ -60,10 +67,7 @@ class MonitorPage extends React.Component {
     }
 
     componentDidMount() {
-        // this.jvmMemoryUsedStreamAll();
         this.streamApplications();
-
-        //this.jvmMemoryUsedStreamGrouped();
     }
 
     streamApplications() {
@@ -80,7 +84,7 @@ class MonitorPage extends React.Component {
                 const tableData = self.state.tableData;
                 const body = [];
 
-                eventData.forEach(app=>{
+                eventData.forEach(app => {
 
                     body.push([
                         { value: app.name },
@@ -111,6 +115,43 @@ class MonitorPage extends React.Component {
     formatDate(date) {
         return window.d3.timeParse("%Y-%m-%d %H:%M:%S")(date);
     }
+
+
+    render() {
+        return (
+            <PageContent>
+                <Row>
+                    <PagePanel cols="col-xxl-12 col-lg-12" >
+                        <PagePanelHead title="Applications">
+                        </PagePanelHead>
+                        <PagePanelBody>
+                            <DataTable id="example1" width="100%" data={this.state.tableData}></DataTable>
+                        </PagePanelBody>
+                    </PagePanel>
+                </Row>
+
+                <Row>
+                    <PageTabPanel cols="col-xxl-12 col-lg-12" >
+                        <PageTab id="myTab">
+                            <PageTabHead id="info-tab" active="true" href="#info" controls="info" selected="true" title="Info"></PageTabHead>
+                            <PageTabHead id="instance-tab" href="#instance" controls="instance" title="Instance"></PageTabHead>
+                        </PageTab>
+
+                        <PageTabContent id="myTabContent">
+                            <PageTabPane id="info" labelledby="info-tab" show="true" active="true">
+                                <div>Info</div>
+                            </PageTabPane>
+                            <PageTabPane id="instance" labelledby="instance-tab">
+                                <div>Instance</div>
+                            </PageTabPane>
+                        </PageTabContent>
+                    </PageTabPanel>
+                </Row>
+            </PageContent>
+        );
+
+    }
+
 
     jvmMemoryUsedStreamAll() {
         let self = this;
@@ -314,33 +355,6 @@ class MonitorPage extends React.Component {
             x: function (d) { return d.date },
             y: function (d) { return d.value }
         });
-    }
-
-    render() {
-        return (
-            <PageContent>
-                <Row>
-                    <PagePanel cols="col-xxl-7 col-lg-12" >
-                        <PagePanelHead title="Applications">
-                        </PagePanelHead>
-                        <PagePanelBody>
-                            <DataTable id="example1" width="100%" data={this.state.tableData}></DataTable>
-                        </PagePanelBody>
-                    </PagePanel>
-                </Row>
-
-                {/* <Row>
-                    <PagePanel cols="col-xxl-7 col-lg-12" >
-                        <PagePanelHead title="Memory Usage">
-                        </PagePanelHead>
-                        <PagePanelBody>
-                            <div id="chart_2" style={{ height: "300px" }}></div>
-                        </PagePanelBody>
-                    </PagePanel>
-                </Row> */}
-            </PageContent>
-        );
-
     }
 
     colours() {

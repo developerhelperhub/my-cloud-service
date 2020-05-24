@@ -1,22 +1,16 @@
-package com.developerhelperhub.ms.id.service.application;
+package com.developerhelperhub.ms.id.service.monitor;
 
 import java.util.Collection;
 
-import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.mapping.Document;
-
+import com.developerhelperhub.ms.id.service.application.ApplicationDiskSpace;
 import com.developerhelperhub.ms.id.service.discovery.DiscoveryResponseModel;
 import com.developerhelperhub.ms.id.service.info.ApplicationInfo;
 
-import lombok.Getter;
-import lombok.Setter;
+import lombok.Data;
 
-@Document("applications")
-@Getter
-@Setter
-public class ApplicationEntity {
+@Data
+public class ApplicationMonitorModel {
 
-	@Id
 	private String name;
 
 	private String status;
@@ -28,5 +22,4 @@ public class ApplicationEntity {
 	private Collection<DiscoveryResponseModel.Instance> instance;
 
 	private ApplicationInfo.Build build;
-
 }

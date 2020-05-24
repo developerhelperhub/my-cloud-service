@@ -1,0 +1,32 @@
+
+.chiller-theme .monitor .info-box .item-head {
+    background: rgb(48, 50, 56, 1);
+    color: #818896!important;
+}
+
+.chiller-theme .monitor .info-box .item-head {
+    font-weight: 500;
+    font-size: 11px;
+}
+
+.chiller-theme .monitor .info-box .item-body {
+    font-size: 11px;
+}
+
+.chiller-theme .monitor .info-box .item-body .item-label {
+    text-align: left;
+    width: 150px!important;
+}
+
+
+.chiller-theme .monitor .info-box .item-body, 
+.chiller-theme .monitor .info-box .item-head,
+.chiller-theme .monitor .info-box .item-body {
+    color: #818896!important;
+}
+
+.chiller-theme .monitor .info-box,
+.chiller-theme .monitor .item-body, 
+.chiller-theme .monitor .item-head {
+    border-color: #383c44!important;
+}

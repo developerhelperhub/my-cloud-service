@@ -5,15 +5,17 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.developerhelperhub.ms.id.service.MonitorService;
 import com.developerhelperhub.ms.id.service.application.ApplicationEntity;
 import com.developerhelperhub.ms.id.service.application.ApplicationModel;
 import com.developerhelperhub.ms.id.service.application.MonitorApplication;
 import com.developerhelperhub.ms.id.service.metrics.MatricsGroupedResponseModel;
 import com.developerhelperhub.ms.id.service.metrics.MemoryResponseModel;
+import com.developerhelperhub.ms.id.service.monitor.ApplicationMonitorModel;
+import com.developerhelperhub.ms.id.service.monitor.MonitorService;
 
 import reactor.core.publisher.Flux;
 
@@ -52,9 +54,21 @@ public class Controller {
 		return application.getBasicInfo();
 	}
 
-	@GetMapping(value = "/stream/applications/basic-info")
+	@GetMapping(value = "/stream/applications/basic-info", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
 	public Flux<List<ApplicationModel>> streamApplicationsBasicInfo() {
 		return application.streamBasicInfo();
+	}
+
+	@GetMapping(value = "/applications/{applicationId}")
+	public ApplicationMonitorModel getApplications(
+			@PathVariable(value = "applicationId", required = true) String application) {
+		return monitorService.getApplication(application);
+	}
+
+	@GetMapping(value = "/applications/{applicationId}", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
+	public Flux<ApplicationMonitorModel> streamApplications(
+			@PathVariable(value = "applicationId", required = true) String application) {
+		return monitorService.streamApplication(application);
 	}
 
 }

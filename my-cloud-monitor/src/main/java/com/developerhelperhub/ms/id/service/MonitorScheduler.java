@@ -13,12 +13,11 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.security.oauth2.client.OAuth2RestTemplate;
 import org.springframework.stereotype.Component;
 
+import com.developerhelperhub.ms.id.service.application.ApplicationDiskSpace;
 import com.developerhelperhub.ms.id.service.application.ApplicationEntity;
-import com.developerhelperhub.ms.id.service.application.ApplicationEntity.ApplicationDiskSpace;
 import com.developerhelperhub.ms.id.service.application.MonitorApplication;
 import com.developerhelperhub.ms.id.service.discovery.DiscoveryResponseModel;
 import com.developerhelperhub.ms.id.service.health.HealthResponseModel;
