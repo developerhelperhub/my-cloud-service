@@ -409,7 +409,7 @@
 							"formdata": []
 						},
 						"url": {
-							"raw": "http://localhost:8761/actuator/metrics",
+							"raw": "http://localhost:8761/actuator/metrics/process.start.time",
 							"protocol": "http",
 							"host": [
 								"localhost"
@@ -417,20 +417,15 @@
 							"port": "8761",
 							"path": [
 								"actuator",
-								"metrics"
+								"metrics",
+								"process.start.time"
 							]
 						}
 					},
 					"response": []
-				}
-			],
-			"protocolProfileBehavior": {}
-		},
-		{
-			"name": "Monitor",
-			"item": [
+				},
 				{
-					"name": "discovery-service-sumary",
+					"name": "info",
 					"protocolProfileBehavior": {
 						"disableBodyPruning": true
 					},
@@ -452,7 +447,50 @@
 							"formdata": []
 						},
 						"url": {
-							"raw": "http://localhost:8085/monitor/jvm-memory-used",
+							"raw": "http://localhost:8761/actuator/info",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8761",
+							"path": [
+								"actuator",
+								"info"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"protocolProfileBehavior": {}
+		},
+		{
+			"name": "Monitor",
+			"item": [
+				{
+					"name": "applications all",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{accessToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": []
+						},
+						"url": {
+							"raw": "http://localhost:8085/monitor/applications/all",
 							"protocol": "http",
 							"host": [
 								"localhost"
@@ -460,7 +498,84 @@
 							"port": "8085",
 							"path": [
 								"monitor",
-								"jvm-memory-used"
+								"applications",
+								"all"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "applications basic-info",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{accessToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": []
+						},
+						"url": {
+							"raw": "http://localhost:8085/monitor/applications/basic-info",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8085",
+							"path": [
+								"monitor",
+								"applications",
+								"basic-info"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "applications by id",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{accessToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": []
+						},
+						"url": {
+							"raw": "http://localhost:8085/monitor/applications/basic-info",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8085",
+							"path": [
+								"monitor",
+								"applications",
+								"basic-info"
 							]
 						}
 					},
