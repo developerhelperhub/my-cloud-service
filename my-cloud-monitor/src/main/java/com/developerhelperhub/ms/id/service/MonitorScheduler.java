@@ -13,6 +13,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.security.oauth2.client.OAuth2RestTemplate;
 import org.springframework.stereotype.Component;
 
@@ -21,6 +22,7 @@ import com.developerhelperhub.ms.id.service.application.ApplicationEntity.Applic
 import com.developerhelperhub.ms.id.service.application.MonitorApplication;
 import com.developerhelperhub.ms.id.service.discovery.DiscoveryResponseModel;
 import com.developerhelperhub.ms.id.service.health.HealthResponseModel;
+import com.developerhelperhub.ms.id.service.info.ApplicationInfo;
 import com.developerhelperhub.ms.id.service.metrics.MemoryModel;
 
 @Component
@@ -44,6 +46,82 @@ public class MonitorScheduler {
 	private final String MATRIX_JVM_BUFFER_MEMORY_PROMPTED = "jvm.buffer.memory.used";
 	private final String MATRIX_JVM_GC_MEMORY_ALLOCATED = "jvm.gc.memory.allocated";
 
+	@Scheduled(fixedDelay = 1000)
+	public void monitorInfo() {
+
+		applicationSerivice.get().parallelStream().forEach(app -> {
+			writeInfo(app);
+		});
+	}
+
+	@Scheduled(fixedDelay = 1000)
+	public void updateDiscoverInformation() {
+
+		Map<String, DiscoveryResponseModel.Application> discovery = getDiscoveryApplication();
+
+		applicationSerivice.get().parallelStream().forEach(app -> {
+
+			DiscoveryResponseModel.Application application = discovery.get(app.getName());
+
+			if (application != null) {
+
+				Map<String, DiscoveryResponseModel.Instance> instances = new HashMap<>();
+
+				for (DiscoveryResponseModel.Instance instance : application.getInstance()) {
+					instances.put(instance.getInstanceId(), instance);
+				}
+
+				for (DiscoveryResponseModel.Instance instance : app.getInstance()) {
+
+					DiscoveryResponseModel.Instance appInstance = instances.get(instance.getInstanceId());
+
+					instance.setStatus("DOWN");
+
+					if (appInstance != null) {
+						instances.put(instance.getInstanceId(), instance);
+					}
+
+				}
+
+				app.setInstance(instances.values());
+
+				applicationSerivice.update(app);
+
+			}
+
+		});
+	}
+
+	@Scheduled(fixedDelay = 1000)
+	public void monitorHealth() {
+
+		applicationSerivice.get().parallelStream().forEach(app -> {
+			writeHealth(app);
+		});
+	}
+
+	@Scheduled(fixedDelay = 1000)
+	public void monitorMatrics() {
+
+		Set<String> matrics = getMatrics();
+
+		applicationSerivice.get().parallelStream().forEach(app -> {
+
+			matrics.parallelStream().forEach(matric -> {
+
+				if (matric.equals(MATRIX_JVM_MEMORY_USED) || matric.equals(MATRIX_JVM_MEMORY_MAX)
+						|| matric.equals(MATRIX_JVM_MEMORY_COMMITED) || matric.equals(MATRIX_JVM_GC_MEMORY_PROMPTED)
+						|| matric.equals(MATRIX_JVM_BUFFER_MEMORY_PROMPTED)
+						|| matric.equals(MATRIX_JVM_GC_MEMORY_ALLOCATED)) {
+					writeMmemory(app, matric);
+				}
+
+			});
+
+		});
+
+	}
+
 	private Map<String, DiscoveryResponseModel.Application> getDiscoveryApplication() {
 
 		ResponseEntity<DiscoveryResponseModel> entity = restTemplate
@@ -62,34 +140,6 @@ public class MonitorScheduler {
 		}
 
 		return model;
-	}
-
-	// @Scheduled(fixedDelay = 1000)
-	public void updateDiscoverInformation() {
-
-		Map<String, DiscoveryResponseModel.Application> discovery = getDiscoveryApplication();
-
-		applicationSerivice.get().parallelStream().forEach(app -> {
-
-			DiscoveryResponseModel.Application application = discovery.get(app.getName());
-
-			if (application != null) {
-
-				app.setInstance(application.getInstance());
-
-				applicationSerivice.update(app);
-
-			}
-
-		});
-	}
-
-	// @Scheduled(fixedDelay = 1000)
-	public void monitorHealth() {
-
-		applicationSerivice.get().parallelStream().forEach(app -> {
-			writeHealth(app);
-		});
 	}
 
 	public void writeHealth(ApplicationEntity application) {
@@ -156,28 +206,6 @@ public class MonitorScheduler {
 		applicationSerivice.update(application);
 	}
 
-	// @Scheduled(fixedDelay = 1000)
-	public void monitorMatrics() {
-
-		Set<String> matrics = getMatrics();
-
-		applicationSerivice.get().parallelStream().forEach(app -> {
-
-			matrics.parallelStream().forEach(matric -> {
-
-				if (matric.equals(MATRIX_JVM_MEMORY_USED) || matric.equals(MATRIX_JVM_MEMORY_MAX)
-						|| matric.equals(MATRIX_JVM_MEMORY_COMMITED) || matric.equals(MATRIX_JVM_GC_MEMORY_PROMPTED)
-						|| matric.equals(MATRIX_JVM_BUFFER_MEMORY_PROMPTED)
-						|| matric.equals(MATRIX_JVM_GC_MEMORY_ALLOCATED)) {
-					writeMmemory(app, matric);
-				}
-
-			});
-
-		});
-
-	}
-
 	private Set<String> getMatrics() {
 		Set<String> matrics = new TreeSet<>();
 
@@ -225,4 +253,43 @@ public class MonitorScheduler {
 		}
 	}
 
+	public void writeInfo(ApplicationEntity application) {
+
+		final String measurementName = "info";
+
+		ResponseEntity<ApplicationInfo> response = restTemplate
+				.getForEntity("http://" + application.getName() + "/actuator/info", ApplicationInfo.class);
+
+		if (response.getStatusCode() == HttpStatus.OK) {
+
+			ApplicationInfo body = response.getBody();
+
+			LOGGER.debug("Info of {} ", application);
+
+			Point.Builder builder = Point.measurement(measurementName)
+					.time(System.currentTimeMillis(), TimeUnit.MILLISECONDS)
+					.addField("application", application.getName())
+					.addField("build_version", body.getBuild().getVersion())
+					.addField("build_artifact", body.getBuild().getArtifact())
+					.addField("build_artifact", body.getBuild().getArtifact())
+					.addField("build_name", body.getBuild().getArtifact())
+					.addField("build_time", body.getBuild().getArtifact())
+					.addField("build_group", body.getBuild().getArtifact());
+
+			influxDB.write(builder.build());
+
+			LOGGER.debug("Info inserted value into {} {} !", measurementName, application);
+
+			influxDB.close();
+
+			application.setBuild(body.getBuild());
+
+			applicationSerivice.update(application);
+		} else {
+
+			LOGGER.error("Info response error {} {}", application, response.getStatusCode());
+
+		}
+
+	}
 }

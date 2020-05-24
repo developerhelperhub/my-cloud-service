@@ -1,11 +1,12 @@
 package com.developerhelperhub.ms.id.service.application;
 
-import java.util.List;
+import java.util.Collection;
 
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import com.developerhelperhub.ms.id.service.discovery.DiscoveryResponseModel;
+import com.developerhelperhub.ms.id.service.info.ApplicationInfo;
 
 import lombok.Data;
 import lombok.Getter;
@@ -38,6 +39,8 @@ public class ApplicationEntity {
 
 	private Long lastUpdated;
 
-	private List<DiscoveryResponseModel.Instance> instance;
+	private Collection<DiscoveryResponseModel.Instance> instance;
+
+	private ApplicationInfo.Build build;
 
 }
