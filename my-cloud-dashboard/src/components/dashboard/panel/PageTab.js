@@ -11,7 +11,7 @@ class PageTab extends React.Component {
     return (
 
       <nav>
-        <div class="nav nav-tabs" id={this.props.id}>
+        <div class="nav nav-tabs tab" id={this.props.id}>
           {childrens}
         </div>
       </nav>

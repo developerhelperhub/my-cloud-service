@@ -30,6 +30,8 @@ class ApiRepo extends React.Component {
                 onerror(err);
             }
         };
+
+        return evtSource;
     }
 
     static async fetch(endPoint, method, headers, body) {

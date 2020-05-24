@@ -65,7 +65,7 @@ public class Controller {
 		return monitorService.getApplication(application);
 	}
 
-	@GetMapping(value = "/applications/{applicationId}", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
+	@GetMapping(value = "/stream/applications/{applicationId}", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
 	public Flux<ApplicationMonitorModel> streamApplications(
 			@PathVariable(value = "applicationId", required = true) String application) {
 		return monitorService.streamApplication(application);

@@ -1,7 +1,7 @@
 
-function refreshDatatable(id) {
-
-    $(id).DataTable();
+function loadDataTable(id, data) {
+    console.log("-------- id: " + id)
+    return $(id).DataTable(data);
 
 };
 

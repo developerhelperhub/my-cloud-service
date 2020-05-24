@@ -35,6 +35,8 @@ public class MonitorService {
 	@Autowired
 	private MonitorApplication monitorApplication;
 
+	private SimpleDateFormat formatter = new SimpleDateFormat("dd-MM-yyyy hh:mm:ss");
+
 	public List<MemoryResponseModel> getMemory() {
 		LOGGER.info("getJvmMemoryUsed ............");
 
@@ -123,28 +125,26 @@ public class MonitorService {
 
 		ApplicationEntity applicationEntity = monitorApplication.get(application);
 
-		model.setBuild(applicationEntity.getBuild());
+		ApplicationMonitorModel.Build build = new ApplicationMonitorModel.Build();
+		build.setArtifact(applicationEntity.getBuild().getArtifact());
+		build.setGroup(applicationEntity.getBuild().getGroup());
+		build.setName(applicationEntity.getBuild().getName());
+		build.setTime(formatter.format(applicationEntity.getBuild().getTime()));
+		build.setVersion(applicationEntity.getBuild().getVersion());
+		model.setBuild(build);
+
 		model.setDiskSpace(applicationEntity.getDiskSpace());
-		model.setInstance(applicationEntity.getInstance());
-		model.setLastUpdated(applicationEntity.getLastUpdated());
+		model.setInstance(new ArrayList<>(applicationEntity.getInstance()));
+		model.setLastUpdated(formatter.format(new Date(applicationEntity.getLastUpdated())));
 		model.setName(applicationEntity.getName());
 		model.setStatus(applicationEntity.getStatus());
 
+		System.err.println(model.getLastUpdated());
+		
 		return model;
 	}
 
 	public Flux<ApplicationMonitorModel> streamApplication(String application) {
-		ApplicationMonitorModel model = new ApplicationMonitorModel();
-
-		ApplicationEntity applicationEntity = monitorApplication.get(application);
-
-		model.setBuild(applicationEntity.getBuild());
-		model.setDiskSpace(applicationEntity.getDiskSpace());
-		model.setInstance(applicationEntity.getInstance());
-		model.setLastUpdated(applicationEntity.getLastUpdated());
-		model.setName(applicationEntity.getName());
-		model.setStatus(applicationEntity.getStatus());
-
-		return Flux.just(model);
+		return Flux.just(getApplication(application));
 	}
 }

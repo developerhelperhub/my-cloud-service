@@ -25,6 +25,21 @@ class DiscoveryPage extends React.Component {
             totalApplications: "0",
             totalInstances: "0",
             tableData: {
+                columnDefs: [
+                    {
+                        render: function (data, type, row) {
+                            if (data == "UP") {
+                                return '<span class="label label-success">' + data + '</span>';
+                            } else if (data == "DOWN") {
+                                return '<span class="label label-danger">' + data + '</span>';
+                            } else {
+                                return '<span class="label label-warning">' + data + '</span>';
+                            }
+
+                        },
+                        targets: 1
+                    }
+                ],
                 head: [
                     { title: "Name", width: "20%" },
                     { title: "Status", width: "10%" },
@@ -35,17 +50,7 @@ class DiscoveryPage extends React.Component {
                     { title: "Last Updated", width: "30%" },
 
                 ],
-                body: [
-                    [
-                        { value: "-" },
-                        { value: "-" },
-                        { value: "-" },
-                        { value: "-" },
-                        { value: "-" },
-                        { value: "-" },
-                        { value: "-" },
-                    ]
-                ]
+                body: []
             }
         }
 
@@ -53,7 +58,7 @@ class DiscoveryPage extends React.Component {
     }
 
     async refreshTable() {
-        
+
         const response = await AppApiRepo.fetch('/discovery/details', 'GET', {
             'Content-Type': 'application/json',
             'Authorization': AppApiRepo.getToken(),
@@ -78,15 +83,17 @@ class DiscoveryPage extends React.Component {
                         labelClass = "label-danger";
                     }
 
-                    body.push([
-                        { value: app.name },
-                        { value: <Label class="label-success"> {instance.status} </Label> },
-                        { value: instance.homePageUrl },
-                        { value: instance.ipAddr },
-                        { value: instance.leaseInfo.renewalIntervalInSecs },
-                        { value: instance.leaseInfo.durationInSecs },
-                        { value: <Moment format="YYYY/MM/DD hh:mm:ss">{timestamp}</Moment> },
-                    ]);
+                    var colums = [];
+
+                    colums.push(app.name);
+                    colums.push(instance.status);
+                    colums.push(instance.homePageUrl);
+                    colums.push(instance.ipAddr);
+                    colums.push(instance.leaseInfo.renewalIntervalInSecs);
+                    colums.push(instance.leaseInfo.durationInSecs);
+                    colums.push(timestamp);
+
+                    body.push(colums);
                 })
             });
 

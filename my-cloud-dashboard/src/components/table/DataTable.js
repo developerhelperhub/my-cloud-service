@@ -13,53 +13,48 @@ class DataTable extends React.Component {
 
     constructor(props) {
         super(props);
+
+        this.state = {
+            table: null
+        }
     }
 
     componentDidMount() {
+
+        let self = this;
+
         if (this.props.id != null) {
-            window.refreshDatatable("#" + this.props.id);
+
+            const table = window.loadDataTable("#" + this.props.id, {
+                data: this.props.data.body,
+                columns: this.props.data.head,
+                columnDefs: this.props.data.columnDefs
+            });
+
+            table
+                .on('click', 'tbody tr', function () {
+                    if (self.props.onclick != undefined) {
+                        self.props.onclick(table.row(this).data());
+                    }
+                });
+
+
+            this.setState({
+                table: table
+            })
         }
     }
 
     render() {
 
-        const tableHeads = [];
-
-        this.props.data.head.forEach(head => {
-
-            tableHeads.push(<TableTh width={head.width}> {head.title} </TableTh>);
-
-        });
-
-        const tableRaws = [];
-
-        this.props.data.body.forEach(row => {
-
-            const tableCols = [];
-
-            row.forEach(col => {
-                tableCols.push(<TableTd> {col.value} </TableTd>);
-            });
-
-            tableRaws.push(<TableTr>
-
-                {tableCols}
-
-            </TableTr>);
-
-        });
+        if (this.state.table != null) {
+            this.state.table.clear();
+            this.state.table.rows.add(this.props.data.body);
+            this.state.table.draw();
+        }
 
         return (
-            <Table {...this.props}>
-                <TableHead>
-                    <TableTr>
-                        {tableHeads}
-                    </TableTr>
-                </TableHead>
-                <TableBody>
-                    {tableRaws}
-                </TableBody>
-            </Table>
+            <table id={this.props.id} class="table table-bordered table-striped" ></table>
         );
     }
 }

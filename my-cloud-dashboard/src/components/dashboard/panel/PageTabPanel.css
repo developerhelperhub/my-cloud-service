@@ -1,5 +1,18 @@
-.nav-tabs .nav-item.show .nav-link, .nav-tabs .nav-link.active {
-    color: #495057;
-    background-color: #fff;
-    border-color: #dee2e6 #dee2e6 #fff;
+
+.nav-tabs {
+    border-bottom: 1px solid #818896!important;
+}
+
+.nav-tabs .nav-item.nav-link {
+    color: #4a5263!important;
+    text-decoration: none;
+    background-color: transparent;
+}
+
+.nav-tabs .nav-item.show .nav-link, 
+.nav-tabs .nav-link.active,
+.nav-tabs .nav-item.nav-link:hover {
+    color: #818896!important;
+    background-color: #31353D!important;
+    border-color: #818896 #818896 #818896!important;
 }

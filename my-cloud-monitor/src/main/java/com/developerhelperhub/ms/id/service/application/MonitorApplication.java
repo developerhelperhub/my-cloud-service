@@ -1,13 +1,18 @@
 package com.developerhelperhub.ms.id.service.application;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 import java.util.function.Supplier;
+import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.stereotype.Service;
+
+import com.developerhelperhub.ms.id.service.monitor.ApplicationMonitorModel;
 
 import reactor.core.publisher.Flux;
 
@@ -19,8 +24,7 @@ public class MonitorApplication {
 	@Autowired
 	private ApplicationRepository repository;
 
-	@Autowired
-	private MongoTemplate template;
+	private SimpleDateFormat formatter = new SimpleDateFormat("dd-MM-yyyy hh:mm:ss");
 
 	public void add(String application) {
 
@@ -40,7 +44,25 @@ public class MonitorApplication {
 	}
 
 	public List<ApplicationModel> getBasicInfo() {
-		return template.findAll(ApplicationModel.class);
+		List<ApplicationEntity> list = get();
+
+		return list.stream().map(entity -> {
+
+			ApplicationModel model = new ApplicationModel();
+			model.setLastUpdated(formatter.format(new Date(entity.getLastUpdated())));
+			model.setName(entity.getName());
+			model.setStatus(entity.getStatus());
+
+			ApplicationMonitorModel.Build build = new ApplicationMonitorModel.Build();
+			build.setArtifact(entity.getBuild().getArtifact());
+			build.setGroup(entity.getBuild().getGroup());
+			build.setName(entity.getBuild().getName());
+			build.setTime(formatter.format(entity.getBuild().getTime()));
+			build.setVersion(entity.getBuild().getVersion());
+			model.setBuild(build);
+
+			return model;
+		}).collect(Collectors.toList());
 	}
 
 	public Flux<List<ApplicationModel>> streamBasicInfo() {
