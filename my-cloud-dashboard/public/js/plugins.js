@@ -147,34 +147,36 @@ function d3LinesChart(value) {
 
     });
 
-    var legend = svg.selectAll('.legend')
-        .data(value.legend.data)
-        .enter()
-        .append('g')
-        .attr('class', 'legend')
-        .attr('transform', function (d, i) {
-            return value.legend.transform(d, i, width, height)
-        });
+    if (value.legend != null) {
+        
+        var legend = svg.selectAll('.legend')
+            .data(value.legend.data)
+            .enter()
+            .append('g')
+            .attr('class', 'legend')
+            .attr('transform', function (d, i) {
+                return value.legend.transform(d, i, width, height)
+            });
 
-    legend.append('rect')
-        .attr("x", value.legend.rect.x(width, height))
-        .attr("y", value.legend.rect.y(width, height))
-        .attr('width', value.legend.rect.width)
-        .attr('height', value.legend.rect.height)
-        .style('fill', function (d, i) {
-            return d.fill;
-        })
-        .style('stroke', function (d, i) {
-            return d.stroke;
-        });
+        legend.append('rect')
+            .attr("x", value.legend.rect.x(width, height))
+            .attr("y", value.legend.rect.y(width, height))
+            .attr('width', value.legend.rect.width)
+            .attr('height', value.legend.rect.height)
+            .style('fill', function (d, i) {
+                return d.fill;
+            })
+            .style('stroke', function (d, i) {
+                return d.stroke;
+            });
 
-    legend.append('text')
-        .attr('x', value.legend.text.x(width, height))
-        .attr('y', value.legend.text.y(width, height))
-        .style("font", value.legend.text.font)
-        .style("fill", value.legend.text.fill)
-        .attr("dy", "0")
-        //.style("text-anchor", "end")
-        .text(function (d) { return value.legend.text.value(d); });
-
+        legend.append('text')
+            .attr('x', value.legend.text.x(width, height))
+            .attr('y', value.legend.text.y(width, height))
+            .style("font", value.legend.text.font)
+            .style("fill", value.legend.text.fill)
+            .attr("dy", "0")
+            //.style("text-anchor", "end")
+            .text(function (d) { return value.legend.text.value(d); });
+    }
 }

@@ -34,6 +34,7 @@ class MonitorPage extends React.Component {
         this.streamApplications = this.streamApplications.bind(this);
         this.onclickApplicationTable = this.onclickApplicationTable.bind(this);
         this.renderStatusOnTable = this.renderStatusOnTable.bind(this);
+        this.populateMemoryHeap = this.populateMemoryHeap.bind(this);
 
         let self = this;
 
@@ -100,18 +101,30 @@ class MonitorPage extends React.Component {
 
         }
 
-
-        this.populateAll = this.populateAll.bind(this);
         this.sampleGroupedData = this.sampleGroupedData.bind(this);
-        this.populateGrouped = this.populateGrouped.bind(this);
-        this.jvmMemoryUsedStreamAll = this.jvmMemoryUsedStreamAll.bind(this);
-        this.jvmMemoryUsedStreamGrouped = this.jvmMemoryUsedStreamGrouped.bind(this);
         this.colours = this.colours.bind(this);
-
     }
 
     componentDidMount() {
         this.streamApplications();
+
+        let self = this;
+
+        let values = [];
+        let items = [];
+        var legends = [];
+
+        let data = {
+            items: items,
+            values: values,
+            legends: legends
+        }
+
+        let colours = self.colours();
+
+        data = this.sampleGroupedData();
+
+        this.populateMemoryHeap(data);
     }
 
     renderStatusOnTable(data, type, row) {
@@ -235,6 +248,37 @@ class MonitorPage extends React.Component {
         }
     }
 
+    populateMemoryHeap(data) {
+
+        window.d3LinesChart({
+            id: "#memroy-heap",
+            margin: { top: 10, right: 30, bottom: 30, left: 60 },
+            items: data.items,
+            axis: {
+                x: {
+                    transform: function (width, height) {
+                        return "translate(0," + height + ")";
+                    },
+                    range: function (width, height) {
+                        return [0, width];
+                    }
+                },
+                y: {
+                    range: function (width, height) {
+                        return [height, 0];
+                    }
+                },
+                stroke: "#818896",
+                fill: "none",
+                text: "#818896",
+                font: "10px Arial"
+            },
+            values: data.values,
+            extent: function (d) { return d.date; },
+            max: function (d) { return d.value; },
+        });
+    }
+
     formatDate(date) {
         return window.d3.timeParse("%Y-%m-%d %H:%M:%S")(date);
     }
@@ -353,6 +397,22 @@ class MonitorPage extends React.Component {
                                             </div>
                                         </div>
                                     </div>
+                                    <div class="row">
+                                        <div class="col-xxl-6 col-lg-6">
+                                            <div class="d-flex flex-column bd-highlight border info-box">
+
+                                                <div class="d-flex flex-row bd-highlight p-2 border-bottom item-head">
+                                                    <div class="bd-highlight pr-10 mr-auto">Memory: Heap</div>
+                                                </div>
+
+                                                <div class="bd-highlight">
+                                                    <div id="memroy-heap" style={{ height: "150px" }}></div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-xxl-6 col-lg-6">
+                                        </div>
+                                    </div>
                                 </div>
                             </PageTabPane>
                             <PageTabPane id="instance" labelledby="instance-tab">
@@ -370,211 +430,6 @@ class MonitorPage extends React.Component {
             </PageContent>
         );
 
-    }
-
-
-    jvmMemoryUsedStreamAll() {
-        let self = this;
-
-        AppApiRepo.eventSource("/monitor/jvm-memory-used/stream-all",
-            {
-                'Authorization': AppApiRepo.getToken()
-            }, function (event) {
-
-                const data = [];
-                const eventData = JSON.parse(event.data);
-                eventData.forEach(d => {
-                    const val = {
-                        date: self.formatDate(d.time),
-                        value: (d.value / 1024 / 1024)
-                    };
-                    data.push(val);
-
-                    //console.log(d.time + ": " + val.date);
-                });
-
-                self.populateAll(data);
-
-            }, function (err) {
-                self.populateAll([]);
-
-                console.log("Monitor Event Source Error : " + err.error);
-            }
-        );
-    }
-
-    jvmMemoryUsedStreamGrouped() {
-
-        let self = this;
-
-        let values = [];
-        let items = [];
-        var legends = [];
-
-        let data = {
-            items: items,
-            values: values,
-            legends: legends
-        }
-
-        let colours = self.colours();
-
-        // data = this.sampleGroupedData();
-        // self.populateGrouped(data);
-
-        AppApiRepo.eventSource("/monitor/jvm-memory-used/stream-grouped",
-            {
-                'Authorization': AppApiRepo.getToken()
-            }, function (event) {
-
-                const eventData = JSON.parse(event.data);
-
-                var colourIndex = 0;
-
-                legends = [];
-
-                eventData.forEach(app => {
-
-                    legends.push({ value: app.application, fill: colours[colourIndex], stroke: colours[colourIndex], strokeWidth: 1.5 });
-
-                    let itemData = []
-
-                    app.data.forEach(d => {
-
-                        let dataObj = {
-                            date: self.formatDate(d.time),
-                            value: (d.value / 1024 / 1024)
-                        };
-
-                        itemData.push(dataObj);
-                        data.values.push(dataObj);
-
-                    });
-
-                    data.items.push({
-                        fill: 'none',
-                        stroke: colours[colourIndex],
-                        strokeWidth: 1.5,
-                        data: itemData,
-                        x: function (d) { return d.date },
-                        y: function (d) { return d.value }
-                    })
-
-                    colourIndex = colourIndex + 1;
-                });
-
-                data = {
-                    items: items,
-                    values: values,
-                    legends: legends
-                }
-
-                self.populateGrouped(data);
-
-            }, function (err) {
-                self.populateGrouped(data);
-
-                console.log("Monitor Event Source Error : " + err.error);
-            }
-        );
-    }
-
-
-
-    populateGrouped(data) {
-
-        window.d3LinesChart({
-            id: "#chart_2",
-            margin: { top: 10, right: 30, bottom: 30, left: 60 },
-            items: data.items,
-            axis: {
-                x: {
-                    transform: function (width, height) {
-                        return "translate(0," + height + ")";
-                    },
-                    range: function (width, height) {
-                        return [0, width - 200];
-                    }
-                },
-                y: {
-                    range: function (width, height) {
-                        return [height, 0];
-                    }
-                },
-                stroke: "#818896",
-                fill: "none",
-                text: "#818896",
-                font: "10px Arial"
-            },
-            legend: {
-                transform: function (d, i, width, height) {
-                    return 'translate(' + 0 + ',' + (i * 20) + ')';
-                },
-                rect: {
-                    width: 10,
-                    height: 10,
-                    x: function (width, height) {
-                        return width - 180;
-                    },
-                    y: function (width, height) {
-                        return 0;
-                    }
-                },
-                text: {
-                    x: function (width, height) {
-                        return width - 160;
-                    },
-                    y: function (width, height) {
-                        return 10;
-                    },
-                    value: function (d) {
-                        return d.value;
-                    },
-                    font: "10px arial",
-                    fill: "#818896"
-                },
-                data: data.legends,
-            },
-            values: data.values,
-            extent: function (d) { return d.date; },
-            max: function (d) { return d.value; },
-        });
-
-    }
-
-    populateAll(data) {
-
-        window.d3LineChart({
-            id: "#chart_1",
-            margin: { top: 10, right: 30, bottom: 30, left: 60 },
-            fill: 'none',
-            stroke: "steelblue",
-            strokeWidth: "1px",
-            data: data,
-            axis: {
-                x: {
-                    transform: function (width, height) {
-                        return "translate(0," + height + ")";
-                    },
-                    range: function (width, height) {
-                        return [0, width];
-                    }
-                },
-                y: {
-                    range: function (width, height) {
-                        return [height, 0];
-                    }
-                },
-                stroke: "#818896",
-                fill: "none",
-                text: "#818896",
-                font: "10px Arial"
-            },
-            extent: function (d) { return d.date; },
-            max: function (d) { return d.value; },
-            x: function (d) { return d.date },
-            y: function (d) { return d.value }
-        });
     }
 
     colours() {
@@ -605,7 +460,7 @@ class MonitorPage extends React.Component {
 
         var items = [
             {
-                fill: 'none',
+                fill: 'steelblue',
                 stroke: "steelblue",
                 strokeWidth: 1.5,
                 data: [
@@ -619,7 +474,7 @@ class MonitorPage extends React.Component {
                 y: function (d) { return d.value }
             },
             {
-                fill: 'none',
+                fill: 'red',
                 stroke: "red",
                 strokeWidth: 1.5,
                 data: [
