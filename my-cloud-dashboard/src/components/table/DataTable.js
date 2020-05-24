@@ -54,7 +54,7 @@ class DataTable extends React.Component {
         }
 
         return (
-            <table id={this.props.id} class="table table-bordered table-striped" ></table>
+            <table id={this.props.id} class="table table-bordered table-striped" width={this.props.width}></table>
         );
     }
 }

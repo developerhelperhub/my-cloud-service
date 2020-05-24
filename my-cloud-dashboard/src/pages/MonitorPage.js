@@ -29,6 +29,14 @@ class MonitorPage extends React.Component {
 
     constructor(props) {
         super(props);
+
+        this.formatDate = this.formatDate.bind(this);
+        this.streamApplications = this.streamApplications.bind(this);
+        this.onclickApplicationTable = this.onclickApplicationTable.bind(this);
+        this.renderStatusOnTable = this.renderStatusOnTable.bind(this);
+
+        let self = this;
+
         this.state = {
             selectedApplicationEventSource: null,
             selectedApplication: {
@@ -49,11 +57,18 @@ class MonitorPage extends React.Component {
                     time: "0"
                 },
                 instance: {
+                    columnDefs: [
+                        {
+                            render: function (data, type, row) {
+                                return self.renderStatusOnTable(data, type, row);
+                            },
+                            targets: 2
+                        }
+                    ],
                     head: [
-                        { title: "Name", width: "20%" },
-                        { title: "Status", width: "10%"},
                         { title: "Instance", width: "30%" },
                         { title: "IP Address", width: "10%" },
+                        { title: "Status", width: "10%" },
                         { title: "Ren Int", width: "5%" },
                         { title: "Dur Int", width: "5%" },
                         { title: "Last Updated", width: "30%" },
@@ -66,13 +81,7 @@ class MonitorPage extends React.Component {
                 columnDefs: [
                     {
                         render: function (data, type, row) {
-                            if (data == "UP") {
-                                return '<span class="label label-success">' + data + '</span>';
-                            } else if (data == "DOWN") {
-                                return '<span class="label label-danger">' + data + '</span>';
-                            } else {
-                                return '<span class="label label-warning">' + data + '</span>';
-                            }
+                            return self.renderStatusOnTable(data, type, row);
                         },
                         targets: 3
                     }
@@ -91,9 +100,6 @@ class MonitorPage extends React.Component {
 
         }
 
-        this.formatDate = this.formatDate.bind(this);
-        this.streamApplications = this.streamApplications.bind(this);
-        this.onclickApplicationTable = this.onclickApplicationTable.bind(this);
 
         this.populateAll = this.populateAll.bind(this);
         this.sampleGroupedData = this.sampleGroupedData.bind(this);
@@ -106,6 +112,16 @@ class MonitorPage extends React.Component {
 
     componentDidMount() {
         this.streamApplications();
+    }
+
+    renderStatusOnTable(data, type, row) {
+        if (data == "UP") {
+            return '<span class="label label-success">' + data + '</span>';
+        } else if (data == "DOWN") {
+            return '<span class="label label-danger">' + data + '</span>';
+        } else {
+            return '<span class="label label-warning">' + data + '</span>';
+        }
     }
 
     streamApplications() {
@@ -183,6 +199,22 @@ class MonitorPage extends React.Component {
                     selected.build.name = eventData.build.name;
                     selected.build.group = eventData.build.group;
                     selected.build.time = eventData.build.time;
+
+
+                    eventData.instance.forEach(instance => {
+                        const timestamp = Date(instance.lastUpdatedTimestamp);
+                        var colums = [];
+
+                        colums.push(instance.homePageUrl);
+                        colums.push(instance.ipAddr);
+                        colums.push(instance.status);
+                        colums.push(instance.leaseInfo.renewalIntervalInSecs);
+                        colums.push(instance.leaseInfo.durationInSecs);
+                        colums.push(timestamp);
+
+                        instanceBody.push(colums);
+                    });
+
                     selected.instance.body = instanceBody;
 
                     self.setState({
@@ -213,16 +245,16 @@ class MonitorPage extends React.Component {
 
         var statusLabelClass = "label-warning";
         if (selected.status == "UP") {
-            statusLabelClass='label-success';
+            statusLabelClass = 'label-success';
         } else if (selected.status == "DOWN") {
-            statusLabelClass='label-danger';
+            statusLabelClass = 'label-danger';
         }
 
         var statusDiskLabelClass = "label-warning";
         if (selected.diskSpace.status == "UP") {
-            statusDiskLabelClass='label-success';
+            statusDiskLabelClass = 'label-success';
         } else if (selected.diskSpace.status == "DOWN") {
-            statusDiskLabelClass='label-danger';
+            statusDiskLabelClass = 'label-danger';
         }
 
         return (
@@ -232,7 +264,7 @@ class MonitorPage extends React.Component {
                         <PagePanelHead title="Applications">
                         </PagePanelHead>
                         <PagePanelBody>
-                            <DataTable id="application" width="100%" data={this.state.applicationData} onclick={this.onclickApplicationTable}></DataTable>
+                            <DataTable id="table-application" width="100%" data={this.state.applicationData} onclick={this.onclickApplicationTable}></DataTable>
                         </PagePanelBody>
                     </PagePanel>
                 </Row>
@@ -253,7 +285,7 @@ class MonitorPage extends React.Component {
 
                                                 <div class="d-flex flex-row bd-highlight p-2 border-bottom item-head">
                                                     <div class="bd-highlight pr-10 mr-auto">Application Info</div>
-                                                    <div class="bd-highlight pr-10"><Label class="label-success"> {statusLabelClass} </Label></div>
+                                                    <div class="bd-highlight pr-10"><Label class={statusLabelClass}> {selected.status} </Label></div>
                                                 </div>
 
                                                 <div class="bd-highlight">
@@ -293,7 +325,7 @@ class MonitorPage extends React.Component {
 
                                                 <div class="d-flex flex-row bd-highlight p-2 border-bottom item-head">
                                                     <div class="bd-highlight pr-10 mr-auto">Disk Space</div>
-                                                    <div class="bd-highlight pr-10"><Label class="label-success"> {statusDiskLabelClass} </Label></div>
+                                                    <div class="bd-highlight pr-10"><Label class={statusDiskLabelClass}> {selected.diskSpace.status} </Label></div>
                                                 </div>
 
                                                 <div class="bd-highlight">
@@ -327,7 +359,7 @@ class MonitorPage extends React.Component {
                                 <div class="container-fluid monitor">
                                     <div class="row">
                                         <div class="col-xxl-12 col-lg-12">
-                                            <DataTable id="instance" width="100%" data={selected.instance}></DataTable>
+                                            <DataTable id="table-instance" width="100%" data={selected.instance}></DataTable>
                                         </div>
                                     </div>
                                 </div>

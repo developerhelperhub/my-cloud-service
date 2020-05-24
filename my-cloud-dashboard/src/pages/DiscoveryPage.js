@@ -94,7 +94,8 @@ class DiscoveryPage extends React.Component {
                     colums.push(timestamp);
 
                     body.push(colums);
-                })
+                });
+                
             });
 
             tableData.body = body;
