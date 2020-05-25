@@ -46,25 +46,25 @@ public class MonitorScheduler {
 	public static final String MATRIX_JVM_BUFFER_MEMORY_PROMPTED = "jvm.buffer.memory.used";
 	public static final String MATRIX_JVM_GC_MEMORY_ALLOCATED = "jvm.gc.memory.allocated";
 
-//	@Scheduled(fixedDelay = 1000)
-//	public void scheduleMonitorInfo() {
-//		monitorInfo();
-//	}
-//
-//	@Scheduled(fixedDelay = 1000)
-//	public void scheduleUpdateDiscoverInformation() {
-//		updateDiscoverInformation();
-//	}
-//
-//	@Scheduled(fixedDelay = 1000)
-//	public void scheduleMmonitorHealth() {
-//		monitorHealth();
-//	}
-//
-//	@Scheduled(fixedDelay = 1000)
-//	public void scheduleMonitorMatrics() {
-//		monitorMatrics();
-//	}
+	@Scheduled(fixedDelay = 1000)
+	public void scheduleMonitorInfo() {
+		monitorInfo();
+	}
+
+	@Scheduled(fixedDelay = 1000)
+	public void scheduleUpdateDiscoverInformation() {
+		updateDiscoverInformation();
+	}
+
+	@Scheduled(fixedDelay = 1000)
+	public void scheduleMmonitorHealth() {
+		monitorHealth();
+	}
+
+	@Scheduled(fixedDelay = 1000)
+	public void scheduleMonitorMatrics() {
+		monitorMatrics();
+	}
 
 	public void monitorInfo() {
 
