@@ -216,6 +216,7 @@ class MonitorPage extends React.Component {
 
                     var values = [];
                     var items = [];
+                    var legends = [];
 
                     eventData.memory.forEach(memory => {
 
@@ -234,6 +235,13 @@ class MonitorPage extends React.Component {
                             color = "red";
                         }
 
+                        legends.push({
+                            value: memory.display,
+                            fill: color,
+                            stroke: color,
+                            strokeWidth: 1
+                        })
+
                         items.push(
                             {
                                 fill: color,
@@ -248,7 +256,8 @@ class MonitorPage extends React.Component {
 
                     self.populateMemory({
                         items: items,
-                        values: values
+                        values: values,
+                        legends: legends
                     },
                         "#chart-memroy-heap",
                         function (d) {
@@ -258,6 +267,7 @@ class MonitorPage extends React.Component {
 
                     var values = [];
                     var items = [];
+                    var legends = [];
 
                     eventData.buffer.forEach(buffer => {
 
@@ -276,6 +286,14 @@ class MonitorPage extends React.Component {
                             color = "red";
                         }
 
+                        legends.push({
+                            value: buffer.display,
+                            fill: color,
+                            stroke: color,
+                            strokeWidth: 1
+                        })
+
+
                         items.push(
                             {
                                 fill: color,
@@ -290,7 +308,8 @@ class MonitorPage extends React.Component {
 
                     self.populateMemory({
                         items: items,
-                        values: values
+                        values: values,
+                        legends: legends
                     },
                         "#chart-memroy-non-heap",
                         function (d) {
@@ -300,6 +319,7 @@ class MonitorPage extends React.Component {
 
                     var values = [];
                     var items = [];
+                    var legends = [];
 
                     eventData.thread.forEach(thread => {
 
@@ -320,6 +340,13 @@ class MonitorPage extends React.Component {
                             color = "blue";
                         }
 
+                        legends.push({
+                            value: thread.display,
+                            fill: color,
+                            stroke: color,
+                            strokeWidth: 1
+                        })
+
                         items.push(
                             {
                                 fill: color,
@@ -334,7 +361,8 @@ class MonitorPage extends React.Component {
 
                     self.populateMemory({
                         items: items,
-                        values: values
+                        values: values,
+                        legends: legends
                     },
                         "#chart-thread",
                         function (d) {
@@ -379,7 +407,7 @@ class MonitorPage extends React.Component {
                         return "translate(0," + height + ")";
                     },
                     range: function (width, height) {
-                        return [0, width];
+                        return [0, width - 70];
                     }
                 },
                 y: {
@@ -395,6 +423,35 @@ class MonitorPage extends React.Component {
                 text: "#818896",
                 font: "8px Arial",
                 fontWeight: "1px"
+            },
+            legend: {
+                transform: function (d, i, width, height) {
+                    return 'translate(' + 0 + ',' + (i * 20) + ')';
+                },
+                rect: {
+                    width: 10,
+                    height: 10,
+                    x: function (width, height) {
+                        return width - 60;
+                    },
+                    y: function (width, height) {
+                        return 0;
+                    }
+                },
+                text: {
+                    x: function (width, height) {
+                        return width - 40;
+                    },
+                    y: function (width, height) {
+                        return 10;
+                    },
+                    value: function (d) {
+                        return d.value;
+                    },
+                    font: "10px arial",
+                    fill: "#818896"
+                },
+                data: data.legends,
             },
             values: data.values,
             extent: function (d) { return d.date; },

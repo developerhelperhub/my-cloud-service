@@ -39,6 +39,7 @@ public class ApplicationMonitorModel {
 
 		private int order;
 		private String name;
+		private String display;
 		private List<Matric> matrics;
 
 		public int compareTo(MatricGroup o) {

@@ -113,6 +113,14 @@ public class MonitorService {
 
 				group.setOrder((key.getKey().compareTo(MonitorScheduler.MATRIX_JVM_MEMORY_MAX) == 0) ? 1 : 2);
 
+				if (key.getKey().compareTo(MonitorScheduler.MATRIX_JVM_MEMORY_USED) == 0) {
+					group.setDisplay("Used");
+				} else if (key.getKey().compareTo(MonitorScheduler.MATRIX_JVM_MEMORY_MAX) == 0) {
+					group.setDisplay("Max");
+				} else {
+					group.setDisplay(key.getKey());
+				}
+
 				memory.add(group);
 
 			} else if (key.getKey().compareTo(MonitorScheduler.MATRIX_JVM_BUFFER_MEMORY_PROMPTED) == 0
@@ -120,6 +128,14 @@ public class MonitorService {
 
 				group.setOrder(
 						(key.getKey().compareTo(MonitorScheduler.MATRIX_JVM_BUFFER_TOTAL_CAPACITY) == 0) ? 1 : 2);
+
+				if (key.getKey().compareTo(MonitorScheduler.MATRIX_JVM_BUFFER_MEMORY_PROMPTED) == 0) {
+					group.setDisplay("Prompted");
+				} else if (key.getKey().compareTo(MonitorScheduler.MATRIX_JVM_BUFFER_TOTAL_CAPACITY) == 0) {
+					group.setDisplay("Total Capacity");
+				} else {
+					group.setDisplay(key.getKey());
+				}
 
 				buffer.add(group);
 			}
@@ -177,10 +193,13 @@ public class MonitorService {
 
 			if (key.getKey().compareTo(MonitorScheduler.MATRIX_JVM_THREADS_PEAK) == 0) {
 				group.setOrder(1);
+				group.setDisplay("Peak");
 			} else if (key.getKey().compareTo(MonitorScheduler.MATRIX_JVM_THREADS_LIVE) == 0) {
 				group.setOrder(2);
+				group.setDisplay("Live");
 			} else {
 				group.setOrder(3);
+				group.setDisplay("Daemon");
 			}
 
 			thread.add(group);
