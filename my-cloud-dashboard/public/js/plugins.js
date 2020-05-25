@@ -1,8 +1,6 @@
 
 function loadDataTable(id, data) {
-    console.log("-------- id: " + id)
     return $(id).DataTable(data);
-
 };
 
 function d3LineChart(value) {
@@ -119,8 +117,19 @@ function d3LinesChart(value) {
         .domain([0, d3.max(value.values, value.max)])
         .range(value.axis.y.range(width, height));
 
+    var axisLeft = d3.axisLeft(y);
+
+    if (value.axis.y.tickFormat != null) {
+        axisLeft.tickFormat(
+            function (d) {
+                return value.axis.y.tickFormat(d);
+            }
+        );
+    }
+
     var yaxis = svg.append("g")
-        .call(d3.axisLeft(y));
+        .call(axisLeft);
+
 
     yaxis.selectAll("line")
         .style("stroke", value.axis.stroke);
@@ -130,25 +139,50 @@ function d3LinesChart(value) {
         .style("stroke", value.axis.text)
         .style("font", value.axis.font);
 
-
-
     value.items.forEach(item => {
 
-        // Add the line
-        svg.append("path")
-            .datum(item.data)
-            .attr("fill", item.fill)
-            .attr("stroke", item.stroke)
-            .attr("stroke-width", item.strokeWidth)
-            .attr("d", d3.line()
+        // // Add the line
+        // svg.append("path")
+        //     .datum(item.data)
+        //     .attr("fill", item.fill)
+        //     .attr("stroke", item.stroke)
+        //     .attr("stroke-width", item.strokeWidth)
+        //     .attr("d", d3.line()
+        //         .x(function (d) { return x(item.x(d)) })
+        //         .y(function (d) { return y(item.y(d)) })
+        //     );
+
+        var type = null;
+        if (value.type == 'line') {
+
+            type = d3.line()
                 .x(function (d) { return x(item.x(d)) })
-                .y(function (d) { return y(item.y(d)) })
-            );
+                .y(function (d) { return y(item.y(d)) });
+
+        } else if (value.type == 'area') {
+
+            type = d3.area()
+                .x(function (d) { return x(item.x(d)) })
+                .y0(function (d) { return y(0) })
+                .y1(function (d) { return y(item.y(d)) });
+
+        } else {
+            console.log(value.type + ' not support chart!')
+        }
+
+        if (type != null) {
+            svg.append("path")
+                .datum(item.data)
+                .attr("fill", item.fill)
+                .attr("stroke", item.stroke)
+                .attr("stroke-width", item.strokeWidth)
+                .attr("d", type);
+        }
 
     });
 
     if (value.legend != null) {
-        
+
         var legend = svg.selectAll('.legend')
             .data(value.legend.data)
             .enter()

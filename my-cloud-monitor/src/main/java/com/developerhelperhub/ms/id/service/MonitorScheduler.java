@@ -13,6 +13,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.security.oauth2.client.OAuth2RestTemplate;
 import org.springframework.stereotype.Component;
 
@@ -38,14 +39,33 @@ public class MonitorScheduler {
 	@Autowired
 	private InfluxDB influxDB;
 
-	private final String MATRIX_JVM_MEMORY_USED = "jvm.memory.used";
-	private final String MATRIX_JVM_MEMORY_MAX = "jvm.memory.max";
-	private final String MATRIX_JVM_MEMORY_COMMITED = "jvm.memory.committed";
-	private final String MATRIX_JVM_GC_MEMORY_PROMPTED = "jvm.gc.memory.promoted";
-	private final String MATRIX_JVM_BUFFER_MEMORY_PROMPTED = "jvm.buffer.memory.used";
-	private final String MATRIX_JVM_GC_MEMORY_ALLOCATED = "jvm.gc.memory.allocated";
+	public static final String MATRIX_JVM_MEMORY_USED = "jvm.memory.used";
+	public static final String MATRIX_JVM_MEMORY_MAX = "jvm.memory.max";
+	public static final String MATRIX_JVM_MEMORY_COMMITED = "jvm.memory.committed";
+	public static final String MATRIX_JVM_GC_MEMORY_PROMPTED = "jvm.gc.memory.promoted";
+	public static final String MATRIX_JVM_BUFFER_MEMORY_PROMPTED = "jvm.buffer.memory.used";
+	public static final String MATRIX_JVM_GC_MEMORY_ALLOCATED = "jvm.gc.memory.allocated";
 
-	//@Scheduled(fixedDelay = 1000)
+//	@Scheduled(fixedDelay = 1000)
+//	public void scheduleMonitorInfo() {
+//		monitorInfo();
+//	}
+//
+//	@Scheduled(fixedDelay = 1000)
+//	public void scheduleUpdateDiscoverInformation() {
+//		updateDiscoverInformation();
+//	}
+//
+//	@Scheduled(fixedDelay = 1000)
+//	public void scheduleMmonitorHealth() {
+//		monitorHealth();
+//	}
+//
+//	@Scheduled(fixedDelay = 1000)
+//	public void scheduleMonitorMatrics() {
+//		monitorMatrics();
+//	}
+
 	public void monitorInfo() {
 
 		applicationSerivice.get().parallelStream().forEach(app -> {
@@ -53,7 +73,6 @@ public class MonitorScheduler {
 		});
 	}
 
-	//@Scheduled(fixedDelay = 1000)
 	public void updateDiscoverInformation() {
 
 		Map<String, DiscoveryResponseModel.Application> discovery = getDiscoveryApplication();
@@ -91,7 +110,6 @@ public class MonitorScheduler {
 		});
 	}
 
-	//@Scheduled(fixedDelay = 1000)
 	public void monitorHealth() {
 
 		applicationSerivice.get().parallelStream().forEach(app -> {
@@ -99,7 +117,6 @@ public class MonitorScheduler {
 		});
 	}
 
-	//@Scheduled(fixedDelay = 1000)
 	public void monitorMatrics() {
 
 		Set<String> matrics = getMatrics();

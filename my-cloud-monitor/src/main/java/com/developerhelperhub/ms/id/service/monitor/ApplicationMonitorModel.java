@@ -20,6 +20,32 @@ public class ApplicationMonitorModel {
 
 	}
 
+	@Data
+	public static class Matric implements Comparable<Matric> {
+
+		private long timestamp;
+		private String time;
+		private long value;
+
+		@Override
+		public int compareTo(Matric o) {
+			return (int) (this.timestamp - o.timestamp);
+		}
+
+	}
+
+	@Data
+	public static class MatricGroup implements Comparable<MatricGroup> {
+
+		private int order;
+		private String name;
+		private List<Matric> matrics;
+
+		public int compareTo(MatricGroup o) {
+			return this.order - o.order;
+		};
+	}
+
 	private String name;
 
 	private String status;
@@ -31,4 +57,7 @@ public class ApplicationMonitorModel {
 	private List<DiscoveryResponseModel.Instance> instance;
 
 	private Build build;
+
+	private List<MatricGroup> memory;
+
 }

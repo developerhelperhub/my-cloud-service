@@ -34,28 +34,29 @@ class MonitorPage extends React.Component {
         this.streamApplications = this.streamApplications.bind(this);
         this.onclickApplicationTable = this.onclickApplicationTable.bind(this);
         this.renderStatusOnTable = this.renderStatusOnTable.bind(this);
-        this.populateMemoryHeap = this.populateMemoryHeap.bind(this);
+        this.populateMemory = this.populateMemory.bind(this);
+        this.fileSizeFormat = this.fileSizeFormat.bind(this);
 
         let self = this;
 
         this.state = {
             selectedApplicationEventSource: null,
             selectedApplication: {
-                id: "-",
-                status: "-",
+                id: "",
+                status: "N/A",
                 diskSpace: {
-                    status: "-",
-                    free: "0",
-                    total: "0",
-                    threshold: "0"
+                    status: "N/A",
+                    free: "",
+                    total: "",
+                    threshold: ""
                 },
-                lastUpdated: "-",
+                lastUpdated: "",
                 build: {
-                    version: "-",
-                    artifact: "-",
-                    name: "-",
-                    group: "0",
-                    time: "0"
+                    version: "",
+                    artifact: "",
+                    name: "",
+                    group: "",
+                    time: ""
                 },
                 instance: {
                     columnDefs: [
@@ -100,31 +101,10 @@ class MonitorPage extends React.Component {
             }
 
         }
-
-        this.sampleGroupedData = this.sampleGroupedData.bind(this);
-        this.colours = this.colours.bind(this);
     }
 
     componentDidMount() {
         this.streamApplications();
-
-        let self = this;
-
-        let values = [];
-        let items = [];
-        var legends = [];
-
-        let data = {
-            items: items,
-            values: values,
-            legends: legends
-        }
-
-        let colours = self.colours();
-
-        data = this.sampleGroupedData();
-
-        this.populateMemoryHeap(data);
     }
 
     renderStatusOnTable(data, type, row) {
@@ -230,10 +210,46 @@ class MonitorPage extends React.Component {
 
                     selected.instance.body = instanceBody;
 
+                    var values = [];
+                    var items = [];
+
+                    eventData.memory.forEach(memory => {
+
+                        var data = [];
+
+                        memory.matrics.forEach(matric => {
+                            values.push({ date: self.formatDate(matric.time), value: matric.value });
+                            data.push({ date: self.formatDate(matric.time), value: matric.value });
+                        });
+
+                        var color = "green";
+
+                        if (memory.name == "jvm.memory.max") {
+                            color = "green";
+                        } else {
+                            color = "red";
+                        }
+
+                        items.push(
+                            {
+                                fill: color,
+                                stroke: color,
+                                strokeWidth: 1,
+                                data: data,
+                                x: function (d) { return d.date },
+                                y: function (d) { return d.value }
+                            }
+                        )
+                    });
+
+                    self.populateMemory({
+                        items: items,
+                        values: values
+                    })
+
                     self.setState({
                         selectedApplication: selected
                     })
-
                 }, function (err) {
                     console.log("Monitor Application " + selectedApplication + " Source Error : " + err.error);
                 }
@@ -248,11 +264,20 @@ class MonitorPage extends React.Component {
         }
     }
 
-    populateMemoryHeap(data) {
+    fileSizeFormat(bytes) {
+        var i = Math.floor(Math.log(bytes) / Math.log(1024));
+        var value = (bytes / Math.pow(1024, i)).toFixed(2) * 1 + ' ' + ['B', 'kB', 'MB', 'GB', 'TB'][i];
+        return (value == undefined) ? 0 : value;
+    }
+
+    populateMemory(data) {
+
+        let self = this;
 
         window.d3LinesChart({
-            id: "#memroy-heap",
+            id: "#memroy",
             margin: { top: 10, right: 30, bottom: 30, left: 60 },
+            type: 'area',
             items: data.items,
             axis: {
                 x: {
@@ -266,6 +291,9 @@ class MonitorPage extends React.Component {
                 y: {
                     range: function (width, height) {
                         return [height, 0];
+                    },
+                    tickFormat: function (d) {
+                        return self.fileSizeFormat(d);
                     }
                 },
                 stroke: "#818896",
@@ -402,11 +430,11 @@ class MonitorPage extends React.Component {
                                             <div class="d-flex flex-column bd-highlight border info-box">
 
                                                 <div class="d-flex flex-row bd-highlight p-2 border-bottom item-head">
-                                                    <div class="bd-highlight pr-10 mr-auto">Memory: Heap</div>
+                                                    <div class="bd-highlight pr-10 mr-auto">Memory</div>
                                                 </div>
 
                                                 <div class="bd-highlight">
-                                                    <div id="memroy-heap" style={{ height: "150px" }}></div>
+                                                    <div id="memroy" style={{ height: "150px" }}></div>
                                                 </div>
                                             </div>
                                         </div>
@@ -432,65 +460,6 @@ class MonitorPage extends React.Component {
 
     }
 
-    colours() {
-        return ["ORCHID", "GOLD", "ORANGERED", "LIMEGREEN", "HOTPINK", "MEDIUMVIOLETRED", "DARKVIOLET"];
-    }
-
-    sampleGroupedData() {
-
-        let self = this;
-
-        var legends = [
-            { value: "Application 1", fill: 'steelblue', stroke: "steelblue", strokeWidth: 1.5 },
-            { value: "Application 2", fill: 'red', stroke: "steelblue", strokeWidth: 1.5 }
-        ]
-
-        var values = [
-            { date: self.formatDate("2020-05-17 09:10:20"), value: 200 },
-            { date: self.formatDate("2020-05-17 09:12:20"), value: 100 },
-            { date: self.formatDate("2020-05-17 09:40:20"), value: 300 },
-            { date: self.formatDate("2020-05-17 09:55:20"), value: 600 },
-            { date: self.formatDate("2020-05-17 10:10:20"), value: 150 },
-            { date: self.formatDate("2020-05-17 09:10:20"), value: 50 },
-            { date: self.formatDate("2020-05-17 09:12:20"), value: 70 },
-            { date: self.formatDate("2020-05-17 09:40:20"), value: 90 },
-            { date: self.formatDate("2020-05-17 09:55:20"), value: 400 },
-            { date: self.formatDate("2020-05-17 10:10:20"), value: 40 }
-        ]
-
-        var items = [
-            {
-                fill: 'steelblue',
-                stroke: "steelblue",
-                strokeWidth: 1.5,
-                data: [
-                    { date: self.formatDate("2020-05-17 09:10:20"), value: 200 },
-                    { date: self.formatDate("2020-05-17 09:12:20"), value: 100 },
-                    { date: self.formatDate("2020-05-17 09:40:20"), value: 300 },
-                    { date: self.formatDate("2020-05-17 09:55:20"), value: 600 },
-                    { date: self.formatDate("2020-05-17 10:10:20"), value: 150 },
-                ],
-                x: function (d) { return d.date },
-                y: function (d) { return d.value }
-            },
-            {
-                fill: 'red',
-                stroke: "red",
-                strokeWidth: 1.5,
-                data: [
-                    { date: self.formatDate("2020-05-17 09:10:20"), value: 50 },
-                    { date: self.formatDate("2020-05-17 09:12:20"), value: 70 },
-                    { date: self.formatDate("2020-05-17 09:40:20"), value: 90 },
-                    { date: self.formatDate("2020-05-17 09:55:20"), value: 400 },
-                    { date: self.formatDate("2020-05-17 10:10:20"), value: 40 },
-                ],
-                x: function (d) { return d.date },
-                y: function (d) { return d.value }
-            }
-        ]
-
-        return { values: values, items: items, legends: legends };
-    }
 }
 
 export default MonitorPage;
