@@ -187,9 +187,9 @@ class MonitorPage extends React.Component {
                     selected.id = eventData.name;
                     selected.status = eventData.status;
                     selected.diskSpace.status = eventData.diskSpace.status;
-                    selected.diskSpace.free = eventData.diskSpace.free;
-                    selected.diskSpace.total = eventData.diskSpace.total;
-                    selected.diskSpace.threshold = eventData.diskSpace.threshold;
+                    selected.diskSpace.free = self.fileSizeFormat(eventData.diskSpace.free);
+                    selected.diskSpace.total = self.fileSizeFormat(eventData.diskSpace.total);
+                    selected.diskSpace.threshold = self.fileSizeFormat(eventData.diskSpace.threshold);
                     selected.lastUpdated = eventData.lastUpdated;
                     selected.build.version = eventData.build.version;
                     selected.build.artifact = eventData.build.artifact;
