@@ -53,7 +53,7 @@ This repostiry contains the development of the my cloud service.
 <img src="docs/screenshots/monitor-dashboard-info-memory.png" width="1000" height="600">
 
 * Monitor Dashboard Page (Info Instance)
-<img src="docs/screenshots/monitor-dashboard-instance.png" width="1000" height="400">
+<img src="docs/screenshots/monitor-dashboard-instance.png" width="1000" height="300">
 
 * Identity Client Page
 <img src="docs/screenshots/identity-client.png" width="1000" height="600">
