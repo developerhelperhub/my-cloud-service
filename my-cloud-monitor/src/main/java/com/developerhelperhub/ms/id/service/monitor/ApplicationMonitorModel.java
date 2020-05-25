@@ -59,5 +59,9 @@ public class ApplicationMonitorModel {
 	private Build build;
 
 	private List<MatricGroup> memory;
+	
+	private List<MatricGroup> buffer;
+	
+	private List<MatricGroup> thread;
 
 }

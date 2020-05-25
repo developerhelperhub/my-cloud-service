@@ -160,7 +160,11 @@ class MonitorPage extends React.Component {
 
     onclickApplicationTable(row) {
         let self = this;
-        const selectedApplication = row[0];
+        var selectedApplication = null;
+
+        if (row != null) {
+            selectedApplication = row[0];
+        }
 
         if (selectedApplication != null) {
 
@@ -245,7 +249,97 @@ class MonitorPage extends React.Component {
                     self.populateMemory({
                         items: items,
                         values: values
-                    })
+                    },
+                        "#chart-memroy-heap",
+                        function (d) {
+                            return self.fileSizeFormat(d);
+                        });
+
+
+                    var values = [];
+                    var items = [];
+
+                    eventData.buffer.forEach(buffer => {
+
+                        var data = [];
+
+                        buffer.matrics.forEach(matric => {
+                            values.push({ date: self.formatDate(matric.time), value: matric.value });
+                            data.push({ date: self.formatDate(matric.time), value: matric.value });
+                        });
+
+                        var color = "green";
+
+                        if (buffer.name == "jvm.buffer.total.capacity") {
+                            color = "green";
+                        } else {
+                            color = "red";
+                        }
+
+                        items.push(
+                            {
+                                fill: color,
+                                stroke: color,
+                                strokeWidth: 1,
+                                data: data,
+                                x: function (d) { return d.date },
+                                y: function (d) { return d.value }
+                            }
+                        )
+                    });
+
+                    self.populateMemory({
+                        items: items,
+                        values: values
+                    },
+                        "#chart-memroy-non-heap",
+                        function (d) {
+                            return self.fileSizeFormat(d);
+                        });
+
+
+                    var values = [];
+                    var items = [];
+
+                    eventData.thread.forEach(thread => {
+
+                        var data = [];
+
+                        thread.matrics.forEach(matric => {
+                            values.push({ date: self.formatDate(matric.time), value: matric.value });
+                            data.push({ date: self.formatDate(matric.time), value: matric.value });
+                        });
+
+                        var color = "blue";
+
+                        if (thread.name == "jvm.threads.peak") {
+                            color = "green";
+                        } else if (thread.name == "jvm.threads.live") {
+                            color = "yellow";
+                        } else {
+                            color = "blue";
+                        }
+
+                        items.push(
+                            {
+                                fill: color,
+                                stroke: color,
+                                strokeWidth: 1,
+                                data: data,
+                                x: function (d) { return d.date },
+                                y: function (d) { return d.value }
+                            }
+                        )
+                    });
+
+                    self.populateMemory({
+                        items: items,
+                        values: values
+                    },
+                        "#chart-thread",
+                        function (d) {
+                            return d;
+                        });
 
                     self.setState({
                         selectedApplication: selected
@@ -270,12 +364,12 @@ class MonitorPage extends React.Component {
         return (value == undefined) ? 0 : value;
     }
 
-    populateMemory(data) {
+    populateMemory(data, id, funTickFormat) {
 
         let self = this;
 
         window.d3LinesChart({
-            id: "#memroy",
+            id: id,
             margin: { top: 10, right: 30, bottom: 30, left: 60 },
             type: 'area',
             items: data.items,
@@ -293,13 +387,14 @@ class MonitorPage extends React.Component {
                         return [height, 0];
                     },
                     tickFormat: function (d) {
-                        return self.fileSizeFormat(d);
+                        return funTickFormat(d);
                     }
                 },
                 stroke: "#818896",
                 fill: "none",
                 text: "#818896",
-                font: "10px Arial"
+                font: "8px Arial",
+                fontWeight: "1px"
             },
             values: data.values,
             extent: function (d) { return d.date; },
@@ -430,11 +525,37 @@ class MonitorPage extends React.Component {
                                             <div class="d-flex flex-column bd-highlight border info-box">
 
                                                 <div class="d-flex flex-row bd-highlight p-2 border-bottom item-head">
-                                                    <div class="bd-highlight pr-10 mr-auto">Memory</div>
+                                                    <div class="bd-highlight pr-10 mr-auto">Memory : Heap</div>
                                                 </div>
 
                                                 <div class="bd-highlight">
-                                                    <div id="memroy" style={{ height: "150px" }}></div>
+                                                    <div id="chart-memroy-heap" style={{ height: "150px" }}></div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-xxl-6 col-lg-6">
+                                            <div class="d-flex flex-column bd-highlight border info-box">
+
+                                                <div class="d-flex flex-row bd-highlight p-2 border-bottom item-head">
+                                                    <div class="bd-highlight pr-10 mr-auto">Memory : Non heap</div>
+                                                </div>
+
+                                                <div class="bd-highlight">
+                                                    <div id="chart-memroy-non-heap" style={{ height: "150px" }}></div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-xxl-6 col-lg-6">
+                                            <div class="d-flex flex-column bd-highlight border info-box">
+
+                                                <div class="d-flex flex-row bd-highlight p-2 border-bottom item-head">
+                                                    <div class="bd-highlight pr-10 mr-auto">Thread</div>
+                                                </div>
+
+                                                <div class="bd-highlight">
+                                                    <div id="chart-thread" style={{ height: "150px" }}></div>
                                                 </div>
                                             </div>
                                         </div>

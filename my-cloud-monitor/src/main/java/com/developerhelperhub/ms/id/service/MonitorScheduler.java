@@ -23,7 +23,7 @@ import com.developerhelperhub.ms.id.service.application.MonitorApplication;
 import com.developerhelperhub.ms.id.service.discovery.DiscoveryResponseModel;
 import com.developerhelperhub.ms.id.service.health.HealthResponseModel;
 import com.developerhelperhub.ms.id.service.info.ApplicationInfo;
-import com.developerhelperhub.ms.id.service.metrics.MemoryModel;
+import com.developerhelperhub.ms.id.service.metrics.MatricModel;
 
 @Component
 public class MonitorScheduler {
@@ -39,32 +39,25 @@ public class MonitorScheduler {
 	@Autowired
 	private InfluxDB influxDB;
 
-	public static final String MATRIX_JVM_MEMORY_USED = "jvm.memory.used";
-	public static final String MATRIX_JVM_MEMORY_MAX = "jvm.memory.max";
-	public static final String MATRIX_JVM_MEMORY_COMMITED = "jvm.memory.committed";
-	public static final String MATRIX_JVM_GC_MEMORY_PROMPTED = "jvm.gc.memory.promoted";
-	public static final String MATRIX_JVM_BUFFER_MEMORY_PROMPTED = "jvm.buffer.memory.used";
-	public static final String MATRIX_JVM_GC_MEMORY_ALLOCATED = "jvm.gc.memory.allocated";
-
-	@Scheduled(fixedDelay = 1000)
-	public void scheduleMonitorInfo() {
-		monitorInfo();
-	}
-
-	@Scheduled(fixedDelay = 1000)
-	public void scheduleUpdateDiscoverInformation() {
-		updateDiscoverInformation();
-	}
-
-	@Scheduled(fixedDelay = 1000)
-	public void scheduleMmonitorHealth() {
-		monitorHealth();
-	}
-
-	@Scheduled(fixedDelay = 1000)
-	public void scheduleMonitorMatrics() {
-		monitorMatrics();
-	}
+//	@Scheduled(fixedDelay = 1000)
+//	public void scheduleMonitorInfo() {
+//		monitorInfo();
+//	}
+//
+//	@Scheduled(fixedDelay = 1000)
+//	public void scheduleUpdateDiscoverInformation() {
+//		updateDiscoverInformation();
+//	}
+//
+//	@Scheduled(fixedDelay = 1000)
+//	public void scheduleMmonitorHealth() {
+//		monitorHealth();
+//	}
+//
+//	@Scheduled(fixedDelay = 1000)
+//	public void scheduleMonitorMatrics() {
+//		monitorMatrics();
+//	}
 
 	public void monitorInfo() {
 
@@ -115,27 +108,6 @@ public class MonitorScheduler {
 		applicationSerivice.get().parallelStream().forEach(app -> {
 			writeHealth(app);
 		});
-	}
-
-	public void monitorMatrics() {
-
-		Set<String> matrics = getMatrics();
-
-		applicationSerivice.get().parallelStream().forEach(app -> {
-
-			matrics.parallelStream().forEach(matric -> {
-
-				if (matric.equals(MATRIX_JVM_MEMORY_USED) || matric.equals(MATRIX_JVM_MEMORY_MAX)
-						|| matric.equals(MATRIX_JVM_MEMORY_COMMITED) || matric.equals(MATRIX_JVM_GC_MEMORY_PROMPTED)
-						|| matric.equals(MATRIX_JVM_BUFFER_MEMORY_PROMPTED)
-						|| matric.equals(MATRIX_JVM_GC_MEMORY_ALLOCATED)) {
-					writeMmemory(app, matric);
-				}
-
-			});
-
-		});
-
 	}
 
 	private Map<String, DiscoveryResponseModel.Application> getDiscoveryApplication() {
@@ -222,35 +194,91 @@ public class MonitorScheduler {
 		applicationSerivice.update(application);
 	}
 
-	private Set<String> getMatrics() {
+	private Set<String> getMemoryMatrics() {
 		Set<String> matrics = new TreeSet<>();
 
 		matrics.add(MATRIX_JVM_MEMORY_USED);
 		matrics.add(MATRIX_JVM_MEMORY_MAX);
-		matrics.add(MATRIX_JVM_MEMORY_COMMITED);
-		matrics.add(MATRIX_JVM_GC_MEMORY_PROMPTED);
+		// matrics.add(MATRIX_JVM_MEMORY_COMMITED);
+
 		matrics.add(MATRIX_JVM_BUFFER_MEMORY_PROMPTED);
-		matrics.add(MATRIX_JVM_GC_MEMORY_ALLOCATED);
+		// matrics.add(MATRIX_JVM_BUFFER_COUNT);
+		matrics.add(MATRIX_JVM_BUFFER_TOTAL_CAPACITY);
+
+		// matrics.add(MATRIX_JVM_GC_MEMORY_ALLOCATED);
+		// matrics.add(MATRIX_JVM_GC_MEMORY_PROMPTED);
 
 		return matrics;
 	}
 
-	public void writeMmemory(ApplicationEntity application, String metric) {
+	private Set<String> getThreadsMatrics() {
+		Set<String> matrics = new TreeSet<>();
 
-		String measurementName = "memory";
+		matrics.add(MATRIX_JVM_THREADS_DAEMON);
+		matrics.add(MATRIX_JVM_THREADS_LIVE);
+		matrics.add(MATRIX_JVM_THREADS_PEAK);
 
-		ResponseEntity<MemoryModel> response = restTemplate
-				.getForEntity("http://" + application.getName() + "/actuator/metrics/" + metric, MemoryModel.class);
+		return matrics;
+	}
+
+	private Set<String> getMatrics() {
+		Set<String> matrics = new TreeSet<>();
+
+		matrics.addAll(getMemoryMatrics());
+		matrics.addAll(getThreadsMatrics());
+
+		return matrics;
+	}
+
+	public static final String MATRIX_JVM_MEMORY_USED = "jvm.memory.used";
+	public static final String MATRIX_JVM_MEMORY_MAX = "jvm.memory.max";
+	public static final String MATRIX_JVM_MEMORY_COMMITED = "jvm.memory.committed";
+
+	public static final String MATRIX_JVM_BUFFER_MEMORY_PROMPTED = "jvm.buffer.memory.used";
+	public static final String MATRIX_JVM_BUFFER_COUNT = "jvm.buffer.count";
+	public static final String MATRIX_JVM_BUFFER_TOTAL_CAPACITY = "jvm.buffer.total.capacity";
+
+	public static final String MATRIX_JVM_GC_MEMORY_ALLOCATED = "jvm.gc.memory.allocated";
+	public static final String MATRIX_JVM_GC_MEMORY_PROMPTED = "jvm.gc.memory.promoted";
+
+	public static final String MATRIX_JVM_THREADS_DAEMON = "jvm.threads.daemon";
+	public static final String MATRIX_JVM_THREADS_LIVE = "jvm.threads.live";
+	public static final String MATRIX_JVM_THREADS_PEAK = "jvm.threads.peak";
+
+	public void monitorMatrics() {
+
+		Set<String> matrics = getMatrics();
+
+		applicationSerivice.get().parallelStream().forEach(app -> {
+
+			matrics.parallelStream().forEach(matric -> {
+
+				if (getMemoryMatrics().contains(matric)) {
+					writeMatric(app, matric, "memory");
+				} else if (getThreadsMatrics().contains(matric)) {
+					writeMatric(app, matric, "thread");
+				}
+
+			});
+
+		});
+
+	}
+
+	public void writeMatric(ApplicationEntity application, String metric, String measurementName) {
+
+		ResponseEntity<MatricModel> response = restTemplate
+				.getForEntity("http://" + application.getName() + "/actuator/metrics/" + metric, MatricModel.class);
 
 		if (response.getStatusCode() == HttpStatus.OK) {
 
-			MemoryModel body = response.getBody();
+			MatricModel body = response.getBody();
 
 			Point.Builder builder = Point.measurement(measurementName)
 					.time(System.currentTimeMillis(), TimeUnit.MILLISECONDS).addField("metric", metric)
 					.addField("application", application.getName()).addField("baseUnit", body.getBaseUnit());
 
-			for (MemoryModel.Measurement measurement : body.getMeasurements()) {
+			for (MatricModel.Measurement measurement : body.getMeasurements()) {
 
 				builder.addField("statistic", measurement.getStatistic()).addField("value", measurement.getValue());
 

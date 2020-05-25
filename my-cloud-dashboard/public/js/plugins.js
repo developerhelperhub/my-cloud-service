@@ -110,7 +110,10 @@ function d3LinesChart(value) {
         .style("stroke", value.axis.stroke);
     xaxis.selectAll("text")
         .style("stroke", value.axis.text)
-        .style("font", value.axis.font);
+        .style("font", value.axis.font)
+        .style("font-weight", value.axis.fontWeight)
+        .style("stroke-width", 1)
+        ;
 
     // Add Y axis
     var y = d3.scaleLinear()
@@ -137,20 +140,10 @@ function d3LinesChart(value) {
         .style("stroke", value.axis.stroke);
     yaxis.selectAll("text")
         .style("stroke", value.axis.text)
-        .style("font", value.axis.font);
+        .style("font", value.axis.font)
+        .style("font-weight", value.axis.fontWeight);
 
     value.items.forEach(item => {
-
-        // // Add the line
-        // svg.append("path")
-        //     .datum(item.data)
-        //     .attr("fill", item.fill)
-        //     .attr("stroke", item.stroke)
-        //     .attr("stroke-width", item.strokeWidth)
-        //     .attr("d", d3.line()
-        //         .x(function (d) { return x(item.x(d)) })
-        //         .y(function (d) { return y(item.y(d)) })
-        //     );
 
         var type = null;
         if (value.type == 'line') {

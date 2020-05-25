@@ -5,7 +5,7 @@ import java.util.List;
 import lombok.Data;
 
 @Data
-public class MemoryModel {
+public class MatricModel {
 
 	@Data
 	public static class Measurement {
