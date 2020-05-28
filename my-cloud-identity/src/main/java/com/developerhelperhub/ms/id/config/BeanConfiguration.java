@@ -6,10 +6,15 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 @Configuration
 public class BeanConfiguration {
-	
+
 	@Bean
 	public BCryptPasswordEncoder passwordEncoder() {
 		return new BCryptPasswordEncoder();
 	}
+
+//	@Bean
+//	public HttpTraceRepository htttpTraceRepository() {
+//		return new InMemoryHttpTraceRepository();
+//	}
 
 }

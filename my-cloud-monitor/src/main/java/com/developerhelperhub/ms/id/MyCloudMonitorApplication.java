@@ -27,6 +27,7 @@ public class MyCloudMonitorApplication implements CommandLineRunner {
 	public void run(String... args) throws Exception {
 
 		application.add("my-cloud-monitor");
+		application.add("my-cloud-monitor-scheduler");
 		application.add("my-cloud-identity");
 		application.add("my-cloud-discovery");
 		application.add("my-cloud-api-gateway");

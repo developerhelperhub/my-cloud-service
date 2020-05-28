@@ -9,7 +9,6 @@ import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.stereotype.Service;
 
 import com.developerhelperhub.ms.id.service.monitor.ApplicationMonitorModel;
@@ -51,14 +50,29 @@ public class MonitorApplication {
 			ApplicationModel model = new ApplicationModel();
 			model.setLastUpdated(formatter.format(new Date(entity.getLastUpdated())));
 			model.setName(entity.getName());
-			model.setStatus(entity.getStatus());
 
 			ApplicationMonitorModel.Build build = new ApplicationMonitorModel.Build();
-			build.setArtifact(entity.getBuild().getArtifact());
-			build.setGroup(entity.getBuild().getGroup());
-			build.setName(entity.getBuild().getName());
-			build.setTime(formatter.format(entity.getBuild().getTime()));
-			build.setVersion(entity.getBuild().getVersion());
+
+			if (entity.getBuild() != null) {
+
+				build.setArtifact(entity.getBuild().getArtifact());
+				build.setGroup(entity.getBuild().getGroup());
+				build.setName(entity.getBuild().getName());
+				build.setTime(formatter.format(entity.getBuild().getTime()));
+				build.setVersion(entity.getBuild().getVersion());
+
+				model.setStatus(entity.getStatus());
+
+			} else {
+				build.setArtifact("-");
+				build.setGroup("-");
+				build.setName("-");
+				build.setTime("-");
+				build.setVersion("-");
+
+				model.setStatus("N/R");
+			}
+
 			model.setBuild(build);
 
 			return model;
@@ -67,15 +81,6 @@ public class MonitorApplication {
 
 	public Flux<List<ApplicationModel>> streamBasicInfo() {
 		return Flux.just(getBasicInfo());
-	}
-
-	public void update(ApplicationEntity entity) {
-
-		entity.setLastUpdated(System.currentTimeMillis());
-
-		repository.save(entity);
-
-		LOGGER.debug("Updated application {} ", entity.getName());
 	}
 
 	public ApplicationEntity get(String name) {

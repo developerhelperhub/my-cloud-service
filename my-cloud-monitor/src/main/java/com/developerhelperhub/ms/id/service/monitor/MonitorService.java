@@ -18,7 +18,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.developerhelperhub.ms.id.service.MonitorScheduler;
 import com.developerhelperhub.ms.id.service.application.ApplicationEntity;
 import com.developerhelperhub.ms.id.service.application.MonitorApplication;
 import com.developerhelperhub.ms.id.service.entity.MemoryEntity;
@@ -32,6 +31,21 @@ import reactor.core.publisher.Flux;
 public class MonitorService {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(MonitorService.class);
+
+	public static final String MATRIX_JVM_MEMORY_USED = "jvm.memory.used";
+	public static final String MATRIX_JVM_MEMORY_MAX = "jvm.memory.max";
+	public static final String MATRIX_JVM_MEMORY_COMMITED = "jvm.memory.committed";
+
+	public static final String MATRIX_JVM_BUFFER_MEMORY_PROMPTED = "jvm.buffer.memory.used";
+	public static final String MATRIX_JVM_BUFFER_COUNT = "jvm.buffer.count";
+	public static final String MATRIX_JVM_BUFFER_TOTAL_CAPACITY = "jvm.buffer.total.capacity";
+
+	public static final String MATRIX_JVM_GC_MEMORY_ALLOCATED = "jvm.gc.memory.allocated";
+	public static final String MATRIX_JVM_GC_MEMORY_PROMPTED = "jvm.gc.memory.promoted";
+
+	public static final String MATRIX_JVM_THREADS_DAEMON = "jvm.threads.daemon";
+	public static final String MATRIX_JVM_THREADS_LIVE = "jvm.threads.live";
+	public static final String MATRIX_JVM_THREADS_PEAK = "jvm.threads.peak";
 
 	@Autowired
 	private InfluxDB influxDB;
@@ -55,7 +69,13 @@ public class MonitorService {
 		model.setBuild(build);
 
 		model.setDiskSpace(applicationEntity.getDiskSpace());
-		model.setInstance(new ArrayList<>(applicationEntity.getInstance()));
+
+		if (applicationEntity.getInstance() != null) {
+			model.setInstance(new ArrayList<>(applicationEntity.getInstance()));
+		} else {
+			model.setInstance(new ArrayList<>());
+		}
+
 		model.setLastUpdated(formatter.format(new Date(applicationEntity.getLastUpdated())));
 		model.setName(applicationEntity.getName());
 		model.setStatus(applicationEntity.getStatus());
@@ -108,14 +128,14 @@ public class MonitorService {
 				Collections.sort(group.getMatrics());
 			}
 
-			if (key.getKey().compareTo(MonitorScheduler.MATRIX_JVM_MEMORY_USED) == 0
-					|| key.getKey().compareTo(MonitorScheduler.MATRIX_JVM_MEMORY_MAX) == 0) {
+			if (key.getKey().compareTo(MATRIX_JVM_MEMORY_USED) == 0
+					|| key.getKey().compareTo(MATRIX_JVM_MEMORY_MAX) == 0) {
 
-				group.setOrder((key.getKey().compareTo(MonitorScheduler.MATRIX_JVM_MEMORY_MAX) == 0) ? 1 : 2);
+				group.setOrder((key.getKey().compareTo(MATRIX_JVM_MEMORY_MAX) == 0) ? 1 : 2);
 
-				if (key.getKey().compareTo(MonitorScheduler.MATRIX_JVM_MEMORY_USED) == 0) {
+				if (key.getKey().compareTo(MATRIX_JVM_MEMORY_USED) == 0) {
 					group.setDisplay("Used");
-				} else if (key.getKey().compareTo(MonitorScheduler.MATRIX_JVM_MEMORY_MAX) == 0) {
+				} else if (key.getKey().compareTo(MATRIX_JVM_MEMORY_MAX) == 0) {
 					group.setDisplay("Max");
 				} else {
 					group.setDisplay(key.getKey());
@@ -123,15 +143,14 @@ public class MonitorService {
 
 				memory.add(group);
 
-			} else if (key.getKey().compareTo(MonitorScheduler.MATRIX_JVM_BUFFER_MEMORY_PROMPTED) == 0
-					|| key.getKey().compareTo(MonitorScheduler.MATRIX_JVM_BUFFER_TOTAL_CAPACITY) == 0) {
+			} else if (key.getKey().compareTo(MATRIX_JVM_BUFFER_MEMORY_PROMPTED) == 0
+					|| key.getKey().compareTo(MATRIX_JVM_BUFFER_TOTAL_CAPACITY) == 0) {
 
-				group.setOrder(
-						(key.getKey().compareTo(MonitorScheduler.MATRIX_JVM_BUFFER_TOTAL_CAPACITY) == 0) ? 1 : 2);
+				group.setOrder((key.getKey().compareTo(MATRIX_JVM_BUFFER_TOTAL_CAPACITY) == 0) ? 1 : 2);
 
-				if (key.getKey().compareTo(MonitorScheduler.MATRIX_JVM_BUFFER_MEMORY_PROMPTED) == 0) {
+				if (key.getKey().compareTo(MATRIX_JVM_BUFFER_MEMORY_PROMPTED) == 0) {
 					group.setDisplay("Prompted");
-				} else if (key.getKey().compareTo(MonitorScheduler.MATRIX_JVM_BUFFER_TOTAL_CAPACITY) == 0) {
+				} else if (key.getKey().compareTo(MATRIX_JVM_BUFFER_TOTAL_CAPACITY) == 0) {
 					group.setDisplay("Total Capacity");
 				} else {
 					group.setDisplay(key.getKey());
@@ -191,10 +210,10 @@ public class MonitorService {
 				Collections.sort(group.getMatrics());
 			}
 
-			if (key.getKey().compareTo(MonitorScheduler.MATRIX_JVM_THREADS_PEAK) == 0) {
+			if (key.getKey().compareTo(MATRIX_JVM_THREADS_PEAK) == 0) {
 				group.setOrder(1);
 				group.setDisplay("Peak");
-			} else if (key.getKey().compareTo(MonitorScheduler.MATRIX_JVM_THREADS_LIVE) == 0) {
+			} else if (key.getKey().compareTo(MATRIX_JVM_THREADS_LIVE) == 0) {
 				group.setOrder(2);
 				group.setDisplay("Live");
 			} else {
