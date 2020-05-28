@@ -39,25 +39,25 @@ public class MonitorScheduler {
 	@Autowired
 	private InfluxDB influxDB;
 
-	@Scheduled(fixedDelay = 1000)
-	public void scheduleMonitorInfo() {
-		monitorInfo();
-	}
-
-	@Scheduled(fixedDelay = 1000)
-	public void scheduleUpdateDiscoverInformation() {
-		updateDiscoverInformation();
-	}
-
-	@Scheduled(fixedDelay = 1000)
-	public void scheduleMmonitorHealth() {
-		monitorHealth();
-	}
-
-	@Scheduled(fixedDelay = 1000)
-	public void scheduleMonitorMatrics() {
-		monitorMatrics();
-	}
+//	@Scheduled(fixedDelay = 1000)
+//	public void scheduleMonitorInfo() {
+//		monitorInfo();
+//	}
+//
+//	@Scheduled(fixedDelay = 1000)
+//	public void scheduleUpdateDiscoverInformation() {
+//		updateDiscoverInformation();
+//	}
+//
+//	@Scheduled(fixedDelay = 1000)
+//	public void scheduleMmonitorHealth() {
+//		monitorHealth();
+//	}
+//
+//	@Scheduled(fixedDelay = 1000)
+//	public void scheduleMonitorMatrics() {
+//		monitorMatrics();
+//	}
 
 	public void monitorInfo() {
 
