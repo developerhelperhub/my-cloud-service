@@ -1,6 +1,6 @@
 # My Cloud Service 1.0
 
-This repostiry contains the development of the my cloud service.
+This repostiry contains the development of the my cloud service. This project includes reactive based monitor dashboard has been implemented.
 
 ## Technology
 * Backend 
