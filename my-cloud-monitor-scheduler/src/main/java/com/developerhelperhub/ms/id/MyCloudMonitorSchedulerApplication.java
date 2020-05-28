@@ -15,5 +15,4 @@ public class MyCloudMonitorSchedulerApplication {
 	public static void main(String[] args) {
 		SpringApplication.run(MyCloudMonitorSchedulerApplication.class, args);
 	}
-
 }
