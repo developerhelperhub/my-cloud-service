@@ -19,7 +19,7 @@ import javax.management.remote.JMXConnector;
 import javax.management.remote.JMXConnectorFactory;
 import javax.management.remote.JMXServiceURL;
 
-public class JMXReadingExample {
+public class JmxReadingExample {
 
 	public static void main(String[] args) {
 		try {
