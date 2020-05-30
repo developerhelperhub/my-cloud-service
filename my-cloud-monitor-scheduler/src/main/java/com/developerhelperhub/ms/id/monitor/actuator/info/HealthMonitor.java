@@ -15,24 +15,23 @@ public class HealthMonitor extends ActuatorJmxMonitor {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(HealthMonitor.class);
 
-	private final String measurementName = "health";
 	private final String STATUS_DOWN = "DOWN";
 
-	public HealthMonitor(String mBeanName, String operation) {
-		super(mBeanName, operation);
+	public HealthMonitor(String mBeanName, String operation, String measurement) {
+		super(mBeanName, operation, measurement);
 	}
 
 	@Override
 	public void process() {
 
-		String instanceId = getConnection().getInstanceId();
 		String application = getConnection().getApplication().getName();
+		String instanceId = getConnection().getInstanceId();
 
-		HealthEntity entity = getDataService().getHealth(getConnection().getApplication().getName());
+		HealthEntity entity = getDataService().getHealth(instanceId);
 
 		LOGGER.debug("Current health status of {} : {}", instanceId, entity.getStatus());
 
-		Point.Builder builder = Point.measurement(measurementName)
+		Point.Builder builder = Point.measurement(getMeasurement())
 				.time(System.currentTimeMillis(), TimeUnit.MILLISECONDS).addField("application", application)
 				.addField("instance_id", instanceId);
 
@@ -42,7 +41,7 @@ public class HealthMonitor extends ActuatorJmxMonitor {
 					new TypeReference<HealthResponseModel>() {
 					});
 
-			LOGGER.debug("Helath of {} : {}", getConnection().getApplication(), body.toString());
+			LOGGER.debug("Helath of {} : {}", instanceId, body.toString());
 
 			builder.addField("status", body.getStatus()).addField("disk_space_status",
 					body.getComponents().getDiskSpace().getStatus());
@@ -84,7 +83,7 @@ public class HealthMonitor extends ActuatorJmxMonitor {
 
 		getInfluxDB().write(builder.build());
 
-		LOGGER.debug("Helath inserted value into {} {}: {}!", measurementName, instanceId, entity.getStatus());
+		LOGGER.debug("Helath inserted value into {} {}: {}!", getMeasurement(), instanceId, entity.getStatus());
 
 		getInfluxDB().close();
 

@@ -13,10 +13,10 @@ import org.springframework.stereotype.Service;
 
 import com.developerhelperhub.ms.id.monitor.actuator.info.HealthMonitor;
 import com.developerhelperhub.ms.id.monitor.actuator.info.InfoMonitor;
+import com.developerhelperhub.ms.id.monitor.actuator.info.MetricMonitor;
 import com.developerhelperhub.ms.id.monitor.actuator.info.MonitorDataService;
 import com.developerhelperhub.ms.id.service.JmxService;
 import com.developerhelperhub.ms.id.service.JmxService.JmxApplication;
-import com.developerhelperhub.ms.id.service.JmxService.JmxConnection;
 
 @Service
 public class ActuatorJmxEndpointScheduler {
@@ -34,10 +34,46 @@ public class ActuatorJmxEndpointScheduler {
 
 	private List<ActuatorJmxMonitor> monitors = new ArrayList<>();
 
+	private final String METRIX_JVM_MEMORY_USED = "jvm.memory.used";
+	private final String METRIX_JVM_MEMORY_MAX = "jvm.memory.max";
+	private final String METRIX_JVM_MEMORY_COMMITED = "jvm.memory.committed";
+
+	private final String METRIX_JVM_BUFFER_MEMORY_PROMPTED = "jvm.buffer.memory.used";
+	private final String METRIX_JVM_BUFFER_COUNT = "jvm.buffer.count";
+	private final String METRIX_JVM_BUFFER_TOTAL_CAPACITY = "jvm.buffer.total.capacity";
+
+	private final String METRIX_JVM_GC_MEMORY_ALLOCATED = "jvm.gc.memory.allocated";
+	private final String METRIX_JVM_GC_MEMORY_PROMPTED = "jvm.gc.memory.promoted";
+
+	private final String METRIX_JVM_THREADS_DAEMON = "jvm.threads.daemon";
+	private final String METRIX_JVM_THREADS_LIVE = "jvm.threads.live";
+	private final String METRIX_JVM_THREADS_PEAK = "jvm.threads.peak";
+
 	public ActuatorJmxEndpointScheduler() {
 
-		monitors.add(new InfoMonitor("org.springframework.boot:type=Endpoint,name=Info", "info"));
-		monitors.add(new HealthMonitor("org.springframework.boot:type=Endpoint,name=Health", "health"));
+		monitors.add(new InfoMonitor("org.springframework.boot:type=Endpoint,name=Info", "info", "info"));
+		monitors.add(new HealthMonitor("org.springframework.boot:type=Endpoint,name=Health", "health", "health"));
+
+		monitors.add(new MetricMonitor("org.springframework.boot:type=Endpoint,name=Metrics", "metric",
+				new Object[] { METRIX_JVM_MEMORY_USED }, new String[] { String.class.getName() }, "metric"));
+
+		monitors.add(new MetricMonitor("org.springframework.boot:type=Endpoint,name=Metrics", "metric",
+				new Object[] { METRIX_JVM_MEMORY_MAX }, new String[] { String.class.getName() }, "metric"));
+
+		monitors.add(new MetricMonitor("org.springframework.boot:type=Endpoint,name=Metrics", "metric",
+				new Object[] { METRIX_JVM_BUFFER_MEMORY_PROMPTED }, new String[] { String.class.getName() }, "metric"));
+
+		monitors.add(new MetricMonitor("org.springframework.boot:type=Endpoint,name=Metrics", "metric",
+				new Object[] { METRIX_JVM_BUFFER_TOTAL_CAPACITY }, new String[] { String.class.getName() }, "metric"));
+
+		monitors.add(new MetricMonitor("org.springframework.boot:type=Endpoint,name=Metrics", "metric",
+				new Object[] { METRIX_JVM_THREADS_DAEMON }, new String[] { String.class.getName() }, "thread"));
+
+		monitors.add(new MetricMonitor("org.springframework.boot:type=Endpoint,name=Metrics", "metric",
+				new Object[] { METRIX_JVM_THREADS_LIVE }, new String[] { String.class.getName() }, "thread"));
+
+		monitors.add(new MetricMonitor("org.springframework.boot:type=Endpoint,name=Metrics", "metric",
+				new Object[] { METRIX_JVM_THREADS_PEAK }, new String[] { String.class.getName() }, "thread"));
 
 	}
 
@@ -54,6 +90,30 @@ public class ActuatorJmxEndpointScheduler {
 			app.getConnections().values().parallelStream().forEach(con -> {
 
 				LOGGER.debug("Instance process is starting {} : ({}) ...", con.getInstanceId(), con.isJmxEnable());
+
+				if (con.isJmxEnable()) {
+
+					monitors.parallelStream().forEach(monitor -> {
+
+						LOGGER.debug("{}:- {}:({}) ", con.getInstanceId(), monitor.getMBeanName(),
+								monitor.getOperation());
+
+						monitor.setDataService(dataService);
+						monitor.setInfluxDB(influxDB);
+						monitor.setConnection(con);
+
+						try {
+
+							monitor.process();
+
+						} catch (Exception exception) {
+							LOGGER.debug("{}:- {}:({}) - ERROR: {}", con.getInstanceId(), monitor.getMBeanName(),
+									monitor.getOperation(), exception.getMessage());
+						}
+
+					});
+
+				}
 
 				LOGGER.debug("IInstance process is completed {} : ({})", con.getInstanceId(), con.isJmxEnable());
 
