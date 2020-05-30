@@ -16,6 +16,8 @@ public class InfoEntity {
 	@Id
 	private String name;
 
+	private String application;
+
 	private Long lastUpdated;
 
 	private ApplicationInfo.Build build;

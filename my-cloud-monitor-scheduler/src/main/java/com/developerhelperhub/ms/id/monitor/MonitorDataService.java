@@ -41,11 +41,6 @@ public class MonitorDataService {
 
 	public void update(HealthEntity entity) {
 
-		ApplicationEntity applicationEntity = getApplication(entity.getName());
-		applicationEntity.setStatus(entity.getStatus());
-
-		update(applicationEntity);
-
 		entity.setLastUpdated(System.currentTimeMillis());
 
 		healthRepository.save(entity);
@@ -64,11 +59,6 @@ public class MonitorDataService {
 	}
 
 	public void update(InfoEntity entity) {
-
-		ApplicationEntity applicationEntity = getApplication(entity.getName());
-		applicationEntity.setBuild(entity.getBuild());
-
-		update(applicationEntity);
 
 		entity.setLastUpdated(System.currentTimeMillis());
 
@@ -122,7 +112,7 @@ public class MonitorDataService {
 	}
 
 	public Map<String, InstanceEntity> getInstances(String app) {
-		return instanceRepository.findByApp(app).stream()
+		return instanceRepository.findByApplication(app).stream()
 				.collect(Collectors.toMap(InstanceEntity::getInstanceId, entity -> entity));
 	}
 

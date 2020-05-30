@@ -3,8 +3,6 @@ package com.developerhelperhub.ms.id.monitor.application;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-import com.developerhelperhub.ms.id.monitor.model.ApplicationInfo;
-
 import lombok.Getter;
 import lombok.Setter;
 
@@ -19,8 +17,6 @@ public class ApplicationEntity {
 	private String status;
 
 	private Long lastUpdated;
-
-	private ApplicationInfo.Build build;
 
 	private int runningInstance;
 

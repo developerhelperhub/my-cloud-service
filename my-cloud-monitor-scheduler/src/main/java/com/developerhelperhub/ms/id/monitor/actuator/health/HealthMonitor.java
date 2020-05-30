@@ -28,6 +28,8 @@ public class HealthMonitor extends ActuatorJmxMonitor {
 		String instanceId = getConnection().getInstanceId();
 
 		HealthEntity entity = getDataService().getHealth(instanceId);
+		
+		entity.setApplication(application);
 
 		LOGGER.debug("Current health status of {} : {}", instanceId, entity.getStatus());
 

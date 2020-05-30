@@ -8,5 +8,5 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface InstanceRepository extends MongoRepository<InstanceEntity, String> {
 
-	public List<InstanceEntity> findByApp(String app);
+	public List<InstanceEntity> findByApplication(String application);
 }

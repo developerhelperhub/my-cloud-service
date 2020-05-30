@@ -17,7 +17,7 @@ public class InstanceEntity {
 
 	@Id
 	private String instanceId;
-	private String app;
+	private String application;
 	private String appGroupName;
 	private String ipAddr;
 	private String sid;
@@ -39,7 +39,6 @@ public class InstanceEntity {
 	private String asgName;
 	private Map<String, String> metadata;
 	private Long lastUpdated;
-
 
 	public InstanceEntity() {
 	}

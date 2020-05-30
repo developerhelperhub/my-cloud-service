@@ -16,10 +16,12 @@ public class HealthEntity {
 	@Id
 	private String name;
 
+	private String application;
+
 	private Long lastUpdated;
 
 	private String status;
-	
+
 	private ApplicationDiskSpace diskSpace;
 
 	public HealthEntity() {

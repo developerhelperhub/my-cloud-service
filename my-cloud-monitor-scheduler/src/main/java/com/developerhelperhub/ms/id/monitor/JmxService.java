@@ -129,6 +129,11 @@ public class JmxService {
 			DiscoveryResponseModel.Application discoveryApplication = getDiscoveryApplication()
 					.get(application.getName());
 
+			Map<String, InstanceEntity> instanceEntities = monitorDataService.getInstances(application.getName());
+
+			int totalInstance = instanceEntities.size();
+			int runningInstance = 0;
+
 			if (discoveryApplication == null) {
 
 				jmxApplication.setAvailable(false);
@@ -136,8 +141,6 @@ public class JmxService {
 			} else {
 
 				jmxApplication.setAvailable(true);
-
-				Map<String, InstanceEntity> instanceEntities = monitorDataService.getInstances(application.getName());
 
 				for (DiscoveryResponseModel.Instance instance : discoveryApplication.getInstance()) {
 
@@ -188,7 +191,7 @@ public class JmxService {
 					}
 
 					instanceEntity.setInstanceId(instance.getInstanceId());
-					instanceEntity.setApp(instance.getApp());
+					instanceEntity.setApplication(instance.getApp().toLowerCase());
 					instanceEntity.setAppGroupName(instance.getAppGroupName());
 					instanceEntity.setIpAddr(instance.getIpAddr());
 					instanceEntity.setSid(instance.getSid());
@@ -220,6 +223,8 @@ public class JmxService {
 					monitorDataService.update(instanceEntity);
 
 					instanceEntities.remove(instance.getInstanceId());
+
+					runningInstance++;
 				}
 
 				for (InstanceEntity instanceEntity : instanceEntities.values()) {
@@ -238,6 +243,9 @@ public class JmxService {
 				application.setStatus(STATU_UP);
 
 			}
+
+			application.setTotalInstance(totalInstance);
+			application.setRunningInstance(runningInstance);
 
 			monitorDataService.update(application);
 		}

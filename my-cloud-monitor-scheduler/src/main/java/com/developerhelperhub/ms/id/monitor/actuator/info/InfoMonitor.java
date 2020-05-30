@@ -31,6 +31,8 @@ public class InfoMonitor extends ActuatorJmxMonitor {
 
 			InfoEntity entity = getDataService().getInfo(instanceId);
 
+			entity.setApplication(application);
+
 			Point.Builder builder = Point.measurement(getMeasurement())
 					.time(System.currentTimeMillis(), TimeUnit.MILLISECONDS).addField("instance_id", instanceId)
 					.addField("application", application).addField("build_version", body.getBuild().getVersion())
