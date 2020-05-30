@@ -1,4 +1,4 @@
-package com.developerhelperhub.ms.id.service.application;
+package com.developerhelperhub.ms.id.monitor.actuator.info;
 
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
@@ -8,26 +8,23 @@ import com.developerhelperhub.ms.id.service.info.ApplicationInfo;
 import lombok.Getter;
 import lombok.Setter;
 
-@Document("applications")
+@Document("info")
 @Getter
 @Setter
-public class ApplicationEntity {
+public class InfoEntity {
 
 	@Id
 	private String name;
-
-	private String status;
 
 	private Long lastUpdated;
 
 	private ApplicationInfo.Build build;
 
-	public ApplicationEntity() {
+	public InfoEntity() {
 	}
-	
-	public ApplicationEntity(String name) {
+
+	public InfoEntity(String name) {
 		this.name = name;
 	}
-	
 
 }

@@ -1,14 +1,12 @@
-package com.developerhelperhub.ms.id.monitor;
+package com.developerhelperhub.ms.id.monitor.actuator.info;
 
 import java.util.concurrent.TimeUnit;
 
 import org.influxdb.dto.Point;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 
-import com.developerhelperhub.ms.id.service.JmxService.JmxConnection;
+import com.developerhelperhub.ms.id.monitor.actuator.ActuatorJmxMonitor;
 import com.developerhelperhub.ms.id.service.info.ApplicationInfo;
 import com.fasterxml.jackson.core.type.TypeReference;
 
@@ -23,17 +21,19 @@ public class InfoMonitor extends ActuatorJmxMonitor {
 	}
 
 	@Override
-	public void process(JmxConnection connection) {
+	public void process() {
 
 		try {
 
-			ApplicationInfo info = connection.read(getMBeanName(), getOperation(),
+			ApplicationInfo body = getConnection().read(getMBeanName(), getOperation(),
 					new TypeReference<ApplicationInfo>() {
 					});
 
+			InfoEntity entity = getDataService().getInfo(getConnection().getSerivce());
+
 			Point.Builder builder = Point.measurement(measurementName)
 					.time(System.currentTimeMillis(), TimeUnit.MILLISECONDS)
-					.addField("application", connection.getSerivce())
+					.addField("application", getConnection().getSerivce())
 					.addField("build_version", body.getBuild().getVersion())
 					.addField("build_artifact", body.getBuild().getArtifact())
 					.addField("build_artifact", body.getBuild().getArtifact())
@@ -41,19 +41,19 @@ public class InfoMonitor extends ActuatorJmxMonitor {
 					.addField("build_time", body.getBuild().getArtifact())
 					.addField("build_group", body.getBuild().getArtifact());
 
-			influxDB.write(builder.build());
+			getInfluxDB().write(builder.build());
 
-			LOGGER.debug("Info inserted value into {} {} !", measurementName, application);
+			LOGGER.debug("Info inserted value into {} {} !", measurementName, getConnection().getSerivce());
 
-			influxDB.close();
+			getInfluxDB().close();
 
-			application.setBuild(body.getBuild());
+			entity.setBuild(body.getBuild());
 
-			applicationSerivice.update(application);
+			getDataService().update(entity);
 
 		} catch (Exception e) {
 
-			LOGGER.debug("{} JMX connection error :- {} ", connection.getInstanceId(), e.getMessage());
+			LOGGER.debug("{} JMX connection error :- {} ", getConnection().getInstanceId(), e.getMessage());
 
 		}
 	}

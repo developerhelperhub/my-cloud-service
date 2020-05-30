@@ -23,7 +23,7 @@ public class JmxReadingExample {
 
 	public static void main(String[] args) {
 		try {
-			JMXServiceURL url = new JMXServiceURL("service:jmx:rmi:///jndi/rmi://:58635/jmxrmi");
+			JMXServiceURL url = new JMXServiceURL("service:jmx:rmi:///jndi/rmi://:56573/jmxrmi");
 			JMXConnector jmxc = JMXConnectorFactory.connect(url, null);
 			MBeanServerConnection mbsc = jmxc.getMBeanServerConnection();
 

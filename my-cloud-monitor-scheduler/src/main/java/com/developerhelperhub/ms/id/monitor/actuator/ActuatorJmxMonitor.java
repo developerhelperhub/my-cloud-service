@@ -1,9 +1,9 @@
-package com.developerhelperhub.ms.id.monitor;
+package com.developerhelperhub.ms.id.monitor.actuator;
 
 import org.influxdb.InfluxDB;
 
+import com.developerhelperhub.ms.id.monitor.actuator.info.MonitorDataService;
 import com.developerhelperhub.ms.id.service.JmxService.JmxConnection;
-import com.developerhelperhub.ms.id.service.application.ApplicationEntity;
 
 import lombok.Data;
 
@@ -15,7 +15,7 @@ public abstract class ActuatorJmxMonitor {
 	private Object[] args;
 	private String[] signatures;
 	private JmxConnection connection;
-	private ApplicationEntity application;
+	private MonitorDataService dataService;
 	private InfluxDB influxDB;
 
 	public ActuatorJmxMonitor(String mBeanName, String operation) {
@@ -32,6 +32,6 @@ public abstract class ActuatorJmxMonitor {
 		this.signatures = signatures;
 	}
 
-	abstract public void process(JmxConnection connection);
+	abstract public void process();
 
 }

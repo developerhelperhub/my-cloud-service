@@ -2,12 +2,16 @@ package com.developerhelperhub.ms.id.service.health;
 
 import java.util.Map;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 import lombok.Data;
 
 @Data
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class HealthResponseModel {
 
 	@Data
+	@JsonIgnoreProperties(ignoreUnknown = true)
 	public static class DiskSpace {
 		public String status;
 		public Map<String, Long> details;
@@ -20,6 +24,7 @@ public class HealthResponseModel {
 	}
 
 	@Data
+	@JsonIgnoreProperties(ignoreUnknown = true)
 	public static class Hystrix {
 		public String status;
 
@@ -31,6 +36,7 @@ public class HealthResponseModel {
 	}
 
 	@Data
+	@JsonIgnoreProperties(ignoreUnknown = true)
 	public static class Ping {
 		public String status;
 
@@ -42,6 +48,7 @@ public class HealthResponseModel {
 	}
 
 	@Data
+	@JsonIgnoreProperties(ignoreUnknown = true)
 	public static class RefreshScope {
 		public String status;
 
@@ -53,6 +60,7 @@ public class HealthResponseModel {
 	}
 
 	@Data
+	@JsonIgnoreProperties(ignoreUnknown = true)
 	public static class HealthComponent {
 		public DiskSpace diskSpace;
 		public Hystrix hystrix;
