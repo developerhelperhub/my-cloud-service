@@ -25,11 +25,16 @@ public class HealthMonitor extends ActuatorJmxMonitor {
 	@Override
 	public void process() {
 
-		HealthEntity entity = getDataService().getHealth(getConnection().getSerivce());
+		String instanceId = getConnection().getInstanceId();
+		String application = getConnection().getApplication().getName();
+
+		HealthEntity entity = getDataService().getHealth(getConnection().getApplication().getName());
+
+		LOGGER.debug("Current health status of {} : {}", instanceId, entity.getStatus());
 
 		Point.Builder builder = Point.measurement(measurementName)
-				.time(System.currentTimeMillis(), TimeUnit.MILLISECONDS)
-				.addField("application", getConnection().getSerivce());
+				.time(System.currentTimeMillis(), TimeUnit.MILLISECONDS).addField("application", application)
+				.addField("instance_id", instanceId);
 
 		try {
 
@@ -37,7 +42,7 @@ public class HealthMonitor extends ActuatorJmxMonitor {
 					new TypeReference<HealthResponseModel>() {
 					});
 
-			LOGGER.debug("Helath of {} : {}", getConnection().getSerivce(), body.toString());
+			LOGGER.debug("Helath of {} : {}", getConnection().getApplication(), body.toString());
 
 			builder.addField("status", body.getStatus()).addField("disk_space_status",
 					body.getComponents().getDiskSpace().getStatus());
@@ -69,7 +74,7 @@ public class HealthMonitor extends ActuatorJmxMonitor {
 
 		} catch (Exception e) {
 
-			LOGGER.debug("{} JMX connection error :- {} ", getConnection().getInstanceId(), e.getMessage());
+			LOGGER.debug("{} JMX connection error :- {} ", instanceId, e.getMessage());
 
 			builder.addField("status", STATUS_DOWN);
 
@@ -79,7 +84,7 @@ public class HealthMonitor extends ActuatorJmxMonitor {
 
 		getInfluxDB().write(builder.build());
 
-		LOGGER.debug("Helath inserted value into {} {} !", measurementName, getConnection().getSerivce());
+		LOGGER.debug("Helath inserted value into {} {}: {}!", measurementName, instanceId, entity.getStatus());
 
 		getInfluxDB().close();
 

@@ -1,6 +1,8 @@
 package com.developerhelperhub.ms.id.monitor.actuator.info;
 
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -9,6 +11,8 @@ import org.springframework.stereotype.Service;
 
 import com.developerhelperhub.ms.id.service.application.ApplicationEntity;
 import com.developerhelperhub.ms.id.service.application.ApplicationRepository;
+import com.developerhelperhub.ms.id.service.application.InstanceEntity;
+import com.developerhelperhub.ms.id.service.application.InstanceRepository;
 
 @Service
 public class MonitorDataService {
@@ -23,6 +27,9 @@ public class MonitorDataService {
 
 	@Autowired
 	private HealthRepository healthRepository;
+
+	@Autowired
+	private InstanceRepository instanceRepository;
 
 	public List<HealthEntity> getHelths() {
 		return healthRepository.findAll();
@@ -39,9 +46,9 @@ public class MonitorDataService {
 
 		healthRepository.save(entity);
 
-		LOGGER.debug("Updated health {} ", entity.getName());
+		LOGGER.debug("Updated health {}: {} ", entity.getName(), entity.getStatus());
 	}
-	
+
 	public HealthEntity getHealth(String name) {
 		LOGGER.debug("Loading info {} ", name);
 
@@ -76,19 +83,49 @@ public class MonitorDataService {
 		return applicationRepository.findAll();
 	}
 
+	public void addApplication(String name) {
+		ApplicationEntity entity = getApplication(name);
+
+		entity.setLastUpdated(System.currentTimeMillis());
+
+		applicationRepository.save(entity);
+
+		LOGGER.debug("Updated application {}: {}", entity.getName(), entity.getStatus());
+	}
+
 	public void update(ApplicationEntity entity) {
 
 		entity.setLastUpdated(System.currentTimeMillis());
 
 		applicationRepository.save(entity);
 
-		LOGGER.debug("Updated application {} ", entity.getName());
+		LOGGER.debug("Updated application {}: {}", entity.getName(), entity.getStatus());
 	}
 
 	public ApplicationEntity getApplication(String name) {
 		LOGGER.debug("Loading application {} ", name);
 
 		return applicationRepository.findById(name).orElse(new ApplicationEntity(name));
+	}
+
+	public void update(InstanceEntity entity) {
+
+		entity.setLastUpdated(System.currentTimeMillis());
+
+		instanceRepository.save(entity);
+
+		LOGGER.debug("Updated application {}: {}", entity.getInstanceId(), entity.getStatus());
+	}
+
+	public Map<String, InstanceEntity> getInstances(String app) {
+		return instanceRepository.findByApp(app).stream()
+				.collect(Collectors.toMap(InstanceEntity::getInstanceId, entity -> entity));
+	}
+
+	public InstanceEntity getInstance(String instanceId) {
+		LOGGER.debug("Loading instance {} ", instanceId);
+
+		return instanceRepository.findById(instanceId).orElse(new InstanceEntity(instanceId));
 	}
 
 }

@@ -11,7 +11,7 @@ spring:
 logging:
   level:
     org:
-      springframework: DEBUG
+      springframework: INFO
     com:
       developerhelperhub: DEBUG
       netflix:

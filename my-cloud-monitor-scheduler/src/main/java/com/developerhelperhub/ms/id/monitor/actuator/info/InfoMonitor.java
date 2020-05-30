@@ -23,39 +23,39 @@ public class InfoMonitor extends ActuatorJmxMonitor {
 	@Override
 	public void process() {
 
-		try {
-
-			ApplicationInfo body = getConnection().read(getMBeanName(), getOperation(),
-					new TypeReference<ApplicationInfo>() {
-					});
-
-			InfoEntity entity = getDataService().getInfo(getConnection().getSerivce());
-
-			Point.Builder builder = Point.measurement(measurementName)
-					.time(System.currentTimeMillis(), TimeUnit.MILLISECONDS)
-					.addField("application", getConnection().getSerivce())
-					.addField("build_version", body.getBuild().getVersion())
-					.addField("build_artifact", body.getBuild().getArtifact())
-					.addField("build_artifact", body.getBuild().getArtifact())
-					.addField("build_name", body.getBuild().getArtifact())
-					.addField("build_time", body.getBuild().getArtifact())
-					.addField("build_group", body.getBuild().getArtifact());
-
-			getInfluxDB().write(builder.build());
-
-			LOGGER.debug("Info inserted value into {} {} !", measurementName, getConnection().getSerivce());
-
-			getInfluxDB().close();
-
-			entity.setBuild(body.getBuild());
-
-			getDataService().update(entity);
-
-		} catch (Exception e) {
-
-			LOGGER.debug("{} JMX connection error :- {} ", getConnection().getInstanceId(), e.getMessage());
-
-		}
+//		try {
+//
+//			ApplicationInfo body = getConnection().read(getMBeanName(), getOperation(),
+//					new TypeReference<ApplicationInfo>() {
+//					});
+//
+//			InfoEntity entity = getDataService().getInfo(getConnection().getApplication());
+//
+//			Point.Builder builder = Point.measurement(measurementName)
+//					.time(System.currentTimeMillis(), TimeUnit.MILLISECONDS)
+//					.addField("application", getConnection().getApplication())
+//					.addField("build_version", body.getBuild().getVersion())
+//					.addField("build_artifact", body.getBuild().getArtifact())
+//					.addField("build_artifact", body.getBuild().getArtifact())
+//					.addField("build_name", body.getBuild().getArtifact())
+//					.addField("build_time", body.getBuild().getArtifact())
+//					.addField("build_group", body.getBuild().getArtifact());
+//
+//			getInfluxDB().write(builder.build());
+//
+//			LOGGER.debug("Info inserted value into {} {} !", measurementName, getConnection().getApplication());
+//
+//			getInfluxDB().close();
+//
+//			entity.setBuild(body.getBuild());
+//
+//			getDataService().update(entity);
+//
+//		} catch (Exception e) {
+//
+//			LOGGER.debug("{} JMX connection error :- {} ", getConnection().getInstanceId(), e.getMessage());
+//
+//		}
 	}
 
 }

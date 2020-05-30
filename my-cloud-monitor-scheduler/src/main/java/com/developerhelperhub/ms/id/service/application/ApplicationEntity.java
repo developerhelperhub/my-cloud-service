@@ -8,7 +8,7 @@ import com.developerhelperhub.ms.id.service.info.ApplicationInfo;
 import lombok.Getter;
 import lombok.Setter;
 
-@Document("applications")
+@Document("application")
 @Getter
 @Setter
 public class ApplicationEntity {
@@ -22,12 +22,15 @@ public class ApplicationEntity {
 
 	private ApplicationInfo.Build build;
 
+	private int runningInstance;
+
+	private int totalInstance;
+
 	public ApplicationEntity() {
 	}
-	
+
 	public ApplicationEntity(String name) {
 		this.name = name;
 	}
-	
 
 }

@@ -15,6 +15,7 @@ import com.developerhelperhub.ms.id.monitor.actuator.info.HealthMonitor;
 import com.developerhelperhub.ms.id.monitor.actuator.info.InfoMonitor;
 import com.developerhelperhub.ms.id.monitor.actuator.info.MonitorDataService;
 import com.developerhelperhub.ms.id.service.JmxService;
+import com.developerhelperhub.ms.id.service.JmxService.JmxApplication;
 import com.developerhelperhub.ms.id.service.JmxService.JmxConnection;
 
 @Service
@@ -43,22 +44,60 @@ public class ActuatorJmxEndpointScheduler {
 	@Scheduled(fixedDelay = 1000)
 	public void process() {
 
-		Collection<JmxConnection> connections = jmxService.getServices();
+		LOGGER.debug("Monitor process is starting ..... ");
 
-		connections.parallelStream().forEach(connection -> {
+		Collection<JmxApplication> connections = jmxService.getApplications();
 
-			monitors.parallelStream().forEach(monitor -> {
+		connections.parallelStream().forEach(app -> {
+			LOGGER.debug("Application process is starting {} : ({}) ....", app.getName(), app.isAvailable());
 
-				LOGGER.debug("{}:- {}:({}) ", connection.getInstanceId(), monitor.getMBeanName(),
-						monitor.getOperation());
+			app.getConnections().values().parallelStream().forEach(con -> {
 
-				monitor.setDataService(dataService);
-				monitor.setInfluxDB(influxDB);
-				monitor.setConnection(connection);
+				LOGGER.debug("Instance process is starting {} : ({}) ...", con.getInstanceId(), con.isJmxEnable());
 
-				monitor.process();
+				LOGGER.debug("IInstance process is completed {} : ({})", con.getInstanceId(), con.isJmxEnable());
+
 			});
+
+			LOGGER.debug("Application process is completed {} : ({})!", app.getName(), app.isAvailable());
 		});
+
+		LOGGER.debug("Monitor process is completed !");
+
+//		connections.parallelStream().forEach(app -> {
+//
+//			if (app.isAvailable()) {
+//
+//				app.getConnections().values().parallelStream().forEach(con -> {
+//
+//					if (con.isJmxEnable()) {
+//
+//						monitors.parallelStream().forEach(monitor -> {
+//
+//							LOGGER.debug("{}:- {}:({}) ", con.getInstanceId(), monitor.getMBeanName(),
+//									monitor.getOperation());
+//
+//							monitor.setDataService(dataService);
+//							monitor.setInfluxDB(influxDB);
+//							monitor.setConnection(con);
+//
+//							try {
+//
+//								monitor.process();
+//
+//							} catch (Exception exception) {
+//								LOGGER.debug("{}:- {}:({}) - ERROR: {}", con.getInstanceId(), monitor.getMBeanName(),
+//										monitor.getOperation(), exception.getMessage());
+//							}
+//
+//						});
+//
+//					}
+//
+//				});
+//
+//			}
+//		});
 
 	}
 

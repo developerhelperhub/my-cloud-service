@@ -1,12 +1,12 @@
 package com.developerhelperhub.ms.id.service;
 
 import java.io.IOException;
-import java.lang.reflect.Type;
 import java.util.Collection;
-import java.util.HashSet;
+import java.util.HashMap;
 import java.util.Hashtable;
+import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import javax.management.InstanceNotFoundException;
 import javax.management.MBeanException;
@@ -21,10 +21,17 @@ import javax.management.remote.JMXServiceURL;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cloud.client.ServiceInstance;
-import org.springframework.cloud.client.discovery.DiscoveryClient;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.scheduling.annotation.Scheduled;
+import org.springframework.security.oauth2.client.OAuth2RestTemplate;
 import org.springframework.stereotype.Service;
 
+import com.developerhelperhub.ms.id.monitor.actuator.info.MonitorDataService;
+import com.developerhelperhub.ms.id.service.application.ApplicationEntity;
+import com.developerhelperhub.ms.id.service.application.InstanceEntity;
+import com.developerhelperhub.ms.id.service.discovery.DiscoveryResponseModel;
+import com.developerhelperhub.ms.id.service.discovery.DiscoveryResponseModel.LeaseInfo;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -35,13 +42,34 @@ public class JmxService {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(JmxService.class);
 
+	private final String STATU_UP = "UP";
+	private final String STATU_DOWN = "DOWN";
+
+	@Data
+	public static class JmxApplication {
+
+		private String name;
+		private boolean available = false;
+
+		private Map<String, JmxConnection> connections = new Hashtable<>();
+
+		public JmxApplication(String name) {
+			this.name = name;
+		}
+	}
+
 	@Data
 	public static class JmxConnection {
 
-		private String serivce;
+		private JmxApplication application;
 		private String instanceId;
 		private int port;
+		private boolean jmxEnable = false;
 		private JMXConnector connector;
+
+		public JmxConnection(JmxApplication application) {
+			this.application = application;
+		}
 
 		public <T> T read(String mBeanName, String operation, TypeReference<T> t) throws Exception {
 			return read(mBeanName, operation, null, null, t);
@@ -72,34 +100,79 @@ public class JmxService {
 	}
 
 	@Autowired
-	private DiscoveryClient discoveryClient;
+	private MonitorDataService monitorDataService;
 
-	private Map<String, JmxConnection> jmxRegistory = new Hashtable<>();
+	@Autowired
+	private OAuth2RestTemplate restTemplate;
 
-	public Collection<JmxConnection> getServices() {
+	private Map<String, JmxApplication> jmxRegistory = new Hashtable<>();
 
-		Set<String> closedServices = new HashSet<>(jmxRegistory.keySet());
+	@Scheduled(fixedDelay = 6000)
+	public void refresh() {
 
-		for (String serivce : discoveryClient.getServices()) {
+		LOGGER.debug("JMX Registry refreshing...");
 
-			for (ServiceInstance instance : discoveryClient.getInstances(serivce)) {
+		for (ApplicationEntity application : monitorDataService.getApplications()) {
 
-				if (instance.getMetadata().containsKey("jmx.port")) {
+			JmxApplication jmxApplication;
 
+			if (jmxRegistory.containsKey(application.getName())) {
+
+				jmxApplication = jmxRegistory.get(application.getName());
+
+			} else {
+
+				jmxApplication = new JmxApplication(application.getName());
+
+				jmxRegistory.put(application.getName(), jmxApplication);
+			}
+
+			DiscoveryResponseModel.Application discoveryApplication = getDiscoveryApplication()
+					.get(application.getName());
+
+			if (discoveryApplication == null) {
+
+				jmxApplication.setAvailable(false);
+
+			} else {
+
+				jmxApplication.setAvailable(true);
+
+				Map<String, InstanceEntity> instanceEntities = monitorDataService.getInstances(application.getName());
+
+				for (DiscoveryResponseModel.Instance instance : discoveryApplication.getInstance()) {
+
+					InstanceEntity instanceEntity;
+
+					if (!instanceEntities.containsKey(instance.getInstanceId())) {
+						instanceEntity = monitorDataService.getInstance(instance.getInstanceId());
+					} else {
+						instanceEntity = instanceEntities.get(instance.getInstanceId());
+					}
+
+					Map<String, JmxConnection> connections = jmxApplication.getConnections();
 					JmxConnection connection;
 
-					if (!jmxRegistory.containsKey(instance.getInstanceId())) {
+					if (connections.containsKey(instance.getInstanceId())) {
 
-						connection = new JmxConnection();
-						connection.setSerivce(serivce);
+						connection = connections.get(instance.getInstanceId());
+
+					} else {
+
+						connection = new JmxConnection(jmxApplication);
+
+						connections.put(instance.getInstanceId(), connection);
+					}
+
+					if (instance.getMetadata().containsKey("jmx.port")) {
+
+						connection.setJmxEnable(true);
 						connection.setInstanceId(instance.getInstanceId());
 						connection.setPort(Integer.parseInt(instance.getMetadata().get("jmx.port")));
 
 						try {
 
 							connection.setConnector(createJmxConnection(connection.getPort()));
-
-							jmxRegistory.put(instance.getInstanceId(), connection);
 
 							LOGGER.debug("Registered connector {} ", instance.getInstanceId());
 
@@ -108,33 +181,72 @@ public class JmxService {
 							LOGGER.error("Jmx registration error {} :- {}", instance.getInstanceId(), e.getMessage());
 
 						}
-
 					} else {
 
-						connection = jmxRegistory.get(instance.getInstanceId());
+						connection.setJmxEnable(false);
 
-						LOGGER.debug("Loaded connector {} ", instance.getInstanceId());
+						LOGGER.debug("{} JMX not available", instance.getInstanceId());
 					}
 
-					closedServices.remove(instance.getInstanceId());
+					instanceEntity.setInstanceId(instance.getInstanceId());
+					instanceEntity.setApp(instance.getApp());
+					instanceEntity.setAppGroupName(instance.getAppGroupName());
+					instanceEntity.setIpAddr(instance.getIpAddr());
+					instanceEntity.setSid(instance.getSid());
+					instanceEntity.setHomePageUrl(instance.getHomePageUrl());
+					instanceEntity.setStatusPageUrl(instance.getStatusPageUrl());
+					instanceEntity.setHealthCheckUrl(instance.getHealthCheckUrl());
+					instanceEntity.setSecureHealthCheckUrl(instance.getSecureHealthCheckUrl());
+					instanceEntity.setVipAddress(instance.getVipAddress());
+					instanceEntity.setSecureVipAddress(instance.getSecureVipAddress());
+					instanceEntity.setCountryId(instance.getCountryId());
+					instanceEntity.setHostName(instance.getHostName());
+					instanceEntity.setStatus(instance.getStatus());
+					instanceEntity.setOverriddenStatus(instance.getOverriddenStatus());
+					instanceEntity.setLeaseInfo(instance.getLeaseInfo());
+					instanceEntity.setCoordinatingDiscoveryServer(instance.isCoordinatingDiscoveryServer());
+					instanceEntity.setLastUpdatedTimestamp(instance.getLastUpdatedTimestamp());
+					instanceEntity.setLastDirtyTimestamp(instance.getLastDirtyTimestamp());
+					instanceEntity.setActionType(instance.getActionType());
+					instanceEntity.setAsgName(instance.getAsgName());
 
-				} else {
+					Map<String, String> metaData = new LinkedHashMap<>();
+					if (instance.getMetadata() != null) {
+						for (Map.Entry<String, String> entry : instance.getMetadata().entrySet()) {
+							metaData.put(entry.getKey().replace(".", ""), entry.getValue());
+						}
+					}
+					instanceEntity.setMetadata(metaData);
 
-					LOGGER.debug("{} JMX not available", instance.getInstanceId());
+					monitorDataService.update(instanceEntity);
 
+					instanceEntities.remove(instance.getInstanceId());
 				}
+
+				for (InstanceEntity instanceEntity : instanceEntities.values()) {
+					instanceEntity.setStatus(STATU_DOWN);
+					monitorDataService.update(instanceEntity);
+				}
+
 			}
 
+			if (!jmxApplication.isAvailable()) {
+
+				application.setStatus(STATU_DOWN);
+
+			} else {
+
+				application.setStatus(STATU_UP);
+
+			}
+
+			monitorDataService.update(application);
 		}
 
-		for (String instanceId : closedServices) {
+		LOGGER.debug("JMX Registry refreshing is completed!");
+	}
 
-			jmxRegistory.remove(instanceId);
-
-			LOGGER.debug("{} Removed JMX connection from Registory", instanceId);
-
-		}
-
+	public Collection<JmxApplication> getApplications() {
 		return jmxRegistory.values();
 	}
 
@@ -145,5 +257,25 @@ public class JmxService {
 		JMXConnector jmxc = JMXConnectorFactory.connect(url, null);
 
 		return jmxc;
+	}
+
+	private Map<String, DiscoveryResponseModel.Application> getDiscoveryApplication() {
+
+		ResponseEntity<DiscoveryResponseModel> entity = restTemplate
+				.getForEntity("http://my-cloud-discovery/discovery/applications", DiscoveryResponseModel.class);
+
+		Map<String, DiscoveryResponseModel.Application> model = new HashMap<String, DiscoveryResponseModel.Application>();
+
+		if (entity.getStatusCode() == HttpStatus.OK) {
+
+			for (DiscoveryResponseModel.Application appModel : entity.getBody().getApplication()) {
+				model.put(appModel.getName().toLowerCase(), appModel);
+			}
+
+		} else {
+			LOGGER.error("Discovery application loading error {} ", entity.getStatusCode());
+		}
+
+		return model;
 	}
 }

@@ -1,6 +1,7 @@
 package com.developerhelperhub.ms.id.service.discovery;
 
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.data.mongodb.core.mapping.Document;
 
@@ -12,38 +13,40 @@ public class DiscoveryResponseModel {
 	@Data
 	@Document
 	public static class LeaseInfo {
-		public int renewalIntervalInSecs;
-		public int durationInSecs;
-		public Object registrationTimestamp;
-		public Object lastRenewalTimestamp;
-		public int evictionTimestamp;
-		public Object serviceUpTimestamp;
+		private int renewalIntervalInSecs;
+		private int durationInSecs;
+		private Object registrationTimestamp;
+		private Object lastRenewalTimestamp;
+		private int evictionTimestamp;
+		private Object serviceUpTimestamp;
 	}
 
 	@Data
 	@Document
 	public static class Instance {
-		public String instanceId;
-		public String app;
-		public String appGroupName;
-		public String ipAddr;
-		public String sid;
-		public String homePageUrl;
-		public String statusPageUrl;
-		public String healthCheckUrl;
-		public String secureHealthCheckUrl;
-		public String vipAddress;
-		public String secureVipAddress;
-		public int countryId;
-		public String hostName;
-		public String status;
-		public String overriddenStatus;
-		public LeaseInfo leaseInfo;
-		public boolean isCoordinatingDiscoveryServer;
-		public Object lastUpdatedTimestamp;
-		public Object lastDirtyTimestamp;
-		public String actionType;
-		public String asgName;
+
+		private String instanceId;
+		private String app;
+		private String appGroupName;
+		private String ipAddr;
+		private String sid;
+		private String homePageUrl;
+		private String statusPageUrl;
+		private String healthCheckUrl;
+		private String secureHealthCheckUrl;
+		private String vipAddress;
+		private String secureVipAddress;
+		private int countryId;
+		private String hostName;
+		private String status;
+		private String overriddenStatus;
+		private LeaseInfo leaseInfo;
+		private boolean isCoordinatingDiscoveryServer;
+		private Object lastUpdatedTimestamp;
+		private Object lastDirtyTimestamp;
+		private String actionType;
+		private String asgName;
+		private Map<String, String> metadata;
 	}
 
 	@Data
