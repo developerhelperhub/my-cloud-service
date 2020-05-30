@@ -1,4 +1,4 @@
-package com.developerhelperhub.ms.id.service.health;
+package com.developerhelperhub.ms.id.model.actuator;
 
 import java.util.Map;
 

@@ -1,9 +1,6 @@
-package com.developerhelperhub.ms.id.service.monitor;
+package com.developerhelperhub.ms.id.model;
 
 import java.util.List;
-
-import com.developerhelperhub.ms.id.service.application.ApplicationDiskSpace;
-import com.developerhelperhub.ms.id.service.discovery.DiscoveryResponseModel;
 
 import lombok.Data;
 

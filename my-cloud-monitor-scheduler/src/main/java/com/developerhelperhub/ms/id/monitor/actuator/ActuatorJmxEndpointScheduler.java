@@ -54,16 +54,16 @@ public class ActuatorJmxEndpointScheduler {
 		monitors.add(new HealthMonitor("org.springframework.boot:type=Endpoint,name=Health", "health", "health"));
 
 		monitors.add(new MetricMonitor("org.springframework.boot:type=Endpoint,name=Metrics", "metric",
-				new Object[] { METRIX_JVM_MEMORY_USED }, new String[] { String.class.getName() }, "metric"));
+				new Object[] { METRIX_JVM_MEMORY_USED }, new String[] { String.class.getName() }, "memory"));
 
 		monitors.add(new MetricMonitor("org.springframework.boot:type=Endpoint,name=Metrics", "metric",
-				new Object[] { METRIX_JVM_MEMORY_MAX }, new String[] { String.class.getName() }, "metric"));
+				new Object[] { METRIX_JVM_MEMORY_MAX }, new String[] { String.class.getName() }, "memory"));
 
 		monitors.add(new MetricMonitor("org.springframework.boot:type=Endpoint,name=Metrics", "metric",
-				new Object[] { METRIX_JVM_BUFFER_MEMORY_PROMPTED }, new String[] { String.class.getName() }, "metric"));
+				new Object[] { METRIX_JVM_BUFFER_MEMORY_PROMPTED }, new String[] { String.class.getName() }, "memory"));
 
 		monitors.add(new MetricMonitor("org.springframework.boot:type=Endpoint,name=Metrics", "metric",
-				new Object[] { METRIX_JVM_BUFFER_TOTAL_CAPACITY }, new String[] { String.class.getName() }, "metric"));
+				new Object[] { METRIX_JVM_BUFFER_TOTAL_CAPACITY }, new String[] { String.class.getName() }, "memory"));
 
 		monitors.add(new MetricMonitor("org.springframework.boot:type=Endpoint,name=Metrics", "metric",
 				new Object[] { METRIX_JVM_THREADS_DAEMON }, new String[] { String.class.getName() }, "thread"));

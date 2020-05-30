@@ -89,11 +89,10 @@ class MonitorPage extends React.Component {
                     }
                 ],
                 head: [
-                    { title: "ID", width: "20%" },
-                    { title: "Name", width: "20%" },
-                    { title: "Version", width: "15%" },
+                    { title: "Name", width: "30%" },
+                    { title: "Running", width: "10%" },
+                    { title: "Total", width: "10%" },
                     { title: "Status", width: "10%" },
-                    { title: "Build Time", width: "20%" },
                     { title: "Last Updated", width: "40%" },
 
                 ],
@@ -120,7 +119,7 @@ class MonitorPage extends React.Component {
     streamApplications() {
         let self = this;
 
-        AppApiRepo.eventSource("/monitor/stream/applications/basic-info",
+        AppApiRepo.eventSource("/monitor/stream/applications/all",
             {
                 'Authorization': AppApiRepo.getToken()
             }, function (event) {
@@ -133,12 +132,11 @@ class MonitorPage extends React.Component {
                 eventData.forEach(app => {
 
                     var colums = [];
-
+                    
                     colums.push(app.name);
-                    colums.push(app.build.name);
-                    colums.push(app.build.version);
+                    colums.push(app.runningInstance);
+                    colums.push(app.totalInstance);
                     colums.push(app.status);
-                    colums.push(app.build.time);
                     colums.push(app.lastUpdated);
 
                     applicationBody.push(colums);

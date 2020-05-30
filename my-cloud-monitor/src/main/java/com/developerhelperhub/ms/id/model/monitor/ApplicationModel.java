@@ -1,8 +1,8 @@
-package com.developerhelperhub.ms.id.service.application;
+package com.developerhelperhub.ms.id.model.monitor;
 
 import org.springframework.data.annotation.Id;
 
-import com.developerhelperhub.ms.id.service.monitor.ApplicationMonitorModel;
+import com.developerhelperhub.ms.id.model.ApplicationMonitorModel.Build;
 
 import lombok.Data;
 
@@ -16,6 +16,8 @@ public class ApplicationModel {
 
 	private String lastUpdated;
 
-	private ApplicationMonitorModel.Build build;
+	private int runningInstance;
+
+	private int totalInstance;
 
 }

@@ -1,4 +1,4 @@
-package com.developerhelperhub.ms.id.service.discovery;
+package com.developerhelperhub.ms.id.model;
 
 import java.util.List;
 

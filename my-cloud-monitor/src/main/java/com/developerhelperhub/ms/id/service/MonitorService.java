@@ -1,4 +1,4 @@
-package com.developerhelperhub.ms.id.service.monitor;
+package com.developerhelperhub.ms.id.service;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -18,12 +18,12 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.developerhelperhub.ms.id.service.application.ApplicationEntity;
-import com.developerhelperhub.ms.id.service.application.MonitorApplication;
-import com.developerhelperhub.ms.id.service.entity.MemoryEntity;
-import com.developerhelperhub.ms.id.service.entity.ThreadEntity;
-import com.developerhelperhub.ms.id.service.monitor.ApplicationMonitorModel.Matric;
-import com.developerhelperhub.ms.id.service.monitor.ApplicationMonitorModel.MatricGroup;
+import com.developerhelperhub.ms.id.entity.influxdb.MemoryEntity;
+import com.developerhelperhub.ms.id.entity.influxdb.ThreadEntity;
+import com.developerhelperhub.ms.id.entity.mongodb.ApplicationEntity;
+import com.developerhelperhub.ms.id.model.ApplicationMonitorModel;
+import com.developerhelperhub.ms.id.model.ApplicationMonitorModel.Matric;
+import com.developerhelperhub.ms.id.model.ApplicationMonitorModel.MatricGroup;
 
 import reactor.core.publisher.Flux;
 
@@ -55,39 +55,39 @@ public class MonitorService {
 
 	private SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
-	public ApplicationMonitorModel getApplication(String application) {
-		ApplicationMonitorModel model = new ApplicationMonitorModel();
-
-		ApplicationEntity applicationEntity = monitorApplication.get(application);
-
-		ApplicationMonitorModel.Build build = new ApplicationMonitorModel.Build();
-		build.setArtifact(applicationEntity.getBuild().getArtifact());
-		build.setGroup(applicationEntity.getBuild().getGroup());
-		build.setName(applicationEntity.getBuild().getName());
-		build.setTime(formatter.format(applicationEntity.getBuild().getTime()));
-		build.setVersion(applicationEntity.getBuild().getVersion());
-		model.setBuild(build);
-
-		model.setDiskSpace(applicationEntity.getDiskSpace());
-
-		if (applicationEntity.getInstance() != null) {
-			model.setInstance(new ArrayList<>(applicationEntity.getInstance()));
-		} else {
-			model.setInstance(new ArrayList<>());
-		}
-
-		model.setLastUpdated(formatter.format(new Date(applicationEntity.getLastUpdated())));
-		model.setName(applicationEntity.getName());
-		model.setStatus(applicationEntity.getStatus());
-
-		model.setMemory(getMemory(application).get("memory"));
-		model.setBuffer(getMemory(application).get("buffer"));
-		model.setThread(getThreads(application));
-
-		influxDB.close();
-
-		return model;
-	}
+//	public ApplicationMonitorModel getApplication(String application) {
+//		ApplicationMonitorModel model = new ApplicationMonitorModel();
+//
+//		ApplicationEntity applicationEntity = monitorApplication.get(application);
+//
+//		ApplicationMonitorModel.Build build = new ApplicationMonitorModel.Build();
+//		build.setArtifact(applicationEntity.getBuild().getArtifact());
+//		build.setGroup(applicationEntity.getBuild().getGroup());
+//		build.setName(applicationEntity.getBuild().getName());
+//		build.setTime(formatter.format(applicationEntity.getBuild().getTime()));
+//		build.setVersion(applicationEntity.getBuild().getVersion());
+//		model.setBuild(build);
+//
+//		model.setDiskSpace(applicationEntity.getDiskSpace());
+//
+//		if (applicationEntity.getInstance() != null) {
+//			model.setInstance(new ArrayList<>(applicationEntity.getInstance()));
+//		} else {
+//			model.setInstance(new ArrayList<>());
+//		}
+//
+//		model.setLastUpdated(formatter.format(new Date(applicationEntity.getLastUpdated())));
+//		model.setName(applicationEntity.getName());
+//		model.setStatus(applicationEntity.getStatus());
+//
+//		model.setMemory(getMemory(application).get("memory"));
+//		model.setBuffer(getMemory(application).get("buffer"));
+//		model.setThread(getThreads(application));
+//
+//		influxDB.close();
+//
+//		return model;
+//	}
 
 	public Map<String, List<MatricGroup>> getMemory(String application) {
 
@@ -230,7 +230,9 @@ public class MonitorService {
 		return thread;
 	}
 
-	public Flux<ApplicationMonitorModel> streamApplication(String application) {
-		return Flux.just(getApplication(application));
-	}
+//	public Flux<ApplicationMonitorModel> streamApplication(String application) {
+//		return Flux.just(getApplication(application));
+//	}
+	
+	
 }

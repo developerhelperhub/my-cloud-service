@@ -1,11 +1,11 @@
-package com.developerhelperhub.ms.id.service.metrics;
+package com.developerhelperhub.ms.id.model.actuator;
 
 import java.util.List;
 
 import lombok.Data;
 
 @Data
-public class MatricModel {
+public class ActuatorMetricModel {
 
 	@Data
 	public static class Measurement {

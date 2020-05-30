@@ -1,4 +1,4 @@
-package com.developerhelperhub.ms.id.service.info;
+package com.developerhelperhub.ms.id.model;
 
 import java.util.Date;
 

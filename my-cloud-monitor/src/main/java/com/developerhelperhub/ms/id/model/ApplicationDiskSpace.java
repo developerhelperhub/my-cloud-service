@@ -1,4 +1,4 @@
-package com.developerhelperhub.ms.id.service.application;
+package com.developerhelperhub.ms.id.model;
 
 import org.springframework.data.mongodb.core.mapping.Document;
 

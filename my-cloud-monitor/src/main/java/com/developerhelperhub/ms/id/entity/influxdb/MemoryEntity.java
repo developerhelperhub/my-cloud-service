@@ -1,4 +1,4 @@
-package com.developerhelperhub.ms.id.service.entity;
+package com.developerhelperhub.ms.id.entity.influxdb;
 
 import java.time.Instant;
 
