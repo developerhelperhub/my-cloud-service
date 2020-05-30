@@ -3,7 +3,7 @@ package com.developerhelperhub.ms.id.monitor.actuator.info;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-import com.developerhelperhub.ms.id.service.info.ApplicationInfo;
+import com.developerhelperhub.ms.id.monitor.model.ApplicationInfo;
 
 import lombok.Getter;
 import lombok.Setter;

@@ -2,8 +2,8 @@ package com.developerhelperhub.ms.id.monitor.actuator;
 
 import org.influxdb.InfluxDB;
 
-import com.developerhelperhub.ms.id.monitor.actuator.info.MonitorDataService;
-import com.developerhelperhub.ms.id.service.JmxService.JmxConnection;
+import com.developerhelperhub.ms.id.monitor.MonitorDataService;
+import com.developerhelperhub.ms.id.monitor.JmxService.JmxConnection;
 
 import lombok.Data;
 

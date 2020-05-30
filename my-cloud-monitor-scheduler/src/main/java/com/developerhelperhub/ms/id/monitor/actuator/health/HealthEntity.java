@@ -1,9 +1,9 @@
-package com.developerhelperhub.ms.id.monitor.actuator.info;
+package com.developerhelperhub.ms.id.monitor.actuator.health;
 
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-import com.developerhelperhub.ms.id.service.application.ApplicationDiskSpace;
+import com.developerhelperhub.ms.id.monitor.application.ApplicationDiskSpace;
 
 import lombok.Getter;
 import lombok.Setter;

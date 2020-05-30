@@ -8,7 +8,7 @@ import org.springframework.cloud.client.circuitbreaker.EnableCircuitBreaker;
 import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
 import org.springframework.scheduling.annotation.EnableScheduling;
 
-import com.developerhelperhub.ms.id.monitor.actuator.info.MonitorDataService;
+import com.developerhelperhub.ms.id.monitor.MonitorDataService;
 
 @SpringBootApplication
 @EnableDiscoveryClient

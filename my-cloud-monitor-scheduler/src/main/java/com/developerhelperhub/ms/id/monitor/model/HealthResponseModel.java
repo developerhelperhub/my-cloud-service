@@ -1,4 +1,4 @@
-package com.developerhelperhub.ms.id.service.health;
+package com.developerhelperhub.ms.id.monitor.model;
 
 import java.util.Map;
 

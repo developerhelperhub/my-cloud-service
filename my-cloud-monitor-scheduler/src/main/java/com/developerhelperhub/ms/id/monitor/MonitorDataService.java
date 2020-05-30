@@ -1,4 +1,4 @@
-package com.developerhelperhub.ms.id.monitor.actuator.info;
+package com.developerhelperhub.ms.id.monitor;
 
 import java.util.List;
 import java.util.Map;
@@ -9,10 +9,14 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.developerhelperhub.ms.id.service.application.ApplicationEntity;
-import com.developerhelperhub.ms.id.service.application.ApplicationRepository;
-import com.developerhelperhub.ms.id.service.application.InstanceEntity;
-import com.developerhelperhub.ms.id.service.application.InstanceRepository;
+import com.developerhelperhub.ms.id.monitor.actuator.health.HealthEntity;
+import com.developerhelperhub.ms.id.monitor.actuator.health.HealthRepository;
+import com.developerhelperhub.ms.id.monitor.actuator.info.InfoEntity;
+import com.developerhelperhub.ms.id.monitor.actuator.info.InfoRepository;
+import com.developerhelperhub.ms.id.monitor.application.ApplicationEntity;
+import com.developerhelperhub.ms.id.monitor.application.ApplicationRepository;
+import com.developerhelperhub.ms.id.monitor.application.InstanceEntity;
+import com.developerhelperhub.ms.id.monitor.application.InstanceRepository;
 
 @Service
 public class MonitorDataService {

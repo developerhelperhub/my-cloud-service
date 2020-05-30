@@ -1,11 +1,11 @@
-package com.developerhelperhub.ms.id.service.application;
+package com.developerhelperhub.ms.id.monitor.application;
 
 import java.util.Map;
 
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-import com.developerhelperhub.ms.id.service.discovery.DiscoveryResponseModel.LeaseInfo;
+import com.developerhelperhub.ms.id.monitor.model.DiscoveryResponseModel.LeaseInfo;
 
 import lombok.Getter;
 import lombok.Setter;

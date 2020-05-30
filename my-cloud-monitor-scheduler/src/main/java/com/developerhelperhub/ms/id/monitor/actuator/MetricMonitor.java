@@ -1,4 +1,4 @@
-package com.developerhelperhub.ms.id.monitor.actuator.info;
+package com.developerhelperhub.ms.id.monitor.actuator;
 
 import java.util.concurrent.TimeUnit;
 
@@ -6,8 +6,7 @@ import org.influxdb.dto.Point;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.developerhelperhub.ms.id.monitor.actuator.ActuatorJmxMonitor;
-import com.developerhelperhub.ms.id.service.metrics.MatricModel;
+import com.developerhelperhub.ms.id.monitor.model.MatricModel;
 import com.fasterxml.jackson.core.type.TypeReference;
 
 public class MetricMonitor extends ActuatorJmxMonitor {

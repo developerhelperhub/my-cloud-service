@@ -1,4 +1,4 @@
-package com.developerhelperhub.ms.id.monitor.actuator.info;
+package com.developerhelperhub.ms.id.monitor.actuator.health;
 
 import java.util.concurrent.TimeUnit;
 
@@ -7,8 +7,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.developerhelperhub.ms.id.monitor.actuator.ActuatorJmxMonitor;
-import com.developerhelperhub.ms.id.service.application.ApplicationDiskSpace;
-import com.developerhelperhub.ms.id.service.health.HealthResponseModel;
+import com.developerhelperhub.ms.id.monitor.application.ApplicationDiskSpace;
+import com.developerhelperhub.ms.id.monitor.model.HealthResponseModel;
 import com.fasterxml.jackson.core.type.TypeReference;
 
 public class HealthMonitor extends ActuatorJmxMonitor {

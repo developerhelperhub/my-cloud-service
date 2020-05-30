@@ -1,4 +1,4 @@
-package com.developerhelperhub.ms.id.service;
+package com.developerhelperhub.ms.id.monitor;
 
 import java.io.IOException;
 import java.util.Collection;
@@ -27,11 +27,10 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.security.oauth2.client.OAuth2RestTemplate;
 import org.springframework.stereotype.Service;
 
-import com.developerhelperhub.ms.id.monitor.actuator.info.MonitorDataService;
-import com.developerhelperhub.ms.id.service.application.ApplicationEntity;
-import com.developerhelperhub.ms.id.service.application.InstanceEntity;
-import com.developerhelperhub.ms.id.service.discovery.DiscoveryResponseModel;
-import com.developerhelperhub.ms.id.service.discovery.DiscoveryResponseModel.LeaseInfo;
+import com.developerhelperhub.ms.id.monitor.application.ApplicationEntity;
+import com.developerhelperhub.ms.id.monitor.application.InstanceEntity;
+import com.developerhelperhub.ms.id.monitor.model.DiscoveryResponseModel;
+import com.developerhelperhub.ms.id.monitor.model.DiscoveryResponseModel.LeaseInfo;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 

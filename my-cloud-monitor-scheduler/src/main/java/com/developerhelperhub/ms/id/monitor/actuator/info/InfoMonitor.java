@@ -7,7 +7,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.developerhelperhub.ms.id.monitor.actuator.ActuatorJmxMonitor;
-import com.developerhelperhub.ms.id.service.info.ApplicationInfo;
+import com.developerhelperhub.ms.id.monitor.model.ApplicationInfo;
 import com.fasterxml.jackson.core.type.TypeReference;
 
 public class InfoMonitor extends ActuatorJmxMonitor {

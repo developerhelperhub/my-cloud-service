@@ -11,12 +11,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
-import com.developerhelperhub.ms.id.monitor.actuator.info.HealthMonitor;
+import com.developerhelperhub.ms.id.monitor.JmxService;
+import com.developerhelperhub.ms.id.monitor.MonitorDataService;
+import com.developerhelperhub.ms.id.monitor.JmxService.JmxApplication;
+import com.developerhelperhub.ms.id.monitor.actuator.health.HealthMonitor;
 import com.developerhelperhub.ms.id.monitor.actuator.info.InfoMonitor;
-import com.developerhelperhub.ms.id.monitor.actuator.info.MetricMonitor;
-import com.developerhelperhub.ms.id.monitor.actuator.info.MonitorDataService;
-import com.developerhelperhub.ms.id.service.JmxService;
-import com.developerhelperhub.ms.id.service.JmxService.JmxApplication;
 
 @Service
 public class ActuatorJmxEndpointScheduler {
@@ -123,41 +122,6 @@ public class ActuatorJmxEndpointScheduler {
 		});
 
 		LOGGER.debug("Monitor process is completed !");
-
-//		connections.parallelStream().forEach(app -> {
-//
-//			if (app.isAvailable()) {
-//
-//				app.getConnections().values().parallelStream().forEach(con -> {
-//
-//					if (con.isJmxEnable()) {
-//
-//						monitors.parallelStream().forEach(monitor -> {
-//
-//							LOGGER.debug("{}:- {}:({}) ", con.getInstanceId(), monitor.getMBeanName(),
-//									monitor.getOperation());
-//
-//							monitor.setDataService(dataService);
-//							monitor.setInfluxDB(influxDB);
-//							monitor.setConnection(con);
-//
-//							try {
-//
-//								monitor.process();
-//
-//							} catch (Exception exception) {
-//								LOGGER.debug("{}:- {}:({}) - ERROR: {}", con.getInstanceId(), monitor.getMBeanName(),
-//										monitor.getOperation(), exception.getMessage());
-//							}
-//
-//						});
-//
-//					}
-//
-//				});
-//
-//			}
-//		});
 
 	}
 
