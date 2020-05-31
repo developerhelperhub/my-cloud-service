@@ -7,7 +7,7 @@ import lombok.Data;
 @Data
 public class ApplicationInfoModel {
 
-	private List<ApplicationDiskSpaceModel> diskSpace;
+	private ApplicationDiskSpaceModel diskSpace;
 
 	private List<MatricGroupModel> memory;
 

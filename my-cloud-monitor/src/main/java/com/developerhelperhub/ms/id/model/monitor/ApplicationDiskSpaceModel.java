@@ -1,18 +1,24 @@
 package com.developerhelperhub.ms.id.model.monitor;
 
-import org.springframework.data.mongodb.core.mapping.Document;
+import java.util.List;
 
 import lombok.Data;
 
-@Document
 @Data
 public class ApplicationDiskSpaceModel {
 
-	private String time;
+	@Data
+	public static class DataModel {
 
-	private Long free;
+		private String time;
+		private Long value;
 
-	private Long total;
+	}
 
-	private Long threshold;
+	private List<DataModel> free;
+
+	private List<DataModel> total;
+
+	private List<DataModel> threshold;
+
 }

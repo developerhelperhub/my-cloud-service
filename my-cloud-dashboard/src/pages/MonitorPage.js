@@ -41,7 +41,7 @@ class MonitorPage extends React.Component {
 
         this.state = {
             selectedApplicationEventSource: null,
-            selectedApplication: {
+            selectedApplicationInstance: {
                 id: "",
                 status: "N/A",
                 diskSpace: {
@@ -57,7 +57,11 @@ class MonitorPage extends React.Component {
                     name: "",
                     group: "",
                     time: ""
-                },
+                }
+            },
+            selectedApplicationInstances: {
+                id: "",
+                status: "N/A",
                 instance: {
                     columnDefs: [
                         {
@@ -78,6 +82,10 @@ class MonitorPage extends React.Component {
                     ],
                     body: []
                 }
+            },
+            selectedApplicationInfo: {
+                id: "",
+                status: "N/A"
             },
             applicationData: {
                 columnDefs: [
@@ -180,37 +188,8 @@ class MonitorPage extends React.Component {
                     const eventData = JSON.parse(event.data);
                     const instanceBody = [];
 
-                    var selected = self.state.selectedApplication;
+                    var selected = self.state.selectedApplicationInfo;
 
-                    // selected.id = eventData.name;
-                    // selected.status = eventData.status;
-                    // selected.diskSpace.status = eventData.diskSpace.status;
-                    // selected.diskSpace.free = self.fileSizeFormat(eventData.diskSpace.free);
-                    // selected.diskSpace.total = self.fileSizeFormat(eventData.diskSpace.total);
-                    // selected.diskSpace.threshold = self.fileSizeFormat(eventData.diskSpace.threshold);
-                    // selected.lastUpdated = eventData.lastUpdated;
-                    // selected.build.version = eventData.build.version;
-                    // selected.build.artifact = eventData.build.artifact;
-                    // selected.build.name = eventData.build.name;
-                    // selected.build.group = eventData.build.group;
-                    // selected.build.time = eventData.build.time;
-
-
-                    // eventData.instance.forEach(instance => {
-                    //     const timestamp = Date(instance.lastUpdatedTimestamp);
-                    //     var colums = [];
-
-                    //     colums.push(instance.homePageUrl);
-                    //     colums.push(instance.ipAddr);
-                    //     colums.push(instance.status);
-                    //     colums.push(instance.leaseInfo.renewalIntervalInSecs);
-                    //     colums.push(instance.leaseInfo.durationInSecs);
-                    //     colums.push(timestamp);
-
-                    //     instanceBody.push(colums);
-                    // });
-
-                    // selected.instance.body = instanceBody;
 
                     var values = [];
                     var items = [];
@@ -261,7 +240,6 @@ class MonitorPage extends React.Component {
                         function (d) {
                             return self.fileSizeFormat(d);
                         });
-
 
                     var values = [];
                     var items = [];
@@ -367,6 +345,107 @@ class MonitorPage extends React.Component {
                             return d;
                         });
 
+
+                    var values = [];
+                    var items = [];
+                    var legends = [];
+                    var color = "";
+
+                    var data = [];
+
+                    data = [];
+                    eventData.diskSpace.total.forEach(diskSpace => {
+
+                        values.push({ date: self.formatDate(diskSpace.time), value: diskSpace.value });
+                        data.push({ date: self.formatDate(diskSpace.time), value: diskSpace.value });
+
+                    });
+
+                    color = "green";
+                    legends.push({
+                        value: "Total",
+                        fill: color,
+                        stroke: color,
+                        strokeWidth: 1
+                    })
+
+                    items.push(
+                        {
+                            fill: color,
+                            stroke: color,
+                            strokeWidth: 1,
+                            data: data,
+                            x: function (d) { return d.date },
+                            y: function (d) { return d.value }
+                        }
+                    )
+
+
+                    data = [];
+                    eventData.diskSpace.free.forEach(diskSpace => {
+
+                        values.push({ date: self.formatDate(diskSpace.time), value: diskSpace.value });
+                        data.push({ date: self.formatDate(diskSpace.time), value: diskSpace.value });
+
+                    });
+
+                    color = "red";
+                    legends.push({
+                        value: "Free",
+                        fill: color,
+                        stroke: color,
+                        strokeWidth: 1
+                    })
+
+                    items.push(
+                        {
+                            fill: color,
+                            stroke: color,
+                            strokeWidth: 1,
+                            data: data,
+                            x: function (d) { return d.date },
+                            y: function (d) { return d.value }
+                        }
+                    )
+
+                    data = [];
+                    eventData.diskSpace.threshold.forEach(diskSpace => {
+
+                        values.push({ date: self.formatDate(diskSpace.time), value: diskSpace.value });
+                        data.push({ date: self.formatDate(diskSpace.time), value: diskSpace.value });
+
+                    });
+
+                    color = "yellow";
+                    legends.push({
+                        value: "Threshold",
+                        fill: color,
+                        stroke: color,
+                        strokeWidth: 1
+                    })
+
+                    items.push(
+                        {
+                            fill: color,
+                            stroke: color,
+                            strokeWidth: 1,
+                            data: data,
+                            x: function (d) { return d.date },
+                            y: function (d) { return d.value }
+                        }
+                    )
+
+
+                    self.populateMemory({
+                        items: items,
+                        values: values,
+                        legends: legends
+                    },
+                        "#chart-disk-space",
+                        function (d) {
+                            return self.fileSizeFormat(d);
+                        });
+
                     self.setState({
                         selectedApplication: selected
                     })
@@ -463,21 +542,22 @@ class MonitorPage extends React.Component {
 
 
     render() {
-        let selected = this.state.selectedApplication;
+        let selectedApplicationInfo = this.state.selectedApplicationInfo;
+        let selectedApplicationInstances = this.state.selectedApplicationInstances;
 
         var statusLabelClass = "label-warning";
-        if (selected.status == "UP") {
+        if (selectedApplicationInfo.status == "UP") {
             statusLabelClass = 'label-success';
-        } else if (selected.status == "DOWN") {
+        } else if (selectedApplicationInfo.status == "DOWN") {
             statusLabelClass = 'label-danger';
         }
 
-        var statusDiskLabelClass = "label-warning";
-        if (selected.diskSpace.status == "UP") {
-            statusDiskLabelClass = 'label-success';
-        } else if (selected.diskSpace.status == "DOWN") {
-            statusDiskLabelClass = 'label-danger';
-        }
+        // var statusDiskLabelClass = "label-warning";
+        // if (selected.diskSpace.status == "UP") {
+        //     statusDiskLabelClass = 'label-success';
+        // } else if (selected.diskSpace.status == "DOWN") {
+        //     statusDiskLabelClass = 'label-danger';
+        // }
 
         return (
             <PageContent>
@@ -501,7 +581,7 @@ class MonitorPage extends React.Component {
                         <PageTabContent id="applicationInfoTabContent">
                             <PageTabPane id="info" labelledby="info-tab" show="true" active="true">
                                 <div class="container-fluid monitor">
-                                    <div class="row">
+                                    {/* <div class="row">
                                         <div class="col-xxl-6 col-lg-6">
                                             <div class="d-flex flex-column bd-highlight border info-box">
 
@@ -574,7 +654,7 @@ class MonitorPage extends React.Component {
                                                 </div>
                                             </div>
                                         </div>
-                                    </div>
+                                    </div> */}
                                     <div class="row">
                                         <div class="col-xxl-6 col-lg-6">
                                             <div class="d-flex flex-column bd-highlight border info-box">
@@ -615,6 +695,16 @@ class MonitorPage extends React.Component {
                                             </div>
                                         </div>
                                         <div class="col-xxl-6 col-lg-6">
+                                            <div class="d-flex flex-column bd-highlight border info-box">
+
+                                                <div class="d-flex flex-row bd-highlight p-2 border-bottom item-head">
+                                                    <div class="bd-highlight pr-10 mr-auto">Disk Space</div>
+                                                </div>
+
+                                                <div class="bd-highlight">
+                                                    <div id="chart-disk-space" style={{ height: "150px" }}></div>
+                                                </div>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
@@ -623,7 +713,7 @@ class MonitorPage extends React.Component {
                                 <div class="container-fluid monitor">
                                     <div class="row">
                                         <div class="col-xxl-12 col-lg-12">
-                                            <DataTable id="table-instance" width="100%" data={selected.instance}></DataTable>
+                                            <DataTable id="table-instance" width="100%" data={selectedApplicationInstances.instance}></DataTable>
                                         </div>
                                     </div>
                                 </div>

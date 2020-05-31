@@ -202,11 +202,19 @@ public class MonitorService {
 		return thread;
 	}
 
-	public List<ApplicationDiskSpaceModel> getDiskSpace(String application) {
+	public ApplicationDiskSpaceModel getDiskSpace(String application) {
 
 		LOGGER.info("Get disk space ............");
 
-		List<ApplicationDiskSpaceModel> out = new ArrayList<>();
+		ApplicationDiskSpaceModel out = new ApplicationDiskSpaceModel();
+
+		List<ApplicationDiskSpaceModel.DataModel> free = new ArrayList<>();
+		List<ApplicationDiskSpaceModel.DataModel> total = new ArrayList<>();
+		List<ApplicationDiskSpaceModel.DataModel> threshold = new ArrayList<>();
+
+		out.setFree(free);
+		out.setThreshold(threshold);
+		out.setTotal(total);
 
 		if (application == null || application.isEmpty()) {
 			return out;
@@ -225,12 +233,22 @@ public class MonitorService {
 
 		for (DiskSpceEntity entity : list) {
 
-			ApplicationDiskSpaceModel model = new ApplicationDiskSpaceModel();
-			model.setTime(formatter.format(new Date(entity.getTime().toEpochMilli())));
-			model.setFree(entity.getFree() == null ? 0 : entity.getFree().longValue());
-			model.setThreshold(entity.getThreshold() == null ? 0 : entity.getThreshold().longValue());
-			model.setTotal(entity.getTotal() == null ? 0 : entity.getTotal().longValue());
-			out.add(model);
+			ApplicationDiskSpaceModel.DataModel freeData = new ApplicationDiskSpaceModel.DataModel();
+			ApplicationDiskSpaceModel.DataModel totalData = new ApplicationDiskSpaceModel.DataModel();
+			ApplicationDiskSpaceModel.DataModel thresholdData = new ApplicationDiskSpaceModel.DataModel();
+
+			freeData.setTime(formatter.format(new Date(entity.getTime().toEpochMilli())));
+			freeData.setValue(entity.getFree() == null ? 0 : entity.getFree().longValue());
+
+			totalData.setTime(freeData.getTime());
+			totalData.setValue(entity.getTotal() == null ? 0 : entity.getTotal().longValue());
+
+			thresholdData.setTime(freeData.getTime());
+			thresholdData.setValue(entity.getThreshold() == null ? 0 : entity.getThreshold().longValue());
+
+			free.add(freeData);
+			threshold.add(thresholdData);
+			total.add(totalData);
 		}
 
 		return out;
@@ -241,7 +259,7 @@ public class MonitorService {
 
 		Map<String, List<MatricGroupModel>> data = getMemory(application);
 		List<MatricGroupModel> threads = getThreads(application);
-		List<ApplicationDiskSpaceModel> diskSpace = getDiskSpace(application);
+		ApplicationDiskSpaceModel diskSpace = getDiskSpace(application);
 
 		model.setMemory(data.get("memory"));
 		model.setBuffer(data.get("buffer"));
