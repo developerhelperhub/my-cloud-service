@@ -4,24 +4,24 @@ import Moment from 'react-moment';
 import { NativeEventSource, EventSourcePolyfill } from 'event-source-polyfill';
 
 
-import Label from '../components/dashboard/Label'
-import PageContent from '../components/dashboard/PageContent'
-import Row from '../components/dashboard/Row'
-import Widget from '../components/dashboard/Widget'
+import Label from '../../components/dashboard/Label'
+import PageContent from '../../components/dashboard/PageContent'
+import Row from '../../components/dashboard/Row'
+import Widget from '../../components/dashboard/Widget'
 
-import PagePanel from '../components/dashboard/panel/PagePanel'
-import PagePanelHead from '../components/dashboard/panel/PagePanelHead'
-import PagePanelBody from '../components/dashboard/panel/PagePanelBody'
+import PagePanel from '../../components/dashboard/panel/PagePanel'
+import PagePanelHead from '../../components/dashboard/panel/PagePanelHead'
+import PagePanelBody from '../../components/dashboard/panel/PagePanelBody'
 
-import PageTabPanel from '../components/dashboard/panel/PageTabPanel'
-import PageTabHead from '../components/dashboard/panel/PageTabHead'
-import PageTab from '../components/dashboard/panel/PageTab'
-import PageTabContent from '../components/dashboard/panel/PageTabContent'
-import PageTabPane from '../components/dashboard/panel/PageTabPane'
+import PageTabPanel from '../../components/dashboard/panel/PageTabPanel'
+import PageTabHead from '../../components/dashboard/panel/PageTabHead'
+import PageTab from '../../components/dashboard/panel/PageTab'
+import PageTabContent from '../../components/dashboard/panel/PageTabContent'
+import PageTabPane from '../../components/dashboard/panel/PageTabPane'
 
-import AppApiRepo from '../common/AppApiRepo'
+import AppApiRepo from '../../common/AppApiRepo'
 
-import DataTable from '../components/table/DataTable'
+import DataTable from '../../components/table/DataTable'
 
 import './MonitorPage.css'
 

@@ -30,7 +30,7 @@ import ToolbarDropdownProfile from '../components/dashboard/topbar/ToolbarDropdo
 import ToolbarDropdownDivider from '../components/dashboard/topbar/ToolbarDropdownDivider'
 
 import DiscoveryPage from './DiscoveryPage'
-import MonitorPage from './MonitorPage'
+import MonitorPage from './monitor/MonitorPage'
 import DashboardHomePage from './DashboardHomePage'
 import CircuitBreakerPage from './CircuitBreakerPage'
 import AdminUiDashboard from './reactadminuis/AdminUiDashboard'
