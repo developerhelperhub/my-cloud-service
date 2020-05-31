@@ -85,7 +85,10 @@ class MonitorPage extends React.Component {
             },
             selectedApplicationInfo: {
                 id: "",
-                status: "N/A"
+                status: "N/A",
+                instanceTotal: 0,
+                instanceRunning: 0,
+                lastUpdated: ""
             },
             applicationData: {
                 columnDefs: [
@@ -446,8 +449,14 @@ class MonitorPage extends React.Component {
                             return self.fileSizeFormat(d);
                         });
 
+                    selected.id = selectedApplication;
+                    selected.status = row[3];
+                    selected.instanceTotal = row[1];
+                    selected.instanceRunning = row[2];
+                    selected.lastUpdated = row[4];
+
                     self.setState({
-                        selectedApplication: selected
+                        selectedApplicationInfo: selected
                     })
                 }, function (err) {
                     console.log("Monitor Application " + selectedApplication + " Source Error : " + err.error);
@@ -655,6 +664,46 @@ class MonitorPage extends React.Component {
                                             </div>
                                         </div>
                                     </div> */}
+
+                                    <div class="row">
+                                        <div class="col-xxl-6 col-lg-6">
+                                            <div class="d-flex flex-column bd-highlight border info-box">
+
+                                                <div class="d-flex flex-row bd-highlight p-2 border-bottom item-head">
+                                                    <div class="bd-highlight pr-10 mr-auto">Application</div>
+                                                    <div class="bd-highlight pr-10"><Label class={statusLabelClass}> {selectedApplicationInfo.status} </Label></div>
+                                                </div>
+
+                                                <div class="bd-highlight">
+                                                    <div class="d-flex flex-row bd-highlight ml-3 mr-3 border-bottom item-body">
+                                                        <div class="d-flex flex-row bd-highlight">
+                                                            <div class="bd-highlight item-label">ID</div>
+                                                            <div class="bd-highlight">{selectedApplicationInfo.id}</div>
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="d-flex flex-row bd-highlight ml-3 mr-3 border-bottom item-body">
+                                                        <div class="d-flex flex-row bd-highlight">
+                                                            <div class="bd-highlight item-label">Instance</div>
+                                                            <div class="bd-highlight">{selectedApplicationInfo.instanceRunning}/{selectedApplicationInfo.instanceTotal}</div>
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="d-flex flex-row bd-highlight mb-2 ml-3 mr-3 border-bottom item-body">
+                                                        <div class="d-flex flex-row bd-highlight">
+                                                            <div class="bd-highlight item-label">Last Updated</div>
+                                                            <div class="bd-highlight">{selectedApplicationInfo.lastUpdated}</div>
+                                                        </div>
+                                                    </div>
+
+
+                                                </div>
+
+                                            </div>
+                                        </div>
+                                        <div class="col-xxl-6 col-lg-6">
+                                        </div>
+                                    </div>
                                     <div class="row">
                                         <div class="col-xxl-6 col-lg-6">
                                             <div class="d-flex flex-column bd-highlight border info-box">
