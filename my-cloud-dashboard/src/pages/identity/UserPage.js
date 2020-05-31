@@ -28,24 +28,15 @@ class UserPage extends React.Component {
                     { title: "Enabled", width: "20%" },
 
                 ],
-                body: [
-                    [
-                        { value: "-" },
-                        { value: "-" },
-                        { value: "-" },
-                        { value: "-" },
-                        { value: "-" },
-                        { value: "-" },
-                    ]
-                ]
+                body: []
             }
         }
 
         this.refreshTable = this.refreshTable.bind(this);
     }
 
-    convertBoolString(value){
-        return value? 'True': 'False';
+    convertBoolString(value) {
+        return value ? 'True' : 'False';
     }
 
     async refreshTable() {
@@ -60,16 +51,16 @@ class UserPage extends React.Component {
         if (response.status == 200) {
 
             response.data.forEach(data => {
+                var colums = [];
 
-                body.push([
-                    { value: data.username },
-                    { value: data.authorities},
-                    { value: this.convertBoolString(data.accountNonExpired) },
-                    { value: this.convertBoolString(data.accountNonLocked) },
-                    { value: this.convertBoolString(data.credentialsNonExpired) },
-                    { value: this.convertBoolString(data.enabled) },
-                ]);
+                colums.push(data.username);
+                colums.push(data.authorities);
+                colums.push(this.convertBoolString(data.accountNonExpired));
+                colums.push(this.convertBoolString(data.accountNonLocked));
+                colums.push(this.convertBoolString(data.credentialsNonExpired));
+                colums.push(this.convertBoolString(data.enabled));
 
+                body.push(colums);
             });
 
             tableData.body = body;
@@ -93,7 +84,7 @@ class UserPage extends React.Component {
                             <PagePanelIcon icon="fa fa-refresh" event={this.refreshTable}></PagePanelIcon>
                         </PagePanelHead>
                         <PagePanelBody>
-                        <DataTable id="example1" width="100%" data={this.state.tableData}></DataTable>
+                            <DataTable id="example1" width="100%" data={this.state.tableData}></DataTable>
                         </PagePanelBody>
                     </PagePanel>
                 </Row>

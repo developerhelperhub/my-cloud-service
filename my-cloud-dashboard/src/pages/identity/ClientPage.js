@@ -29,16 +29,7 @@ class ClientPage extends React.Component {
                     { title: "Refresh Token", width: "20%" },
 
                 ],
-                body: [
-                    [
-                        { value: "-" },
-                        { value: "-" },
-                        { value: "-" },
-                        { value: "-" },
-                        { value: "-" },
-                        { value: "-" },
-                    ]
-                ]
+                body: []
             }
         }
 
@@ -58,16 +49,16 @@ class ClientPage extends React.Component {
         if (response.status == 200) {
 
             response.data.forEach(data => {
+                var colums = [];
 
-                body.push([
-                    { value: data.clientId },
-                    { value: data.authorizedGrantTypes },
-                    { value: data.scope },
-                    { value: data.registeredRedirectUri },
-                    { value: data.accessTokenValiditySeconds },
-                    { value: data.refreshTokenValiditySeconds },
-                ]);
+                colums.push(data.clientId);
+                colums.push(data.authorizedGrantTypes);
+                colums.push(data.scope);
+                colums.push(data.registeredRedirectUri);
+                colums.push(data.accessTokenValiditySeconds);
+                colums.push(data.refreshTokenValiditySeconds);
 
+                body.push(colums);
             });
 
             tableData.body = body;
