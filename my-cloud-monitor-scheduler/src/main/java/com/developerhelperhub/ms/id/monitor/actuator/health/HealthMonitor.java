@@ -28,14 +28,17 @@ public class HealthMonitor extends ActuatorJmxMonitor {
 		String instanceId = getConnection().getInstanceId();
 
 		HealthEntity entity = getDataService().getHealth(instanceId);
-		
-		entity.setApplication(application);
 
+		entity.setApplication(application);
+		entity.setHostName(getConnection().getHostName());
+		
 		LOGGER.debug("Current health status of {} : {}", instanceId, entity.getStatus());
 
 		Point.Builder builder = Point.measurement(getMeasurement())
-				.time(System.currentTimeMillis(), TimeUnit.MILLISECONDS).addField("application", application)
-				.addField("instance_id", instanceId);
+				.time(System.currentTimeMillis(), TimeUnit.MILLISECONDS)
+				.tag("instance_id", instanceId)
+				.tag("host_name", getConnection().getHostName())
+				.addField("application", application).addField("instance_id", instanceId);
 
 		try {
 

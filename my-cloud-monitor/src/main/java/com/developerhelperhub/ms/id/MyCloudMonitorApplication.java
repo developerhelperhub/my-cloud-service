@@ -26,10 +26,10 @@ public class MyCloudMonitorApplication implements CommandLineRunner {
 	@Override
 	public void run(String... args) throws Exception {
 
-		application.add("my-cloud-monitor");
-		application.add("my-cloud-monitor-scheduler");
-		application.add("my-cloud-identity");
-		application.add("my-cloud-discovery");
-		application.add("my-cloud-api-gateway");
+		application.addApplication("my-cloud-monitor");
+		application.addApplication("my-cloud-monitor-scheduler");
+		application.addApplication("my-cloud-identity");
+		application.addApplication("my-cloud-discovery");
+		application.addApplication("my-cloud-api-gateway");
 	}
 }

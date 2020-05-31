@@ -24,10 +24,11 @@ public class MonitorApplication {
 
 	@Autowired
 	private ApplicationRepository repository;
+	
 
 	private SimpleDateFormat formatter = new SimpleDateFormat("dd-MM-yyyy hh:mm:ss");
 
-	public void add(String application) {
+	public void addApplication(String application) {
 
 		ApplicationEntity entity = repository.findById(application).orElse(new ApplicationEntity());
 
@@ -40,7 +41,7 @@ public class MonitorApplication {
 		LOGGER.debug("Application inserted {} ", application);
 	}
 
-	public List<ApplicationModel> get() {
+	public List<ApplicationModel> getApplication() {
 		return repository.findAll().stream().map(entity -> {
 
 			ApplicationModel model = new ApplicationModel();
@@ -56,8 +57,9 @@ public class MonitorApplication {
 		}).collect(Collectors.toList());
 	}
 
-	public Flux<List<ApplicationModel>> stream() {
-		return Flux.just(get());
+	public Flux<List<ApplicationModel>> streamApplication() {
+		return Flux.just(getApplication());
 	}
 
+	
 }

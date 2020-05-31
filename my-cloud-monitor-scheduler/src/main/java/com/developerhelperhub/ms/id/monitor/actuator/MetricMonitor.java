@@ -32,9 +32,11 @@ public class MetricMonitor extends ActuatorJmxMonitor {
 			LOGGER.debug("Matric of {} : {}", instanceId, body.toString());
 
 			Point.Builder builder = Point.measurement(getMeasurement())
-					.time(System.currentTimeMillis(), TimeUnit.MILLISECONDS).addField("metric", getOperation())
-					.addField("instance_id", instanceId).addField("application", application)
-					.addField("baseUnit", body.getBaseUnit());
+					.tag("metric", (String) getArgs()[0])
+					.tag("host_name", getConnection().getHostName())
+					.tag("instance_id", instanceId)
+					.time(System.currentTimeMillis(), TimeUnit.MILLISECONDS).addField("instance_id", instanceId)
+					.addField("application", application).addField("baseUnit", body.getBaseUnit());
 
 			for (MatricModel.Measurement measurement : body.getMeasurements()) {
 

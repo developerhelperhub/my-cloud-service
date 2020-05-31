@@ -1,9 +1,9 @@
-package com.developerhelperhub.ms.id.monitor.actuator.health;
+package com.developerhelperhub.ms.id.entity.mongodb;
 
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-import com.developerhelperhub.ms.id.monitor.application.ApplicationDiskSpace;
+import com.developerhelperhub.ms.id.model.ApplicationDiskSpace;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -15,8 +15,6 @@ public class HealthEntity {
 
 	@Id
 	private String name;
-
-	private String hostName;
 
 	private String application;
 

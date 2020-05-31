@@ -8,8 +8,8 @@ import org.influxdb.annotation.Measurement;
 import lombok.Data;
 
 @Data
-@Measurement(name = "memory")
-public class MemoryEntity {
+@Measurement(name = "health")
+public class DiskSpceEntity {
 
 	@Column(name = "time")
 	private Instant time;
@@ -17,16 +17,13 @@ public class MemoryEntity {
 	@Column(name = "host_name", tag = true)
 	private String hostName;
 	
-	@Column(name = "statistic")
-	private String statistic;
+	@Column(name = "disk_space_free")
+	private Double free;
 
-	@Column(name = "application")
-	private String application;
+	@Column(name = "disk_space_threshold")
+	private Double threshold;
 
-	@Column(name = "metric", tag = true)
-	private String metric;
-
-	@Column(name = "value")
-	private Double value;
+	@Column(name = "disk_space_total")
+	private Double total;
 
 }

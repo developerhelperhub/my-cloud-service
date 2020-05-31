@@ -14,13 +14,16 @@ public class ThreadEntity {
 	@Column(name = "time")
 	private Instant time;
 
+	@Column(name = "host_name", tag = true)
+	private String hostName;
+	
 	@Column(name = "statistic")
 	private String statistic;
 
 	@Column(name = "application")
 	private String application;
 
-	@Column(name = "metric")
+	@Column(name = "metric", tag = true)
 	private String metric;
 
 	@Column(name = "value")

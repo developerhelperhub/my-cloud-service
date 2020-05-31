@@ -12,7 +12,7 @@ public class MatricGroupModel implements Comparable<MatricGroupModel> {
 	private int order;
 	private String name;
 	private String display;
-	private List<Matric> matrics;
+	private List<MatricModel> matrics;
 
 	public int compareTo(MatricGroupModel o) {
 		return this.order - o.order;

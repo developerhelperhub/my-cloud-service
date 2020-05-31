@@ -18,12 +18,13 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.developerhelperhub.ms.id.entity.influxdb.DiskSpceEntity;
 import com.developerhelperhub.ms.id.entity.influxdb.MemoryEntity;
 import com.developerhelperhub.ms.id.entity.influxdb.ThreadEntity;
-import com.developerhelperhub.ms.id.entity.mongodb.ApplicationEntity;
-import com.developerhelperhub.ms.id.model.ApplicationMonitorModel;
-import com.developerhelperhub.ms.id.model.ApplicationMonitorModel.Matric;
-import com.developerhelperhub.ms.id.model.ApplicationMonitorModel.MatricGroup;
+import com.developerhelperhub.ms.id.model.monitor.ApplicationDiskSpaceModel;
+import com.developerhelperhub.ms.id.model.monitor.ApplicationInfoModel;
+import com.developerhelperhub.ms.id.model.monitor.MatricGroupModel;
+import com.developerhelperhub.ms.id.model.monitor.MatricModel;
 
 import reactor.core.publisher.Flux;
 
@@ -55,47 +56,24 @@ public class MonitorService {
 
 	private SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
-//	public ApplicationMonitorModel getApplication(String application) {
-//		ApplicationMonitorModel model = new ApplicationMonitorModel();
-//
-//		ApplicationEntity applicationEntity = monitorApplication.get(application);
-//
-//		ApplicationMonitorModel.Build build = new ApplicationMonitorModel.Build();
-//		build.setArtifact(applicationEntity.getBuild().getArtifact());
-//		build.setGroup(applicationEntity.getBuild().getGroup());
-//		build.setName(applicationEntity.getBuild().getName());
-//		build.setTime(formatter.format(applicationEntity.getBuild().getTime()));
-//		build.setVersion(applicationEntity.getBuild().getVersion());
-//		model.setBuild(build);
-//
-//		model.setDiskSpace(applicationEntity.getDiskSpace());
-//
-//		if (applicationEntity.getInstance() != null) {
-//			model.setInstance(new ArrayList<>(applicationEntity.getInstance()));
-//		} else {
-//			model.setInstance(new ArrayList<>());
-//		}
-//
-//		model.setLastUpdated(formatter.format(new Date(applicationEntity.getLastUpdated())));
-//		model.setName(applicationEntity.getName());
-//		model.setStatus(applicationEntity.getStatus());
-//
-//		model.setMemory(getMemory(application).get("memory"));
-//		model.setBuffer(getMemory(application).get("buffer"));
-//		model.setThread(getThreads(application));
-//
-//		influxDB.close();
-//
-//		return model;
-//	}
-
-	public Map<String, List<MatricGroup>> getMemory(String application) {
+	public Map<String, List<MatricGroupModel>> getMemory(String application) {
 
 		LOGGER.info("getMemory ............");
 
-		Query query = new Query(
-				"select metric, time, value from memory WHERE application='" + application + "' AND time > 23h",
-				"mycloudmonitordb");
+		List<MatricGroupModel> memory = new ArrayList<>();
+		List<MatricGroupModel> buffer = new ArrayList<>();
+
+		Map<String, List<MatricGroupModel>> data = new HashMap<String, List<MatricGroupModel>>();
+
+		data.put("memory", memory);
+		data.put("buffer", buffer);
+
+		if (application == null || application.isEmpty()) {
+			return data;
+		}
+
+		Query query = new Query("select * from memory WHERE application='" + application
+				+ "' and time > now() - 1h group by metric, host_name", "mycloudmonitordb");
 
 		QueryResult queryResult = influxDB.query(query);
 
@@ -106,22 +84,19 @@ public class MonitorService {
 		Map<String, List<MemoryEntity>> grouped = memoryPointList.stream()
 				.collect(Collectors.groupingBy(MemoryEntity::getMetric));
 
-		List<MatricGroup> memory = new ArrayList<>();
-		List<MatricGroup> buffer = new ArrayList<>();
-
 		for (Map.Entry<String, List<MemoryEntity>> key : grouped.entrySet()) {
 
-			MatricGroup group = new MatricGroup();
+			MatricGroupModel group = new MatricGroupModel();
 
 			group.setName(key.getKey());
 			group.setMatrics(new ArrayList<>());
 
 			for (MemoryEntity entity : key.getValue()) {
 
-				Matric matric = new Matric();
+				MatricModel matric = new MatricModel();
 				matric.setTimestamp(entity.getTime().toEpochMilli());
 				matric.setTime(formatter.format(new Date(entity.getTime().toEpochMilli())));
-				matric.setValue(entity.getValue().longValue());
+				matric.setValue(entity.getValue() == null ? 0 : entity.getValue().longValue());
 
 				group.getMatrics().add(matric);
 
@@ -164,46 +139,43 @@ public class MonitorService {
 		Collections.sort(memory);
 		Collections.sort(buffer);
 
-		Map<String, List<MatricGroup>> data = new HashMap<String, List<MatricGroup>>();
-
-		data.put("memory", memory);
-		data.put("buffer", buffer);
-
 		return data;
 	}
 
-	public List<MatricGroup> getThreads(String application) {
+	public List<MatricGroupModel> getThreads(String application) {
 
 		LOGGER.info("getThreads ............");
 
-		Query query = new Query(
-				"select metric, time, value from thread WHERE application='" + application + "' AND time > 23h",
-				"mycloudmonitordb");
+		List<MatricGroupModel> thread = new ArrayList<>();
+
+		if (application == null || application.isEmpty()) {
+			return thread;
+		}
+
+		Query query = new Query("select * from thread WHERE application='" + application
+				+ "' and time > now() - 1h group by metric, host_name", "mycloudmonitordb");
 
 		QueryResult queryResult = influxDB.query(query);
 
 		InfluxDBResultMapper resultMapper = new InfluxDBResultMapper();
 
-		List<ThreadEntity> memoryPointList = resultMapper.toPOJO(queryResult, ThreadEntity.class);
+		List<ThreadEntity> list = resultMapper.toPOJO(queryResult, ThreadEntity.class);
 
-		Map<String, List<ThreadEntity>> grouped = memoryPointList.stream()
-				.collect(Collectors.groupingBy(ThreadEntity::getMetric));
-
-		List<MatricGroup> thread = new ArrayList<>();
+		Map<String, List<ThreadEntity>> grouped = list.stream().collect(Collectors.groupingBy(ThreadEntity::getMetric));
 
 		for (Map.Entry<String, List<ThreadEntity>> key : grouped.entrySet()) {
 
-			MatricGroup group = new MatricGroup();
+			MatricGroupModel group = new MatricGroupModel();
 
 			group.setName(key.getKey());
 			group.setMatrics(new ArrayList<>());
 
 			for (ThreadEntity entity : key.getValue()) {
 
-				Matric matric = new Matric();
+				MatricModel matric = new MatricModel();
 				matric.setTimestamp(entity.getTime().toEpochMilli());
 				matric.setTime(formatter.format(new Date(entity.getTime().toEpochMilli())));
-				matric.setValue(entity.getValue().longValue());
+				matric.setValue(entity.getValue() == null ? 0 : entity.getValue().longValue());
 
 				group.getMatrics().add(matric);
 
@@ -230,9 +202,56 @@ public class MonitorService {
 		return thread;
 	}
 
-//	public Flux<ApplicationMonitorModel> streamApplication(String application) {
-//		return Flux.just(getApplication(application));
-//	}
-	
-	
+	public List<ApplicationDiskSpaceModel> getDiskSpace(String application) {
+
+		LOGGER.info("Get disk space ............");
+
+		List<ApplicationDiskSpaceModel> out = new ArrayList<>();
+
+		if (application == null || application.isEmpty()) {
+			return out;
+		}
+
+		Query query = new Query(
+				"select * from health" + " where application='" + application
+						+ "' AND disk_space_status='UP' and time > now() - 1h" + " group by host_name",
+				"mycloudmonitordb");
+
+		QueryResult queryResult = influxDB.query(query);
+
+		InfluxDBResultMapper resultMapper = new InfluxDBResultMapper();
+
+		List<DiskSpceEntity> list = resultMapper.toPOJO(queryResult, DiskSpceEntity.class);
+
+		for (DiskSpceEntity entity : list) {
+
+			ApplicationDiskSpaceModel model = new ApplicationDiskSpaceModel();
+			model.setTime(formatter.format(new Date(entity.getTime().toEpochMilli())));
+			model.setFree(entity.getFree() == null ? 0 : entity.getFree().longValue());
+			model.setThreshold(entity.getThreshold() == null ? 0 : entity.getThreshold().longValue());
+			model.setTotal(entity.getTotal() == null ? 0 : entity.getTotal().longValue());
+			out.add(model);
+		}
+
+		return out;
+	}
+
+	public ApplicationInfoModel getInfo(String application) {
+		ApplicationInfoModel model = new ApplicationInfoModel();
+
+		Map<String, List<MatricGroupModel>> data = getMemory(application);
+		List<MatricGroupModel> threads = getThreads(application);
+		List<ApplicationDiskSpaceModel> diskSpace = getDiskSpace(application);
+
+		model.setMemory(data.get("memory"));
+		model.setBuffer(data.get("buffer"));
+		model.setThread(threads);
+		model.setDiskSpace(diskSpace);
+
+		return model;
+	}
+
+	public Flux<ApplicationInfoModel> streamInfo(String application) {
+		return Flux.just(getInfo(application));
+	}
 }

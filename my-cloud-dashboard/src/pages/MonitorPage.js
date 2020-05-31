@@ -132,7 +132,7 @@ class MonitorPage extends React.Component {
                 eventData.forEach(app => {
 
                     var colums = [];
-                    
+
                     colums.push(app.name);
                     colums.push(app.runningInstance);
                     colums.push(app.totalInstance);
@@ -172,7 +172,7 @@ class MonitorPage extends React.Component {
                 eventSource.close();
             }
 
-            eventSource = AppApiRepo.eventSource("/monitor/stream/applications/" + selectedApplication,
+            eventSource = AppApiRepo.eventSource("/monitor/stream/applications/" + selectedApplication + "/info",
                 {
                     'Authorization': AppApiRepo.getToken()
                 }, function (event) {
@@ -182,35 +182,35 @@ class MonitorPage extends React.Component {
 
                     var selected = self.state.selectedApplication;
 
-                    selected.id = eventData.name;
-                    selected.status = eventData.status;
-                    selected.diskSpace.status = eventData.diskSpace.status;
-                    selected.diskSpace.free = self.fileSizeFormat(eventData.diskSpace.free);
-                    selected.diskSpace.total = self.fileSizeFormat(eventData.diskSpace.total);
-                    selected.diskSpace.threshold = self.fileSizeFormat(eventData.diskSpace.threshold);
-                    selected.lastUpdated = eventData.lastUpdated;
-                    selected.build.version = eventData.build.version;
-                    selected.build.artifact = eventData.build.artifact;
-                    selected.build.name = eventData.build.name;
-                    selected.build.group = eventData.build.group;
-                    selected.build.time = eventData.build.time;
+                    // selected.id = eventData.name;
+                    // selected.status = eventData.status;
+                    // selected.diskSpace.status = eventData.diskSpace.status;
+                    // selected.diskSpace.free = self.fileSizeFormat(eventData.diskSpace.free);
+                    // selected.diskSpace.total = self.fileSizeFormat(eventData.diskSpace.total);
+                    // selected.diskSpace.threshold = self.fileSizeFormat(eventData.diskSpace.threshold);
+                    // selected.lastUpdated = eventData.lastUpdated;
+                    // selected.build.version = eventData.build.version;
+                    // selected.build.artifact = eventData.build.artifact;
+                    // selected.build.name = eventData.build.name;
+                    // selected.build.group = eventData.build.group;
+                    // selected.build.time = eventData.build.time;
 
 
-                    eventData.instance.forEach(instance => {
-                        const timestamp = Date(instance.lastUpdatedTimestamp);
-                        var colums = [];
+                    // eventData.instance.forEach(instance => {
+                    //     const timestamp = Date(instance.lastUpdatedTimestamp);
+                    //     var colums = [];
 
-                        colums.push(instance.homePageUrl);
-                        colums.push(instance.ipAddr);
-                        colums.push(instance.status);
-                        colums.push(instance.leaseInfo.renewalIntervalInSecs);
-                        colums.push(instance.leaseInfo.durationInSecs);
-                        colums.push(timestamp);
+                    //     colums.push(instance.homePageUrl);
+                    //     colums.push(instance.ipAddr);
+                    //     colums.push(instance.status);
+                    //     colums.push(instance.leaseInfo.renewalIntervalInSecs);
+                    //     colums.push(instance.leaseInfo.durationInSecs);
+                    //     colums.push(timestamp);
 
-                        instanceBody.push(colums);
-                    });
+                    //     instanceBody.push(colums);
+                    // });
 
-                    selected.instance.body = instanceBody;
+                    // selected.instance.body = instanceBody;
 
                     var values = [];
                     var items = [];

@@ -62,7 +62,8 @@ public class JmxService {
 
 		private JmxApplication application;
 		private String instanceId;
-		private int port;
+		private String hostName;
+		private int jmxPort;
 		private boolean jmxEnable = false;
 		private JMXConnector connector;
 
@@ -166,15 +167,18 @@ public class JmxService {
 						connections.put(instance.getInstanceId(), connection);
 					}
 
+					connection.setInstanceId(instance.getInstanceId());
+					connection.setHostName(instance.getHostName());
+
 					if (instance.getMetadata().containsKey("jmx.port")) {
 
 						connection.setJmxEnable(true);
-						connection.setInstanceId(instance.getInstanceId());
-						connection.setPort(Integer.parseInt(instance.getMetadata().get("jmx.port")));
+
+						connection.setJmxPort(Integer.parseInt(instance.getMetadata().get("jmx.port")));
 
 						try {
 
-							connection.setConnector(createJmxConnection(connection.getPort()));
+							connection.setConnector(createJmxConnection(connection.getJmxPort()));
 
 							LOGGER.debug("Registered connector {} ", instance.getInstanceId());
 

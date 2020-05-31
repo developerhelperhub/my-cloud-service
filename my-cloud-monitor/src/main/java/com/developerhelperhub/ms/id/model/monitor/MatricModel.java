@@ -1,5 +1,8 @@
 package com.developerhelperhub.ms.id.model.monitor;
 
+import lombok.Data;
+
+@Data
 public class MatricModel implements Comparable<MatricModel> {
 
 	private long timestamp;
