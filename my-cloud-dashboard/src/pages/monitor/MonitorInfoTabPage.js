@@ -30,13 +30,16 @@ class MonitorInfoTabPage extends React.Component {
 
     componentWillReceiveProps(nextProps) {
 
-
-
         let self = this;
         let selectedApplication = nextProps.selectedApplication;
+        let selectedTab = nextProps.selectedTab;
         var eventSource = self.state.selectedApplicationEventSource;
 
-        console.log("selectedApplication:-" + selectedApplication);
+        if(selectedTab != "info-tab" || selectedApplication == null){
+            return "";
+        }
+
+        console.log("MonitorInfoTabPage selectedApplication: " + selectedApplication + " " + selectedTab);
 
         if (eventSource != null) {
             eventSource.close();
@@ -48,8 +51,6 @@ class MonitorInfoTabPage extends React.Component {
             }, function (event) {
 
                 const eventData = JSON.parse(event.data);
-
-                console.log(eventData);
 
                 var selected = self.state.selectedApplicationInfo;
 

@@ -1,3 +1,4 @@
+
 $(function () {
 
     /* Bar dashboard chart */

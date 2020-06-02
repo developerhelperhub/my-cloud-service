@@ -49,6 +49,20 @@ class MonitorInstanceTabPage extends React.Component {
     }
 
 
+    componentWillReceiveProps(nextProps) {
+
+        let self = this;
+        let selectedApplication = nextProps.selectedApplication;
+        let selectedTab = nextProps.selectedTab;
+        var eventSource = self.state.selectedApplicationEventSource;
+
+        if(selectedTab != "instance-tab"){
+            return "";
+        }
+
+        console.log("MonitorInstanceTabPage selectedApplication: " + selectedApplication + " " + selectedTab);
+    }
+
     render() {
         let selectedApplicationInstances = this.state.selectedApplicationInstances;
 

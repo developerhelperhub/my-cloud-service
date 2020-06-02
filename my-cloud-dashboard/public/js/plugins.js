@@ -1,4 +1,3 @@
-
 function loadDataTable(id, data) {
     return $(id).DataTable(data);
 };

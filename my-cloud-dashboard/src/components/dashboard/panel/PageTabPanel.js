@@ -5,7 +5,12 @@ import "./PageTabPanel.css"
 class PageTabPanel extends React.Component {
 
 
+  componentDidMount(){
+    
+  }
+
   render() {
+
     const childrens = React.Children.map(this.props.children, children =>
       React.cloneElement(children)
     );
