@@ -5,12 +5,13 @@ This repostiry contains the development of the my cloud service. This project in
 ## Technology
 * Backend 
   * Spring Boot Framework 
-    * Netflix Discovery Pattern
+    * Netflix Discovery Pattern 
     * Netflix Zuul API Gateway
     * Netflix Circuit Breaker
     * Netflix Loadbalancer
     * Oauth2 Server and Resource
     * MongoDB Repository
+    * JMX Client
     * Security
       * Basic Security
       * Oauth2 
@@ -22,6 +23,7 @@ This repostiry contains the development of the my cloud service. This project in
     * Identity Service
     * Discovery Service
     * Monitor Service
+    * Monitor Scheduler Service
     * API Gateway
 * Frontend 
   * React JS
