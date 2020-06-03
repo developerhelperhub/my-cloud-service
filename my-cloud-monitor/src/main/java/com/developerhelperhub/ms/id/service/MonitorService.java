@@ -26,6 +26,7 @@ import com.developerhelperhub.ms.id.entity.mongodb.InfoEntity;
 import com.developerhelperhub.ms.id.entity.mongodb.InstanceEntity;
 import com.developerhelperhub.ms.id.model.monitor.ApplicationDiskSpaceModel;
 import com.developerhelperhub.ms.id.model.monitor.ApplicationInfoModel;
+import com.developerhelperhub.ms.id.model.monitor.ApplicationInstanceInfoModel;
 import com.developerhelperhub.ms.id.model.monitor.ApplicationInstanceModel;
 import com.developerhelperhub.ms.id.model.monitor.MatricGroupModel;
 import com.developerhelperhub.ms.id.model.monitor.MatricModel;
@@ -58,9 +59,6 @@ public class MonitorService {
 	private InfluxDB influxDB;
 
 	@Autowired
-	private MonitorApplication monitorApplication;
-
-	@Autowired
 	private InstanceRepository instanceRepository;
 
 	@Autowired
@@ -68,210 +66,204 @@ public class MonitorService {
 
 	private SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
-	public Map<String, List<MatricGroupModel>> getMemory(String application) {
+	private class QueryData {
 
-		LOGGER.info("getMemory ............");
+		public Map<String, List<MatricGroupModel>> getMemory(Query query) {
 
-		List<MatricGroupModel> memory = new ArrayList<>();
-		List<MatricGroupModel> buffer = new ArrayList<>();
+			LOGGER.info("getMemory ............");
 
-		Map<String, List<MatricGroupModel>> data = new HashMap<String, List<MatricGroupModel>>();
+			List<MatricGroupModel> memory = new ArrayList<>();
+			List<MatricGroupModel> buffer = new ArrayList<>();
 
-		data.put("memory", memory);
-		data.put("buffer", buffer);
+			Map<String, List<MatricGroupModel>> data = new HashMap<String, List<MatricGroupModel>>();
 
-		if (application == null || application.isEmpty()) {
+			data.put("memory", memory);
+			data.put("buffer", buffer);
+
+			QueryResult queryResult = influxDB.query(query);
+
+			InfluxDBResultMapper resultMapper = new InfluxDBResultMapper();
+
+			List<MemoryEntity> memoryPointList = resultMapper.toPOJO(queryResult, MemoryEntity.class);
+
+			Map<String, List<MemoryEntity>> grouped = memoryPointList.stream()
+					.collect(Collectors.groupingBy(MemoryEntity::getMetric));
+
+			for (Map.Entry<String, List<MemoryEntity>> key : grouped.entrySet()) {
+
+				MatricGroupModel group = new MatricGroupModel();
+
+				group.setName(key.getKey());
+				group.setMatrics(new ArrayList<>());
+
+				for (MemoryEntity entity : key.getValue()) {
+
+					MatricModel matric = new MatricModel();
+					matric.setTimestamp(entity.getTime().toEpochMilli());
+					matric.setTime(formatter.format(new Date(entity.getTime().toEpochMilli())));
+					matric.setValue(entity.getValue() == null ? 0 : entity.getValue().longValue());
+
+					group.getMatrics().add(matric);
+
+					Collections.sort(group.getMatrics());
+				}
+
+				if (key.getKey().compareTo(MATRIX_JVM_MEMORY_USED) == 0
+						|| key.getKey().compareTo(MATRIX_JVM_MEMORY_MAX) == 0) {
+
+					group.setOrder((key.getKey().compareTo(MATRIX_JVM_MEMORY_MAX) == 0) ? 1 : 2);
+
+					if (key.getKey().compareTo(MATRIX_JVM_MEMORY_USED) == 0) {
+						group.setDisplay("Used");
+					} else if (key.getKey().compareTo(MATRIX_JVM_MEMORY_MAX) == 0) {
+						group.setDisplay("Max");
+					} else {
+						group.setDisplay(key.getKey());
+					}
+
+					memory.add(group);
+
+				} else if (key.getKey().compareTo(MATRIX_JVM_BUFFER_MEMORY_PROMPTED) == 0
+						|| key.getKey().compareTo(MATRIX_JVM_BUFFER_TOTAL_CAPACITY) == 0) {
+
+					group.setOrder((key.getKey().compareTo(MATRIX_JVM_BUFFER_TOTAL_CAPACITY) == 0) ? 1 : 2);
+
+					if (key.getKey().compareTo(MATRIX_JVM_BUFFER_MEMORY_PROMPTED) == 0) {
+						group.setDisplay("Prompted");
+					} else if (key.getKey().compareTo(MATRIX_JVM_BUFFER_TOTAL_CAPACITY) == 0) {
+						group.setDisplay("Total Capacity");
+					} else {
+						group.setDisplay(key.getKey());
+					}
+
+					buffer.add(group);
+				}
+
+			}
+
+			Collections.sort(memory);
+			Collections.sort(buffer);
+
 			return data;
 		}
 
-		Query query = new Query("select * from memory WHERE application='" + application
-				+ "' and time > now() - 1h group by metric, host_name", "mycloudmonitordb");
+		public List<MatricGroupModel> getThreads(Query query) {
 
-		QueryResult queryResult = influxDB.query(query);
+			LOGGER.info("getThreads ............");
 
-		InfluxDBResultMapper resultMapper = new InfluxDBResultMapper();
+			List<MatricGroupModel> thread = new ArrayList<>();
 
-		List<MemoryEntity> memoryPointList = resultMapper.toPOJO(queryResult, MemoryEntity.class);
+			QueryResult queryResult = influxDB.query(query);
 
-		Map<String, List<MemoryEntity>> grouped = memoryPointList.stream()
-				.collect(Collectors.groupingBy(MemoryEntity::getMetric));
+			InfluxDBResultMapper resultMapper = new InfluxDBResultMapper();
 
-		for (Map.Entry<String, List<MemoryEntity>> key : grouped.entrySet()) {
+			List<ThreadEntity> list = resultMapper.toPOJO(queryResult, ThreadEntity.class);
 
-			MatricGroupModel group = new MatricGroupModel();
+			Map<String, List<ThreadEntity>> grouped = list.stream()
+					.collect(Collectors.groupingBy(ThreadEntity::getMetric));
 
-			group.setName(key.getKey());
-			group.setMatrics(new ArrayList<>());
+			for (Map.Entry<String, List<ThreadEntity>> key : grouped.entrySet()) {
 
-			for (MemoryEntity entity : key.getValue()) {
+				MatricGroupModel group = new MatricGroupModel();
 
-				MatricModel matric = new MatricModel();
-				matric.setTimestamp(entity.getTime().toEpochMilli());
-				matric.setTime(formatter.format(new Date(entity.getTime().toEpochMilli())));
-				matric.setValue(entity.getValue() == null ? 0 : entity.getValue().longValue());
+				group.setName(key.getKey());
+				group.setMatrics(new ArrayList<>());
 
-				group.getMatrics().add(matric);
+				for (ThreadEntity entity : key.getValue()) {
 
-				Collections.sort(group.getMatrics());
-			}
+					MatricModel matric = new MatricModel();
+					matric.setTimestamp(entity.getTime().toEpochMilli());
+					matric.setTime(formatter.format(new Date(entity.getTime().toEpochMilli())));
+					matric.setValue(entity.getValue() == null ? 0 : entity.getValue().longValue());
 
-			if (key.getKey().compareTo(MATRIX_JVM_MEMORY_USED) == 0
-					|| key.getKey().compareTo(MATRIX_JVM_MEMORY_MAX) == 0) {
+					group.getMatrics().add(matric);
 
-				group.setOrder((key.getKey().compareTo(MATRIX_JVM_MEMORY_MAX) == 0) ? 1 : 2);
-
-				if (key.getKey().compareTo(MATRIX_JVM_MEMORY_USED) == 0) {
-					group.setDisplay("Used");
-				} else if (key.getKey().compareTo(MATRIX_JVM_MEMORY_MAX) == 0) {
-					group.setDisplay("Max");
-				} else {
-					group.setDisplay(key.getKey());
+					Collections.sort(group.getMatrics());
 				}
 
-				memory.add(group);
-
-			} else if (key.getKey().compareTo(MATRIX_JVM_BUFFER_MEMORY_PROMPTED) == 0
-					|| key.getKey().compareTo(MATRIX_JVM_BUFFER_TOTAL_CAPACITY) == 0) {
-
-				group.setOrder((key.getKey().compareTo(MATRIX_JVM_BUFFER_TOTAL_CAPACITY) == 0) ? 1 : 2);
-
-				if (key.getKey().compareTo(MATRIX_JVM_BUFFER_MEMORY_PROMPTED) == 0) {
-					group.setDisplay("Prompted");
-				} else if (key.getKey().compareTo(MATRIX_JVM_BUFFER_TOTAL_CAPACITY) == 0) {
-					group.setDisplay("Total Capacity");
+				if (key.getKey().compareTo(MATRIX_JVM_THREADS_PEAK) == 0) {
+					group.setOrder(1);
+					group.setDisplay("Peak");
+				} else if (key.getKey().compareTo(MATRIX_JVM_THREADS_LIVE) == 0) {
+					group.setOrder(2);
+					group.setDisplay("Live");
 				} else {
-					group.setDisplay(key.getKey());
+					group.setOrder(3);
+					group.setDisplay("Daemon");
 				}
 
-				buffer.add(group);
+				thread.add(group);
+
 			}
 
-		}
+			Collections.sort(thread);
 
-		Collections.sort(memory);
-		Collections.sort(buffer);
-
-		return data;
-	}
-
-	public List<MatricGroupModel> getThreads(String application) {
-
-		LOGGER.info("getThreads ............");
-
-		List<MatricGroupModel> thread = new ArrayList<>();
-
-		if (application == null || application.isEmpty()) {
 			return thread;
 		}
 
-		Query query = new Query("select * from thread WHERE application='" + application
-				+ "' and time > now() - 1h group by metric, host_name", "mycloudmonitordb");
+		public ApplicationDiskSpaceModel getDiskSpace(Query query) {
 
-		QueryResult queryResult = influxDB.query(query);
+			LOGGER.info("Get disk space ............");
 
-		InfluxDBResultMapper resultMapper = new InfluxDBResultMapper();
+			ApplicationDiskSpaceModel out = new ApplicationDiskSpaceModel();
 
-		List<ThreadEntity> list = resultMapper.toPOJO(queryResult, ThreadEntity.class);
+			List<ApplicationDiskSpaceModel.DataModel> free = new ArrayList<>();
+			List<ApplicationDiskSpaceModel.DataModel> total = new ArrayList<>();
+			List<ApplicationDiskSpaceModel.DataModel> threshold = new ArrayList<>();
 
-		Map<String, List<ThreadEntity>> grouped = list.stream().collect(Collectors.groupingBy(ThreadEntity::getMetric));
+			out.setFree(free);
+			out.setThreshold(threshold);
+			out.setTotal(total);
 
-		for (Map.Entry<String, List<ThreadEntity>> key : grouped.entrySet()) {
+			QueryResult queryResult = influxDB.query(query);
 
-			MatricGroupModel group = new MatricGroupModel();
+			InfluxDBResultMapper resultMapper = new InfluxDBResultMapper();
 
-			group.setName(key.getKey());
-			group.setMatrics(new ArrayList<>());
+			List<DiskSpceEntity> list = resultMapper.toPOJO(queryResult, DiskSpceEntity.class);
 
-			for (ThreadEntity entity : key.getValue()) {
+			for (DiskSpceEntity entity : list) {
 
-				MatricModel matric = new MatricModel();
-				matric.setTimestamp(entity.getTime().toEpochMilli());
-				matric.setTime(formatter.format(new Date(entity.getTime().toEpochMilli())));
-				matric.setValue(entity.getValue() == null ? 0 : entity.getValue().longValue());
+				ApplicationDiskSpaceModel.DataModel freeData = new ApplicationDiskSpaceModel.DataModel();
+				ApplicationDiskSpaceModel.DataModel totalData = new ApplicationDiskSpaceModel.DataModel();
+				ApplicationDiskSpaceModel.DataModel thresholdData = new ApplicationDiskSpaceModel.DataModel();
 
-				group.getMatrics().add(matric);
+				freeData.setTime(formatter.format(new Date(entity.getTime().toEpochMilli())));
+				freeData.setValue(entity.getFree() == null ? 0 : entity.getFree().longValue());
 
-				Collections.sort(group.getMatrics());
+				totalData.setTime(freeData.getTime());
+				totalData.setValue(entity.getTotal() == null ? 0 : entity.getTotal().longValue());
+
+				thresholdData.setTime(freeData.getTime());
+				thresholdData.setValue(entity.getThreshold() == null ? 0 : entity.getThreshold().longValue());
+
+				free.add(freeData);
+				threshold.add(thresholdData);
+				total.add(totalData);
 			}
 
-			if (key.getKey().compareTo(MATRIX_JVM_THREADS_PEAK) == 0) {
-				group.setOrder(1);
-				group.setDisplay("Peak");
-			} else if (key.getKey().compareTo(MATRIX_JVM_THREADS_LIVE) == 0) {
-				group.setOrder(2);
-				group.setDisplay("Live");
-			} else {
-				group.setOrder(3);
-				group.setDisplay("Daemon");
-			}
-
-			thread.add(group);
-
-		}
-
-		Collections.sort(thread);
-
-		return thread;
-	}
-
-	public ApplicationDiskSpaceModel getDiskSpace(String application) {
-
-		LOGGER.info("Get disk space ............");
-
-		ApplicationDiskSpaceModel out = new ApplicationDiskSpaceModel();
-
-		List<ApplicationDiskSpaceModel.DataModel> free = new ArrayList<>();
-		List<ApplicationDiskSpaceModel.DataModel> total = new ArrayList<>();
-		List<ApplicationDiskSpaceModel.DataModel> threshold = new ArrayList<>();
-
-		out.setFree(free);
-		out.setThreshold(threshold);
-		out.setTotal(total);
-
-		if (application == null || application.isEmpty()) {
 			return out;
 		}
-
-		Query query = new Query(
-				"select * from health" + " where application='" + application
-						+ "' AND disk_space_status='UP' and time > now() - 1h" + " group by host_name",
-				"mycloudmonitordb");
-
-		QueryResult queryResult = influxDB.query(query);
-
-		InfluxDBResultMapper resultMapper = new InfluxDBResultMapper();
-
-		List<DiskSpceEntity> list = resultMapper.toPOJO(queryResult, DiskSpceEntity.class);
-
-		for (DiskSpceEntity entity : list) {
-
-			ApplicationDiskSpaceModel.DataModel freeData = new ApplicationDiskSpaceModel.DataModel();
-			ApplicationDiskSpaceModel.DataModel totalData = new ApplicationDiskSpaceModel.DataModel();
-			ApplicationDiskSpaceModel.DataModel thresholdData = new ApplicationDiskSpaceModel.DataModel();
-
-			freeData.setTime(formatter.format(new Date(entity.getTime().toEpochMilli())));
-			freeData.setValue(entity.getFree() == null ? 0 : entity.getFree().longValue());
-
-			totalData.setTime(freeData.getTime());
-			totalData.setValue(entity.getTotal() == null ? 0 : entity.getTotal().longValue());
-
-			thresholdData.setTime(freeData.getTime());
-			thresholdData.setValue(entity.getThreshold() == null ? 0 : entity.getThreshold().longValue());
-
-			free.add(freeData);
-			threshold.add(thresholdData);
-			total.add(totalData);
-		}
-
-		return out;
 	}
 
 	public ApplicationInfoModel getInfo(String application) {
 		ApplicationInfoModel model = new ApplicationInfoModel();
 
-		Map<String, List<MatricGroupModel>> data = getMemory(application);
-		List<MatricGroupModel> threads = getThreads(application);
-		ApplicationDiskSpaceModel diskSpace = getDiskSpace(application);
+		QueryData queryData = new QueryData();
+
+		Query queryMemory = new Query("select * from memory WHERE application='" + application
+				+ "' and time > now() - 1h group by metric, host_name", "mycloudmonitordb");
+
+		Query queryThread = new Query("select * from thread WHERE application='" + application
+				+ "' and time > now() - 1h group by metric, host_name", "mycloudmonitordb");
+
+		Query diskSpaceQuery = new Query(
+				"select * from health" + " where application='" + application
+						+ "' AND disk_space_status='UP' and time > now() - 1h" + " group by host_name",
+				"mycloudmonitordb");
+
+		Map<String, List<MatricGroupModel>> data = queryData.getMemory(queryMemory);
+		List<MatricGroupModel> threads = queryData.getThreads(queryThread);
+		ApplicationDiskSpaceModel diskSpace = queryData.getDiskSpace(diskSpaceQuery);
 
 		model.setMemory(data.get("memory"));
 		model.setBuffer(data.get("buffer"));
@@ -292,6 +284,7 @@ public class MonitorService {
 			ApplicationInstanceModel model = new ApplicationInstanceModel();
 			model.setInstanceId(instance.getInstanceId());
 			model.setStatus(instance.getStatus());
+			model.setIdentifier(instance.getIdentifier());
 
 			Optional<InfoEntity> info = infoRepository.findById(instance.getInstanceId());
 
@@ -314,4 +307,77 @@ public class MonitorService {
 	public Flux<List<ApplicationInstanceModel>> streamInstances(String application) {
 		return Flux.just(getInstances(application));
 	}
+
+	public ApplicationInstanceInfoModel getInstanceInfo(String id) {
+		ApplicationInstanceInfoModel model = new ApplicationInstanceInfoModel();
+
+		Optional<InstanceEntity> entityOpt = instanceRepository.findByIdentifier(id);
+
+		if (!entityOpt.isPresent()) {
+			model.setFound(false);
+
+			return model;
+		}
+
+		InstanceEntity instanceEntity = entityOpt.get();
+
+		model.setFound(true);
+		model.setId(id);
+
+		model.getDetail().setInstanceId(instanceEntity.getInstanceId());
+		model.getDetail().setApplication(instanceEntity.getApplication().toLowerCase());
+		model.getDetail().setAppGroupName(instanceEntity.getAppGroupName());
+		model.getDetail().setIpAddr(instanceEntity.getIpAddr());
+		model.getDetail().setSid(instanceEntity.getSid());
+		model.getDetail().setHomePageUrl(instanceEntity.getHomePageUrl());
+		model.getDetail().setStatusPageUrl(instanceEntity.getStatusPageUrl());
+		model.getDetail().setHealthCheckUrl(instanceEntity.getHealthCheckUrl());
+		model.getDetail().setSecureHealthCheckUrl(instanceEntity.getSecureHealthCheckUrl());
+		model.getDetail().setVipAddress(instanceEntity.getVipAddress());
+		model.getDetail().setSecureVipAddress(instanceEntity.getSecureVipAddress());
+		model.getDetail().setCountryId(instanceEntity.getCountryId());
+		model.getDetail().setHostName(instanceEntity.getHostName());
+		model.getDetail().setStatus(instanceEntity.getStatus());
+		model.getDetail().setOverriddenStatus(instanceEntity.getOverriddenStatus());
+		model.getDetail().setLeaseInfo(instanceEntity.getLeaseInfo());
+		model.getDetail().setCoordinatingDiscoveryServer(instanceEntity.isCoordinatingDiscoveryServer());
+		model.getDetail().setLastUpdatedTimestamp(instanceEntity.getLastUpdatedTimestamp());
+		model.getDetail().setLastDirtyTimestamp(instanceEntity.getLastDirtyTimestamp());
+		model.getDetail().setActionType(instanceEntity.getActionType());
+		model.getDetail().setAsgName(instanceEntity.getAsgName());
+		model.getDetail().setMetadata(instanceEntity.getMetadata());
+
+		infoRepository.findById(instanceEntity.getInstanceId()).ifPresent(info -> {
+			model.setBuild(info.getBuild());
+		});
+
+		QueryData queryData = new QueryData();
+
+		Query diskSpaceQuery = new Query(
+				"select * from health" + " where instance_id='" + instanceEntity.getInstanceId()
+						+ "' AND disk_space_status='UP' and time > now() - 1h" + " group by host_name",
+				"mycloudmonitordb");
+
+		Query threadQuery = new Query("select * from thread WHERE instance_id='" + instanceEntity.getInstanceId()
+				+ "' and time > now() - 1h group by metric, host_name", "mycloudmonitordb");
+
+		Query memoryQuery = new Query("select * from memory WHERE instance_id='" + instanceEntity.getInstanceId()
+				+ "' and time > now() - 1h group by metric, host_name", "mycloudmonitordb");
+
+		model.setDiskSpace(queryData.getDiskSpace(diskSpaceQuery));
+
+		Map<String, List<MatricGroupModel>> memory = queryData.getMemory(memoryQuery);
+
+		model.setMemory(memory.get("memory"));
+		model.setBuffer(memory.get("buffer"));
+
+		model.setThread(queryData.getThreads(threadQuery));
+
+		return model;
+	}
+
+	public Flux<ApplicationInstanceInfoModel> streamInstanceInfo(String id) {
+		return Flux.just(getInstanceInfo(id));
+	}
+
 }

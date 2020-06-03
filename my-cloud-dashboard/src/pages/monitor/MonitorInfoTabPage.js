@@ -457,6 +457,7 @@ class MonitorInfoTabPage extends React.Component {
                         <div class="col-xxl-6 col-lg-6">
                         </div>
                     </div>
+                    
                     <div class="row">
                         <div class="col-xxl-6 col-lg-6">
                             <div class="d-flex flex-column bd-highlight border info-box">
@@ -509,6 +510,9 @@ class MonitorInfoTabPage extends React.Component {
                             </div>
                         </div>
                     </div>
+
+
+                    
                 </div>
             </PageTabPane>
 

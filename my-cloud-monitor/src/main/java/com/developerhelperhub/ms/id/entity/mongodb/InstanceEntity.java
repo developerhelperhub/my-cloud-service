@@ -39,6 +39,7 @@ public class InstanceEntity {
 	private String asgName;
 	private Map<String, String> metadata;
 	private Long lastUpdated;
+	private String identifier;
 
 	public InstanceEntity() {
 	}

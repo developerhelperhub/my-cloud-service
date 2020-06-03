@@ -2,6 +2,7 @@ package com.developerhelperhub.ms.id.monitor;
 
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
@@ -119,7 +120,8 @@ public class MonitorDataService {
 	public InstanceEntity getInstance(String instanceId) {
 		LOGGER.debug("Loading instance {} ", instanceId);
 
-		return instanceRepository.findById(instanceId).orElse(new InstanceEntity(instanceId));
+		return instanceRepository.findById(instanceId)
+				.orElse(new InstanceEntity(instanceId, UUID.randomUUID().toString()));
 	}
 
 }
