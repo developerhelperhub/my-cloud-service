@@ -7,6 +7,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.influxdb.InfluxDB;
@@ -21,10 +22,15 @@ import org.springframework.stereotype.Service;
 import com.developerhelperhub.ms.id.entity.influxdb.DiskSpceEntity;
 import com.developerhelperhub.ms.id.entity.influxdb.MemoryEntity;
 import com.developerhelperhub.ms.id.entity.influxdb.ThreadEntity;
+import com.developerhelperhub.ms.id.entity.mongodb.InfoEntity;
+import com.developerhelperhub.ms.id.entity.mongodb.InstanceEntity;
 import com.developerhelperhub.ms.id.model.monitor.ApplicationDiskSpaceModel;
 import com.developerhelperhub.ms.id.model.monitor.ApplicationInfoModel;
+import com.developerhelperhub.ms.id.model.monitor.ApplicationInstanceModel;
 import com.developerhelperhub.ms.id.model.monitor.MatricGroupModel;
 import com.developerhelperhub.ms.id.model.monitor.MatricModel;
+import com.developerhelperhub.ms.id.repository.InfoRepository;
+import com.developerhelperhub.ms.id.repository.InstanceRepository;
 
 import reactor.core.publisher.Flux;
 
@@ -53,6 +59,12 @@ public class MonitorService {
 
 	@Autowired
 	private MonitorApplication monitorApplication;
+
+	@Autowired
+	private InstanceRepository instanceRepository;
+
+	@Autowired
+	private InfoRepository infoRepository;
 
 	private SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
@@ -271,5 +283,35 @@ public class MonitorService {
 
 	public Flux<ApplicationInfoModel> streamInfo(String application) {
 		return Flux.just(getInfo(application));
+	}
+
+	public List<ApplicationInstanceModel> getInstances(String application) {
+		List<ApplicationInstanceModel> list = new ArrayList<>();
+
+		for (InstanceEntity instance : instanceRepository.findByApplication(application)) {
+			ApplicationInstanceModel model = new ApplicationInstanceModel();
+			model.setInstanceId(instance.getInstanceId());
+			model.setStatus(instance.getStatus());
+
+			Optional<InfoEntity> info = infoRepository.findById(instance.getInstanceId());
+
+			if (info.isPresent()) {
+				model.setName(info.get().getBuild().getName());
+				model.setVersion(info.get().getBuild().getVersion());
+			} else {
+				model.setName("-");
+				model.setVersion("-");
+			}
+
+			model.setLastUpdated(formatter.format(new Date(instance.getLastUpdated())));
+
+			list.add(model);
+		}
+
+		return list;
+	}
+
+	public Flux<List<ApplicationInstanceModel>> streamInstances(String application) {
+		return Flux.just(getInstances(application));
 	}
 }
