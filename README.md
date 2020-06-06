@@ -57,6 +57,9 @@ This repostiry contains the development of the my cloud service. This project in
 * Monitor Dashboard Page (Info Instance)
 <img src="docs/screenshots/monitor-dashboard-instance.png" width="1000" height="600">
 
+* Monitor Dashboard Page (Info Instance Details)
+<img src="docs/screenshots/monitor-dashboard-instance-details.png" width="1000" height="600">
+
 * Identity Client Page
 <img src="docs/screenshots/identity-client.png" width="1000" height="600">
 
