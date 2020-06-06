@@ -9,6 +9,8 @@ spring:
     mongodb:
       authentication-database: admin
       database: myidsrvdb
+      username: myidsrvdbuser
+      password: myidsrvdbpwd@1234
       port: 27017
       host: localhost
 
