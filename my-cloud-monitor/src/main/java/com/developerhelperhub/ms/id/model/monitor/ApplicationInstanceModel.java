@@ -10,4 +10,5 @@ public class ApplicationInstanceModel {
 	private String version;
 	private String status;
 	private String lastUpdated;
+	private String identifier;
 }

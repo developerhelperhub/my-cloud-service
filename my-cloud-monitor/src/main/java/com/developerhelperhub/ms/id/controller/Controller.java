@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.developerhelperhub.ms.id.model.monitor.ApplicationInfoModel;
+import com.developerhelperhub.ms.id.model.monitor.ApplicationInstanceInfoModel;
 import com.developerhelperhub.ms.id.model.monitor.ApplicationInstanceModel;
 import com.developerhelperhub.ms.id.model.monitor.ApplicationModel;
 import com.developerhelperhub.ms.id.service.MonitorApplication;
@@ -57,5 +58,16 @@ public class Controller {
 	public Flux<List<ApplicationInstanceModel>> streamInstances(
 			@PathVariable(value = "application", required = true) String application) {
 		return monitorService.streamInstances(application);
+	}
+
+	@GetMapping(value = "/instances/{id}/info")
+	public ApplicationInstanceInfoModel getInstanceInfo(@PathVariable(value = "id", required = true) String id) {
+		return monitorService.getInstanceInfo(id);
+	}
+
+	@GetMapping(value = "/stream/instances/{id}/info")
+	public Flux<ApplicationInstanceInfoModel> streamInstanceInfo(
+			@PathVariable(value = "id", required = true) String id) {
+		return monitorService.streamInstanceInfo(id);
 	}
 }

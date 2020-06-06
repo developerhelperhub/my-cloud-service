@@ -1,7 +1,8 @@
 import React from 'react';
 
-import Label from '../../components/dashboard/Label'
 import PageTabPane from '../../components/dashboard/panel/PageTabPane'
+import InfoBox from '../../components/dashboard/InfoBox'
+import InfoBoxItem from '../../components/dashboard/InfoBoxItem'
 
 import AppApiRepo from '../../common/AppApiRepo'
 
@@ -35,7 +36,7 @@ class MonitorInfoTabPage extends React.Component {
         let selectedTab = nextProps.selectedTab;
         var eventSource = self.state.selectedApplicationEventSource;
 
-        if(selectedTab != "info-tab" || selectedApplication == null){
+        if (selectedTab != "info-tab" || selectedApplication == null) {
             return "";
         }
 
@@ -420,93 +421,38 @@ class MonitorInfoTabPage extends React.Component {
                 <div class="container-fluid monitor">
                     <div class="row">
                         <div class="col-xxl-6 col-lg-6">
-                            <div class="d-flex flex-column bd-highlight border info-box">
-
-                                <div class="d-flex flex-row bd-highlight p-2 border-bottom item-head">
-                                    <div class="bd-highlight pr-10 mr-auto">Application</div>
-                                    <div class="bd-highlight pr-10"><Label class={statusLabelClass}> {selectedApplicationInfo.status} </Label></div>
-                                </div>
-
-                                <div class="bd-highlight">
-                                    <div class="d-flex flex-row bd-highlight ml-3 mr-3 border-bottom item-body">
-                                        <div class="d-flex flex-row bd-highlight">
-                                            <div class="bd-highlight item-label">ID</div>
-                                            <div class="bd-highlight">{selectedApplicationInfo.id}</div>
-                                        </div>
-                                    </div>
-
-                                    <div class="d-flex flex-row bd-highlight ml-3 mr-3 border-bottom item-body">
-                                        <div class="d-flex flex-row bd-highlight">
-                                            <div class="bd-highlight item-label">Instance</div>
-                                            <div class="bd-highlight">{selectedApplicationInfo.instanceRunning}/{selectedApplicationInfo.instanceTotal}</div>
-                                        </div>
-                                    </div>
-
-                                    <div class="d-flex flex-row bd-highlight mb-2 ml-3 mr-3 border-bottom item-body">
-                                        <div class="d-flex flex-row bd-highlight">
-                                            <div class="bd-highlight item-label">Last Updated</div>
-                                            <div class="bd-highlight">{selectedApplicationInfo.lastUpdated}</div>
-                                        </div>
-                                    </div>
-
-
-                                </div>
-
-                            </div>
+                            <InfoBox title="Application" label={{ value: selectedApplicationInfo.status, class: statusLabelClass }}>
+                                <InfoBoxItem label="ID">{selectedApplicationInfo.id}</InfoBoxItem>
+                                <InfoBoxItem label="Instance">{selectedApplicationInfo.instanceRunning}/{selectedApplicationInfo.instanceTotal}</InfoBoxItem>
+                                <InfoBoxItem label="Last Updated">{selectedApplicationInfo.lastUpdated}</InfoBoxItem>
+                            </InfoBox>
                         </div>
                         <div class="col-xxl-6 col-lg-6">
                         </div>
                     </div>
+
                     <div class="row">
                         <div class="col-xxl-6 col-lg-6">
-                            <div class="d-flex flex-column bd-highlight border info-box">
-
-                                <div class="d-flex flex-row bd-highlight p-2 border-bottom item-head">
-                                    <div class="bd-highlight pr-10 mr-auto">Memory : Heap</div>
-                                </div>
-
-                                <div class="bd-highlight">
-                                    <div id="chart-memroy-heap" style={{ height: "150px" }}></div>
-                                </div>
-                            </div>
+                            <InfoBox title="Memory : Heap">
+                                <div id="chart-memroy-heap" style={{ height: "150px" }}></div>
+                            </InfoBox>
                         </div>
                         <div class="col-xxl-6 col-lg-6">
-                            <div class="d-flex flex-column bd-highlight border info-box">
-
-                                <div class="d-flex flex-row bd-highlight p-2 border-bottom item-head">
-                                    <div class="bd-highlight pr-10 mr-auto">Memory : Non heap</div>
-                                </div>
-
-                                <div class="bd-highlight">
-                                    <div id="chart-memroy-non-heap" style={{ height: "150px" }}></div>
-                                </div>
-                            </div>
+                            <InfoBox title="Memory : Non Heap">
+                                <div id="chart-memroy-non-heap" style={{ height: "150px" }}></div>
+                            </InfoBox>
                         </div>
                     </div>
                     <div class="row">
                         <div class="col-xxl-6 col-lg-6">
-                            <div class="d-flex flex-column bd-highlight border info-box">
-
-                                <div class="d-flex flex-row bd-highlight p-2 border-bottom item-head">
-                                    <div class="bd-highlight pr-10 mr-auto">Thread</div>
-                                </div>
-
-                                <div class="bd-highlight">
-                                    <div id="chart-thread" style={{ height: "150px" }}></div>
-                                </div>
-                            </div>
+                            <InfoBox title="Thread">
+                                <div id="chart-thread" style={{ height: "150px" }}></div>
+                            </InfoBox>
                         </div>
                         <div class="col-xxl-6 col-lg-6">
-                            <div class="d-flex flex-column bd-highlight border info-box">
-
-                                <div class="d-flex flex-row bd-highlight p-2 border-bottom item-head">
-                                    <div class="bd-highlight pr-10 mr-auto">Disk Space</div>
-                                </div>
-
-                                <div class="bd-highlight">
-                                    <div id="chart-disk-space" style={{ height: "150px" }}></div>
-                                </div>
-                            </div>
+                            <InfoBox title="Disk Space">
+                                <div id="chart-disk-space" style={{ height: "150px" }}></div>
+                            </InfoBox>
                         </div>
                     </div>
                 </div>

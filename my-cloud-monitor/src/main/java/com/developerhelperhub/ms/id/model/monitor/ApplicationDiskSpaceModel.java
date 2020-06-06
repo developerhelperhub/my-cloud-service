@@ -2,6 +2,8 @@ package com.developerhelperhub.ms.id.model.monitor;
 
 import java.util.List;
 
+import com.developerhelperhub.ms.id.model.ApplicationDiskSpace;
+
 import lombok.Data;
 
 @Data
@@ -14,6 +16,8 @@ public class ApplicationDiskSpaceModel {
 		private Long value;
 
 	}
+
+	private ApplicationDiskSpace data;
 
 	private List<DataModel> free;
 

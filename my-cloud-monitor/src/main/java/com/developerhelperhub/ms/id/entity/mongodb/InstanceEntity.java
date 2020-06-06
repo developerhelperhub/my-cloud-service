@@ -33,12 +33,13 @@ public class InstanceEntity {
 	private String overriddenStatus;
 	private LeaseInfo leaseInfo;
 	private boolean isCoordinatingDiscoveryServer;
-	private Object lastUpdatedTimestamp;
-	private Object lastDirtyTimestamp;
+	private Long lastUpdatedTimestamp;
+	private Long lastDirtyTimestamp;
 	private String actionType;
 	private String asgName;
 	private Map<String, String> metadata;
 	private Long lastUpdated;
+	private String identifier;
 
 	public InstanceEntity() {
 	}

@@ -39,12 +39,14 @@ public class InstanceEntity {
 	private String asgName;
 	private Map<String, String> metadata;
 	private Long lastUpdated;
+	private String identifier;
 
 	public InstanceEntity() {
 	}
 
-	public InstanceEntity(String instanceId) {
+	public InstanceEntity(String instanceId, String identifier) {
 		this.instanceId = instanceId;
+		this.identifier = identifier;
 	}
 
 }
