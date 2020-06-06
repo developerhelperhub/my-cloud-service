@@ -14,10 +14,10 @@ public class DiscoveryResponseModel {
 	public static class LeaseInfo {
 		public int renewalIntervalInSecs;
 		public int durationInSecs;
-		public Object registrationTimestamp;
-		public Object lastRenewalTimestamp;
+		public Long registrationTimestamp;
+		public Long lastRenewalTimestamp;
 		public int evictionTimestamp;
-		public Object serviceUpTimestamp;
+		public Long serviceUpTimestamp;
 	}
 
 	@Data

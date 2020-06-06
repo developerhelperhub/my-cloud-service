@@ -3,14 +3,26 @@ package com.developerhelperhub.ms.id.model.monitor;
 import java.util.List;
 import java.util.Map;
 
+import org.springframework.data.mongodb.core.mapping.Document;
+
 import com.developerhelperhub.ms.id.model.ApplicationInfo;
-import com.developerhelperhub.ms.id.model.DiscoveryResponseModel.LeaseInfo;
 
 import lombok.Data;
 
 @Data
 public class ApplicationInstanceInfoModel {
 
+	@Data
+	@Document
+	public static class LeaseInfo {
+		public int renewalIntervalInSecs;
+		public int durationInSecs;
+		public String registrationTimestamp;
+		public String lastRenewalTimestamp;
+		public int evictionTimestamp;
+		public String serviceUpTimestamp;
+	}
+	
 	@Data
 	public static class Instance {
 		private String instanceId;
@@ -28,10 +40,10 @@ public class ApplicationInstanceInfoModel {
 		private String hostName;
 		private String status;
 		private String overriddenStatus;
-		private LeaseInfo leaseInfo;
+		private LeaseInfo leaseInfo = new LeaseInfo();
 		private boolean isCoordinatingDiscoveryServer;
-		private Object lastUpdatedTimestamp;
-		private Object lastDirtyTimestamp;
+		private String lastUpdatedTimestamp;
+		private String lastDirtyTimestamp;
 		private String actionType;
 		private String asgName;
 		private Map<String, String> metadata;

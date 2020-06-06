@@ -9,7 +9,7 @@ class InfoBoxItem extends React.Component {
     render() {
         var childrens;
 
-        if (this.props.children.type == PropTypes.object) {
+        if (this.props.children !=null && this.props.children.type == PropTypes.object) {
 
             childrens = React.Children.map(this.props.children, children =>
                 React.cloneElement(children)

@@ -347,10 +347,21 @@ public class MonitorService {
 		model.getDetail().setHostName(instanceEntity.getHostName());
 		model.getDetail().setStatus(instanceEntity.getStatus());
 		model.getDetail().setOverriddenStatus(instanceEntity.getOverriddenStatus());
-		model.getDetail().setLeaseInfo(instanceEntity.getLeaseInfo());
+
+		model.getDetail().getLeaseInfo().setDurationInSecs(instanceEntity.getLeaseInfo().getDurationInSecs());
+		model.getDetail().getLeaseInfo().setEvictionTimestamp(instanceEntity.getLeaseInfo().getEvictionTimestamp());
+		model.getDetail().getLeaseInfo().setLastRenewalTimestamp(
+				formatter.format(new Date(instanceEntity.getLeaseInfo().getLastRenewalTimestamp())));
+		model.getDetail().getLeaseInfo().setRegistrationTimestamp(
+				formatter.format(new Date(instanceEntity.getLeaseInfo().getRegistrationTimestamp())));
+		model.getDetail().getLeaseInfo()
+				.setRenewalIntervalInSecs(instanceEntity.getLeaseInfo().getRenewalIntervalInSecs());
+		model.getDetail().getLeaseInfo().setServiceUpTimestamp(
+				formatter.format(new Date(instanceEntity.getLeaseInfo().getServiceUpTimestamp())));
+
 		model.getDetail().setCoordinatingDiscoveryServer(instanceEntity.isCoordinatingDiscoveryServer());
-		model.getDetail().setLastUpdatedTimestamp(instanceEntity.getLastUpdatedTimestamp());
-		model.getDetail().setLastDirtyTimestamp(instanceEntity.getLastDirtyTimestamp());
+		model.getDetail().setLastUpdatedTimestamp(formatter.format(new Date(instanceEntity.getLastUpdatedTimestamp())));
+		model.getDetail().setLastDirtyTimestamp(formatter.format(new Date(instanceEntity.getLastDirtyTimestamp())));
 		model.getDetail().setActionType(instanceEntity.getActionType());
 		model.getDetail().setAsgName(instanceEntity.getAsgName());
 		model.getDetail().setMetadata(instanceEntity.getMetadata());

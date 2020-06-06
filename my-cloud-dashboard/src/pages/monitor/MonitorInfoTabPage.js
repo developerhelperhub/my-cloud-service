@@ -1,10 +1,8 @@
 import React from 'react';
 
-import Label from '../../components/dashboard/Label'
 import PageTabPane from '../../components/dashboard/panel/PageTabPane'
 import InfoBox from '../../components/dashboard/InfoBox'
 import InfoBoxItem from '../../components/dashboard/InfoBoxItem'
-
 
 import AppApiRepo from '../../common/AppApiRepo'
 

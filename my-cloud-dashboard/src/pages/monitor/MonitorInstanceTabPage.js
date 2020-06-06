@@ -1,12 +1,11 @@
 
 import React from 'react';
-import Moment from 'react-moment';
-import { NativeEventSource, EventSourcePolyfill } from 'event-source-polyfill';
-
 
 import Label from '../../components/dashboard/Label'
 import PageTabPane from '../../components/dashboard/panel/PageTabPane'
 import DataTable from '../../components/table/DataTable'
+import InfoBox from '../../components/dashboard/InfoBox'
+import InfoBoxItem from '../../components/dashboard/InfoBoxItem'
 
 import AppApiRepo from '../../common/AppApiRepo'
 
@@ -32,6 +31,7 @@ class MonitorInstanceTabPage extends React.Component {
             selectedInstance: {
                 id: "",
                 status: "N/A",
+                application: "",
                 diskSpace: {
                     status: "N/A",
                     free: "",
@@ -45,6 +45,34 @@ class MonitorInstanceTabPage extends React.Component {
                     name: "",
                     group: "",
                     time: ""
+                },
+                detail: {
+                    instanceId: "",
+                    appGroupName: "N/A",
+                    ipAddr: "",
+                    sid: "",
+                    homePageUrl: "",
+                    vipAddress: "",
+                    secureVipAddress: "",
+                    countryId: "",
+                    hostName: "",
+                    overriddenStatus: "",
+                    leaseInfo: {
+                        renewalIntervalInSecs: 0,
+                        durationInSecs: 0,
+                        registrationTimestamp: 0,
+                        lastRenewalTimestamp: 0,
+                        evictionTimestamp: 0,
+                        serviceUpTimestamp: 0
+                    },
+                    lastUpdatedTimestamp: 0,
+                    lastDirtyTimestamp: 0,
+                    actionType: "",
+                    asgName: "",
+                    metadata: {
+                        managementport: 0
+                    },
+                    coordinatingDiscoveryServer: false
                 }
             },
             selectedApplicationInstances: {
@@ -172,9 +200,10 @@ class MonitorInstanceTabPage extends React.Component {
 
                 var selected = self.state.selectedInstance;
 
-                selected.id = "";
-                selected.status = "N/A";
-                selected.lastUpdated = "";
+                selected.id = eventData.id;
+                selected.status = eventData.status;
+                selected.application = eventData.application;
+                selected.lastUpdated = eventData.lastUpdated;
 
                 selected.build.version = eventData.build.version;
                 selected.build.artifact = eventData.build.artifact;
@@ -182,12 +211,33 @@ class MonitorInstanceTabPage extends React.Component {
                 selected.build.group = eventData.build.group;
                 selected.build.time = eventData.build.time;
 
-                selected.diskSpace.status = "N/A";
-                selected.diskSpace.free = "";
-                selected.diskSpace.total = "";
-                selected.diskSpace.threshold = "";
+                selected.diskSpace.free = self.fileSizeFormat(eventData.diskSpace.data.free);
+                selected.diskSpace.total = self.fileSizeFormat(eventData.diskSpace.data.total);
+                selected.diskSpace.threshold = self.fileSizeFormat(eventData.diskSpace.data.threshold);
 
-
+                selected.detail.instanceId = eventData.detail.instanceId;
+                selected.detail.appGroupName = eventData.detail.appGroupName;
+                selected.detail.ipAddr = eventData.detail.ipAddr;
+                selected.detail.sid = eventData.detail.sid;
+                selected.detail.homePageUrl = eventData.detail.homePageUrl;
+                selected.detail.vipAddress = eventData.detail.vipAddress;
+                selected.detail.secureVipAddress = eventData.detail.secureVipAddress;
+                selected.detail.countryId = eventData.detail.countryId;
+                selected.detail.hostName = eventData.detail.hostName;
+                selected.detail.overriddenStatus = eventData.detail.overriddenStatus;
+                selected.detail.leaseInfo.renewalIntervalInSecs = eventData.detail.leaseInfo.renewalIntervalInSecs;
+                selected.detail.leaseInfo.durationInSecs = eventData.detail.leaseInfo.durationInSecs;
+                selected.detail.leaseInfo.registrationTimestamp = eventData.detail.leaseInfo.registrationTimestamp;
+                selected.detail.leaseInfo.lastRenewalTimestamp = eventData.detail.leaseInfo.lastRenewalTimestamp;
+                selected.detail.leaseInfo.evictionTimestamp = eventData.detail.leaseInfo.evictionTimestamp;
+                selected.detail.leaseInfo.serviceUpTimestamp = eventData.detail.leaseInfo.serviceUpTimestamp;
+                selected.detail.lastUpdatedTimestamp = eventData.detail.lastUpdatedTimestamp;
+                selected.detail.lastDirtyTimestamp = eventData.detail.lastDirtyTimestamp;
+                selected.detail.actionType = eventData.detail.actionType;
+                selected.detail.asgName = eventData.detail.asgName;
+                selected.detail.metadata.managementport = eventData.detail.metadata.managementport;
+                selected.detail.coordinatingDiscoveryServer = eventData.detail.coordinatingDiscoveryServer;
+                
                 var values = [];
                 var items = [];
                 var legends = [];
@@ -466,13 +516,6 @@ class MonitorInstanceTabPage extends React.Component {
             statusLabelClass = 'label-danger';
         }
 
-        var statusDiskLabelClass = "label-warning";
-        if (selected.diskSpace.status == "UP") {
-            statusDiskLabelClass = 'label-success';
-        } else if (selected.diskSpace.status == "DOWN") {
-            statusDiskLabelClass = 'label-danger';
-        }
-
         return (
             <PageTabPane id="instance" labelledby="instance-tab">
                 <div class="container-fluid monitor">
@@ -484,129 +527,88 @@ class MonitorInstanceTabPage extends React.Component {
 
                     <div class="row">
                         <div class="col-xxl-6 col-lg-6">
-                            <div class="d-flex flex-column bd-highlight border info-box">
+                            <InfoBox title="Application Info" label={{ value: selected.status, class: statusLabelClass }}>
+                                <InfoBoxItem label="ID">{selected.id}</InfoBoxItem>
+                                <InfoBoxItem label="Application">{selected.application}</InfoBoxItem>
+                                <InfoBoxItem label="Last Updated">{selected.lastUpdated}</InfoBoxItem>
+                                <InfoBoxItem label="Build">
 
-                                <div class="d-flex flex-row bd-highlight p-2 border-bottom item-head">
-                                    <div class="bd-highlight pr-10 mr-auto">Application Info</div>
-                                    <div class="bd-highlight pr-10"><Label class={statusLabelClass}> {selected.status} </Label></div>
-                                </div>
+                                    <p class="m-0">Artifact: {selected.build.artifact}</p>
+                                    <p class="m-0">Name: {selected.build.name}</p>
+                                    <p class="m-0">Group: {selected.build.group}</p>
+                                    <p class="m-0">Version: {selected.build.version}</p>
+                                    <p class="m-0">Time: {selected.build.time}</p>
 
-                                <div class="bd-highlight">
-                                    <div class="d-flex flex-row bd-highlight ml-3 mr-3 border-bottom item-body">
-                                        <div class="d-flex flex-row bd-highlight">
-                                            <div class="bd-highlight item-label">ID</div>
-                                            <div class="bd-highlight">{selected.id}</div>
-                                        </div>
-                                    </div>
+                                </InfoBoxItem>
+                            </InfoBox>
 
-                                    <div class="d-flex flex-row bd-highlight ml-3 mr-3 border-bottom item-body">
-                                        <div class="d-flex flex-row bd-highlight">
-                                            <div class="bd-highlight item-label">Last Updated</div>
-                                            <div class="bd-highlight">{selected.lastUpdated}</div>
-                                        </div>
-                                    </div>
+                            <div class="mb-3"></div>
 
-                                </div>
-                                <div class="bd-highlight">
-                                    <div class="d-flex flex-row bd-highlight mb-2 ml-3 mr-3 border-bottom item-body">
-                                        <div class="d-flex flex-row bd-highlight">
-                                            <div class="bd-highlight item-label">Build</div>
-                                            <div class="bd-highlight" width="100%">
-                                                <p class="m-0">Artifact: {selected.build.artifact}</p>
-                                                <p class="m-0">Name: {selected.build.name}</p>
-                                                <p class="m-0">Group: {selected.build.group}</p>
-                                                <p class="m-0">Version: {selected.build.version}</p>
-                                                <p class="m-0">Time: {selected.build.time}</p>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
+                            <InfoBox title="Memory : Heap">
+                                <div id="chart-instance-memroy-heap" style={{ height: "150px" }}></div>
+                            </InfoBox>
+
+                            <div class="mb-3"></div>
+
+                            <InfoBox title="Memory : Non Heap">
+                                <div id="chart-instance-memroy-non-heap" style={{ height: "150px" }}></div>
+                            </InfoBox>
+
                         </div>
+
                         <div class="col-xxl-6 col-lg-6">
-                            <div class="d-flex flex-column bd-highlight border info-box">
+                            <InfoBox title="Disk Space">
+                                <InfoBoxItem label="Total">{selected.diskSpace.total}</InfoBoxItem>
+                                <InfoBoxItem label="Free">{selected.diskSpace.free}</InfoBoxItem>
+                                <InfoBoxItem label="Threshold">{selected.diskSpace.threshold}</InfoBoxItem>
+                            </InfoBox>
 
-                                <div class="d-flex flex-row bd-highlight p-2 border-bottom item-head">
-                                    <div class="bd-highlight pr-10 mr-auto">Disk Space</div>
-                                    <div class="bd-highlight pr-10"><Label class={statusDiskLabelClass}> {selected.diskSpace.status} </Label></div>
-                                </div>
+                            <div class="mb-3"></div>
 
-                                <div class="bd-highlight">
-                                    <div class="d-flex flex-row bd-highlight ml-3 mr-3 border-bottom item-body">
-                                        <div class="d-flex flex-row bd-highlight">
-                                            <div class="bd-highlight item-label">Total</div>
-                                            <div class="bd-highlight">{selected.diskSpace.total}</div>
-                                        </div>
-                                    </div>
-
-                                    <div class="d-flex flex-row bd-highlight ml-3 mr-3 border-bottom item-body">
-                                        <div class="d-flex flex-row bd-highlight">
-                                            <div class="bd-highlight item-label">Free</div>
-                                            <div class="bd-highlight">{selected.diskSpace.free}</div>
-                                        </div>
-                                    </div>
-
-                                    <div class="d-flex flex-row bd-highlight  mb-2 ml-3 mr-3 border-bottom item-body">
-                                        <div class="d-flex flex-row bd-highlight">
-                                            <div class="bd-highlight item-label">Threshold</div>
-                                            <div class="bd-highlight">{selected.diskSpace.threshold}</div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="row">
-                        <div class="col-xxl-6 col-lg-6">
-                            <div class="d-flex flex-column bd-highlight border info-box">
-
-                                <div class="d-flex flex-row bd-highlight p-2 border-bottom item-head">
-                                    <div class="bd-highlight pr-10 mr-auto">Memory : Heap</div>
-                                </div>
-
-                                <div class="bd-highlight">
-                                    <div id="chart-instance-memroy-heap" style={{ height: "150px" }}></div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-xxl-6 col-lg-6">
-                            <div class="d-flex flex-column bd-highlight border info-box">
-
-                                <div class="d-flex flex-row bd-highlight p-2 border-bottom item-head">
-                                    <div class="bd-highlight pr-10 mr-auto">Memory : Non heap</div>
-                                </div>
-
-                                <div class="bd-highlight">
-                                    <div id="chart-instance-memroy-non-heap" style={{ height: "150px" }}></div>
-                                </div>
-                            </div>
+                            <InfoBox title="Instance">
+                                <InfoBoxItem label="Id">{selected.detail.instanceId}</InfoBoxItem>
+                                <InfoBoxItem label="App Group Name">{selected.detail.appGroupName}</InfoBoxItem>
+                                <InfoBoxItem label="IP Address">{selected.detail.ipAddr}</InfoBoxItem>
+                                <InfoBoxItem label="SID">{selected.detail.sid}</InfoBoxItem>
+                                <InfoBoxItem label="Home Page Url">{selected.detail.homePageUrl}</InfoBoxItem>
+                                <InfoBoxItem label="VIP Address">{selected.detail.vipAddress}</InfoBoxItem>
+                                <InfoBoxItem label="Country Id">{selected.detail.countryId}</InfoBoxItem>
+                                <InfoBoxItem label="Host Name">{selected.detail.hostName}</InfoBoxItem>
+                                <InfoBoxItem label="Overridden Status">{selected.detail.overriddenStatus}</InfoBoxItem>
+                                <InfoBoxItem label="Lease Info">
+                                    <p class="m-0">Renewal Interval (Secs): {selected.detail.leaseInfo.renewalIntervalInSecs}</p>
+                                    <p class="m-0">Duration (Secs): {selected.detail.leaseInfo.durationInSecs}</p>
+                                    <p class="m-0">Registration Time: {selected.detail.leaseInfo.registrationTimestamp}</p>
+                                    <p class="m-0">Last Renewal Time: {selected.detail.leaseInfo.lastRenewalTimestamp}</p>
+                                    <p class="m-0">Eviction Time: {selected.detail.leaseInfo.evictionTimestamp}</p>
+                                    <p class="m-0">Service Up Time: {selected.detail.leaseInfo.serviceUpTimestamp}</p>
+                                </InfoBoxItem>
+                                <InfoBoxItem label="Last Updated Time">{selected.detail.lastUpdatedTimestamp}</InfoBoxItem>
+                                <InfoBoxItem label="Last Dirty Time">{selected.detail.lastDirtyTimestamp}</InfoBoxItem>
+                                <InfoBoxItem label="Action Type">{selected.detail.actionType}</InfoBoxItem>
+                                <InfoBoxItem label="ASG Name">{selected.detail.asgName}</InfoBoxItem>
+                                <InfoBoxItem label="Coordinating Discovery Server">{selected.detail.coordinatingDiscoveryServer}</InfoBoxItem>
+                            </InfoBox>
                         </div>
                     </div>
                     <div class="row">
                         <div class="col-xxl-6 col-lg-6">
-                            <div class="d-flex flex-column bd-highlight border info-box">
 
-                                <div class="d-flex flex-row bd-highlight p-2 border-bottom item-head">
-                                    <div class="bd-highlight pr-10 mr-auto">Thread</div>
-                                </div>
-
-                                <div class="bd-highlight">
-                                    <div id="chart-instance-thread" style={{ height: "150px" }}></div>
-                                </div>
-                            </div>
                         </div>
                         <div class="col-xxl-6 col-lg-6">
-                            <div class="d-flex flex-column bd-highlight border info-box">
 
-                                <div class="d-flex flex-row bd-highlight p-2 border-bottom item-head">
-                                    <div class="bd-highlight pr-10 mr-auto">Disk Space</div>
-                                </div>
-
-                                <div class="bd-highlight">
-                                    <div id="chart-instance-disk-space" style={{ height: "150px" }}></div>
-                                </div>
-                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-xxl-6 col-lg-6">
+                            <InfoBox title="Thread">
+                                <div id="chart-instance-thread" style={{ height: "150px" }}></div>
+                            </InfoBox>
+                        </div>
+                        <div class="col-xxl-6 col-lg-6">
+                            <InfoBox title="Disk Space">
+                                <div id="chart-instance-disk-space" style={{ height: "150px" }}></div>
+                            </InfoBox>
                         </div>
                     </div>
                 </div>
