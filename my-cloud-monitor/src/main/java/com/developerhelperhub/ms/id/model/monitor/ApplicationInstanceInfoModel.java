@@ -39,6 +39,9 @@ public class ApplicationInstanceInfoModel {
 	
 	private String id;
 	private boolean found;
+	private String application;
+	private String status;
+	private String lastUpdated;
 
 	private ApplicationInfo.Build build;
 

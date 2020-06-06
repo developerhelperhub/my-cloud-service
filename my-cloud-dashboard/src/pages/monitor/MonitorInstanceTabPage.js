@@ -513,7 +513,7 @@ class MonitorInstanceTabPage extends React.Component {
                                             <div class="bd-highlight item-label">Build</div>
                                             <div class="bd-highlight" width="100%">
                                                 <p class="m-0">Artifact: {selected.build.artifact}</p>
-                                                <p class="m-0">Name: {selected.build.artifact}</p>
+                                                <p class="m-0">Name: {selected.build.name}</p>
                                                 <p class="m-0">Group: {selected.build.group}</p>
                                                 <p class="m-0">Version: {selected.build.version}</p>
                                                 <p class="m-0">Time: {selected.build.time}</p>

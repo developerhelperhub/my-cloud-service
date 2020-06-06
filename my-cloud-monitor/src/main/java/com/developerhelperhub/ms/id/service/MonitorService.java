@@ -24,12 +24,14 @@ import com.developerhelperhub.ms.id.entity.influxdb.MemoryEntity;
 import com.developerhelperhub.ms.id.entity.influxdb.ThreadEntity;
 import com.developerhelperhub.ms.id.entity.mongodb.InfoEntity;
 import com.developerhelperhub.ms.id.entity.mongodb.InstanceEntity;
+import com.developerhelperhub.ms.id.model.ApplicationDiskSpace;
 import com.developerhelperhub.ms.id.model.monitor.ApplicationDiskSpaceModel;
 import com.developerhelperhub.ms.id.model.monitor.ApplicationInfoModel;
 import com.developerhelperhub.ms.id.model.monitor.ApplicationInstanceInfoModel;
 import com.developerhelperhub.ms.id.model.monitor.ApplicationInstanceModel;
 import com.developerhelperhub.ms.id.model.monitor.MatricGroupModel;
 import com.developerhelperhub.ms.id.model.monitor.MatricModel;
+import com.developerhelperhub.ms.id.repository.HealthRepository;
 import com.developerhelperhub.ms.id.repository.InfoRepository;
 import com.developerhelperhub.ms.id.repository.InstanceRepository;
 
@@ -63,6 +65,9 @@ public class MonitorService {
 
 	@Autowired
 	private InfoRepository infoRepository;
+
+	@Autowired
+	private HealthRepository healthRepository;
 
 	private SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
@@ -323,6 +328,9 @@ public class MonitorService {
 
 		model.setFound(true);
 		model.setId(id);
+		model.setLastUpdated(formatter.format(new Date(instanceEntity.getLastUpdated())));
+		model.setApplication(instanceEntity.getApplication());
+		model.setStatus(instanceEntity.getStatus());
 
 		model.getDetail().setInstanceId(instanceEntity.getInstanceId());
 		model.getDetail().setApplication(instanceEntity.getApplication().toLowerCase());
@@ -365,6 +373,21 @@ public class MonitorService {
 				+ "' and time > now() - 1h group by metric, host_name", "mycloudmonitordb");
 
 		model.setDiskSpace(queryData.getDiskSpace(diskSpaceQuery));
+
+		healthRepository.findById(instanceEntity.getInstanceId()).ifPresent(entity -> {
+			model.getDiskSpace().setData(entity.getDiskSpace());
+		});
+
+		if (model.getDiskSpace().getData() == null) {
+
+			ApplicationDiskSpace data = new ApplicationDiskSpace();
+
+			data.setFree(0L);
+			data.setFree(0L);
+			data.setTotal(0L);
+
+			model.getDiskSpace().setData(data);
+		}
 
 		Map<String, List<MatricGroupModel>> memory = queryData.getMemory(memoryQuery);
 
