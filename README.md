@@ -19,6 +19,10 @@ This repostiry contains the development of the my cloud service. This project in
   * Database
     * MongoDB
     * Influxdb
+  * Docker
+    * Docker Compose
+    * Docker Hub
+  * Maven
   * My Cloud Service 
     * Identity Service
     * Discovery Service

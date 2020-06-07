@@ -68,19 +68,28 @@
 				<version>1.18.12</version>
 			</dependency>
 
+			<dependency>
+				<groupId>com.spotify</groupId>
+				<artifactId>dockerfile-maven-plugin</artifactId>
+				<version>1.4.13</version>
+			</dependency>
+			
 		</dependencies>
+
 	</dependencyManagement>
 
 	<modules>
 		<module>../my-cloud-identity</module>
 		<module>../my-cloud-discovery</module>
 		<module>../my-cloud-api-gateway</module>
-		<module>../my-cloud-circuit-breaker</module>
+		<module>../my-cloud-monitor</module>
+		<module>../my-cloud-monitor-scheduler</module>
+		<!-- <module>../my-cloud-circuit-breaker</module>
 
 		<module>../api-gateway-service</module>
 		<module>../sales-service</module>
 		<module>../inventory-service</module>
-		<module>../client-application-service</module>
+		<module>../client-application-service</module> -->
 	</modules>
 
 </project>

@@ -1,0 +1,25 @@
+version: '3'
+services: 
+  mongodatabase:
+    image: mongo
+    container_name: my_cloud_mongodb
+    environment:
+      - MONGO_INITDB_DATABASE=myidsrvdb
+      - MONGO_INITDB_ROOT_USERNAME=myidsrvdbuser
+      - MONGO_INITDB_ROOT_PASSWORD=myidsrvdbpwd@1234
+    volumes:
+      - ./init-mongo.js:/docker-entrypoint-initdb.d/init-mongo.js:ro
+      - ./mongo-volume:/var/db/mycloud/mongodb
+    ports:
+      - '27017-27019:27017-27019'
+  influxdatabase:
+    image: influxdb
+    container_name: my_cloud_influxdb
+    environment:
+      - INFLUX_USERNAME=todd
+      - INFLUX_PASSWORD=influxdb4ever
+    volumes:
+      - ./influx-volume:/var/db/mycloud/influxdb
+    ports:
+      - '8086:8086'
+
