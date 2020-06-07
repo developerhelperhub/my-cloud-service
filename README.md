@@ -42,6 +42,14 @@ This repostiry contains the development of the my cloud service. This project in
 
 #### In progress .....
 
+## Run Commands
+
+#### Network creation for my cloud service
+docker network create --gateway 172.16.1.1 --subnet 172.16.1.0/24 mycloud_network
+
+#### Running the services
+docker-compose up
+
 ## Screens
 * Login Page
 <img src="docs/screenshots/login.png" width="1000" height="600">
