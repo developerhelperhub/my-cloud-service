@@ -4,8 +4,8 @@ spring:
     name: my-cloud-discovery
   security:
     user:
-      name: discovery
-      password: discoverypass
+      name: ${ENV_MYC_DISCOVERY_USERNAME}
+      password: ${ENV_MYC_DISCOVERY_PASSWORD}
 
 logging:
   level:
@@ -26,7 +26,7 @@ eureka:
     enabled: false
   client:
     serviceUrl:
-      defaultZone: http://discovery:discoverypass@localhost:8761/eureka/
+      defaultZone: http://${ENV_MYC_DISCOVERY_USERNAME}:${ENV_MYC_DISCOVERY_PASSWORD}@${ENV_MYC_DISCOVERY_HOST}:${ENV_MYC_DISCOVERY_PORT}/eureka/
     #register-with-eureka: false
     #fetch-registry: false
   
