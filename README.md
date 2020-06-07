@@ -45,10 +45,15 @@ This repostiry contains the development of the my cloud service. This project in
 ## Run Commands
 
 #### Network creation for my cloud service
-docker network create --gateway 172.16.1.1 --subnet 172.16.1.0/24 mycloud_network
+$ docker network create --gateway 172.16.1.1 --subnet 172.16.1.0/24 mycloud_network
 
 #### Running the services
-docker-compose up
+$ cd /setup
+$ docker-compose up
+
+#### Running My Cloud Dashboard
+$ cd /my-cloud-dashboard
+$ npm start
 
 ## Screens
 * Login Page
