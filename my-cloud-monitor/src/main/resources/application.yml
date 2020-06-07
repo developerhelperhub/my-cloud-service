@@ -1,19 +1,22 @@
 spring:
   application:
     name: my-cloud-monitor
-  security:
-    user:
-      name: breaker
-      password: breaker
   data:
     mongodb:
-      authentication-database: admin
-      database: myidsrvdb
-      username: myidsrvdbuser
-      password: myidsrvdbpwd@1234
-      port: 27017
-      host: localhost
+      authentication-database: ${ENV_MYC_MONITOR_MONGO_AUTH_DB}
+      database: ${ENV_MYC_MONITOR_MONGO_DB}
+      username: ${ENV_MYC_MONITOR_MONGO_USERNAME}
+      password: ${ENV_MYC_MONITOR_MONGO_PASSWORD}
+      port: ${ENV_MYC_MONITOR_MONGO_PORT}
+      host: ${ENV_MYC_MONITOR_MONGO_HOST}
 
+influxdb:
+  database: ${ENV_MYC_MONITOR_INFLUX_DB}
+  username: ${ENV_MYC_MONITOR_INFLUX_USERNAME}
+  password: ${ENV_MYC_MONITOR_INFLUX_PASSWORD}
+  port: ${ENV_MYC_MONITOR_INFLUX_PORT}
+  host: ${ENV_MYC_MONITOR_INFLUX_HOST}
+      
 logging:
   level:
     org:
@@ -32,7 +35,7 @@ server:
 eureka:
   client:
     serviceUrl:
-      defaultZone: http://discovery:discoverypass@localhost:8761/eureka/
+      defaultZone: http://${ENV_MYC_DISCOVERY_USERNAME}:${ENV_MYC_DISCOVERY_PASSWORD}@${ENV_MYC_DISCOVERY_HOST}:${ENV_MYC_DISCOVERY_PORT}/eureka/
 
       
 management:

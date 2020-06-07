@@ -5,6 +5,7 @@ import org.influxdb.InfluxDBFactory;
 import org.influxdb.dto.Pong;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -13,16 +14,30 @@ public class InfluxDBConfiguration {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(InfluxDBConfiguration.class);
 
-	public static final String DATABASE_NAME = "mycloudmonitordb";
-
 	public static final String RETENTION_DEFAULT_POLICY = "defaultPolicy";
 
 	public static final String RETENTION_REAL_TIME_POLICY = "defaultRealTimePolicy";
 
+	@Value("${influxdb.host}")
+	private String host;
+
+	@Value("${influxdb.port}")
+	private String port;
+
+	@Value("${influxdb.username}")
+	private String username;
+
+	@Value("${influxdb.password}")
+	private String password;
+
+	@Value("${influxdb.database}")
+	private String database;
+
 	@Bean
 	public InfluxDB influxDB() {
+		final String url = "http://" + this.host + ":" + this.port;
 
-		InfluxDB influxDB = InfluxDBFactory.connect("http://localhost:8086", "todd", "influxdb4ever");
+		InfluxDB influxDB = InfluxDBFactory.connect(url, this.username, this.password);
 
 		Pong response = influxDB.ping();
 
@@ -32,12 +47,12 @@ public class InfluxDBConfiguration {
 		}
 
 		influxDB.setLogLevel(InfluxDB.LogLevel.BASIC);
-		influxDB.createDatabase(DATABASE_NAME);
-		influxDB.createRetentionPolicy(RETENTION_DEFAULT_POLICY, DATABASE_NAME, "2d", 1, true);
-		influxDB.createRetentionPolicy(RETENTION_REAL_TIME_POLICY, DATABASE_NAME, "1h", 1, true);
+		influxDB.createDatabase(this.database);
+		influxDB.createRetentionPolicy(RETENTION_DEFAULT_POLICY, this.database, "2d", 1, true);
+		influxDB.createRetentionPolicy(RETENTION_REAL_TIME_POLICY, this.database, "1h", 1, true);
 
 		influxDB.setRetentionPolicy(InfluxDBConfiguration.RETENTION_REAL_TIME_POLICY);
-		influxDB.setDatabase(DATABASE_NAME);
+		influxDB.setDatabase(this.database);
 
 		LOGGER.info("InfluxDB is connected!");
 

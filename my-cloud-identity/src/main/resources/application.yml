@@ -3,12 +3,12 @@ spring:
     name: my-cloud-identity
   data:
     mongodb:
-      authentication-database: admin
-      database: myidsrvdb
-      username: myidsrvdbuser
-      password: myidsrvdbpwd@1234
-      port: 27017
-      host: localhost
+      authentication-database: ${ENV_MYC_IDENTIY_MONGO_AUTH_DB}
+      database: ${ENV_MYC_IDENTIY_MONGO_DB}
+      username: ${ENV_MYC_IDENTIY_MONGO_USERNAME}
+      password: ${ENV_MYC_IDENTIY_MONGO_PASSWORD}
+      port: ${ENV_MYC_IDENTIY_MONGO_PORT}
+      host: ${ENV_MYC_IDENTIY_MONGO_HOST}
       
 logging:
   level:
@@ -25,7 +25,7 @@ server:
 eureka:
   client:
     serviceUrl:
-      defaultZone: http://discovery:discoverypass@localhost:8761/eureka/
+      defaultZone: http://${ENV_MYC_DISCOVERY_USERNAME}:${ENV_MYC_DISCOVERY_PASSWORD}@${ENV_MYC_DISCOVERY_HOST}:${ENV_MYC_DISCOVERY_PORT}/eureka/
 
 
 management:

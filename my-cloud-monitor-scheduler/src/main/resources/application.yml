@@ -3,12 +3,28 @@ spring:
     name: my-cloud-monitor-scheduler
   data:
     mongodb:
-      authentication-database: admin
-      database: myidsrvdb
-      username: myidsrvdbuser
-      password: myidsrvdbpwd@1234
-      port: 27017
-      host: localhost
+      authentication-database: ${ENV_MYC_MONITOR_SCHD_MONGO_AUTH_DB}
+      database: ${ENV_MYC_MONITOR_SCHD_MONGO_DB}
+      username: ${ENV_MYC_MONITOR_SCHD_MONGO_USERNAME}
+      password: ${ENV_MYC_MONITOR_SCHD_MONGO_PASSWORD}
+      port: ${ENV_MYC_MONITOR_SCHD_MONGO_PORT}
+      host: ${ENV_MYC_MONITOR_SCHD_MONGO_HOST}
+
+influxdb:
+  database: ${ENV_MYC_MONITOR_SCHD_INFLUX_DB}
+  username: ${ENV_MYC_MONITOR_SCHD_INFLUX_USERNAME}
+  password: ${ENV_MYC_MONITOR_SCHD_INFLUX_PASSWORD}
+  port: ${ENV_MYC_MONITOR_SCHD_INFLUX_PORT}
+  host: ${ENV_MYC_MONITOR_SCHD_INFLUX_HOST}
+
+mycloud:
+  oauth:
+    id: identity-service
+    client-id: ${ENV_MYC_IDENTIY_CLIENT_ID}
+    client-secret: ${ENV_MYC_IDENTIY_CLIENT_SECRET}
+    grant-type: client_credentials
+    scop: ADMIN
+    access-token-uri: http://${ENV_MYC_IDENTIY_HOST}:${ENV_MYC_IDENTIY_PORT}/oauth/token
 
 logging:
   level:
@@ -28,7 +44,7 @@ server:
 eureka:
   client:
     serviceUrl:
-      defaultZone: http://discovery:discoverypass@localhost:8761/eureka/
+      defaultZone: http://${ENV_MYC_DISCOVERY_USERNAME}:${ENV_MYC_DISCOVERY_PASSWORD}@${ENV_MYC_DISCOVERY_HOST}:${ENV_MYC_DISCOVERY_PORT}/eureka/
 
       
 management:
