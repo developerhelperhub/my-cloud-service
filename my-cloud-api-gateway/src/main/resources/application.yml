@@ -45,4 +45,7 @@ management:
   endpoints:
     web:
       exposure:
-        include: info, health, metrics
+        exclude: "*" 
+    jmx:
+      exposure:
+        include: info, health, metrics 

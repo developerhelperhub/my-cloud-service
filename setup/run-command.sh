@@ -24,3 +24,20 @@ docker rm my-cloud-api-gateway
 docker rm my_cloud_influxdb
 docker rm my-cloud-monitor
 docker rm my-cloud-identity
+
+docker rmi developerhelperhub/my_cloud_mongodb
+docker rmi developerhelperhub/my-cloud-discovery
+docker rmi developerhelperhub/my-cloud-monitor-scheduler
+docker rmi developerhelperhub/my-cloud-api-gateway
+docker rmi developerhelperhub/my_cloud_influxdb
+docker rmi developerhelperhub/my-cloud-monitor
+docker rmi developerhelperhub/my-cloud-identity
+
+
+docker system prune
+docker rmi -f $(docker images -aq)
+
+docker-compose down
+docker rm -fv $(docker ps -aq)
+
+sudo lsof -i -P -n | grep 5432

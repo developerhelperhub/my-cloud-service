@@ -35,5 +35,7 @@ management:
   endpoints:
     web:
       exposure:
-        #include: info, health, metrics, auditevents, beans, caches, conditions, configprops, env, httptrace, loggers, mappings, scheduledtasks, sessions, shutdown, threaddump
-        include: "*"
+        exclude: "*" 
+    jmx:
+      exposure:
+        include: info, health, metrics 
