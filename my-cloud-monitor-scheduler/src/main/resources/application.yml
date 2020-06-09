@@ -54,4 +54,7 @@ management:
   endpoints:
     web:
       exposure:
-        include: info, health, metrics, hystrix.stream
+        exclude: "*" 
+    jmx:
+      exposure:
+        include: info, health, metrics
