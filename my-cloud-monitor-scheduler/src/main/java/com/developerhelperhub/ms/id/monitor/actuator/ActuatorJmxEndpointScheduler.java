@@ -88,7 +88,7 @@ public class ActuatorJmxEndpointScheduler {
 
 			app.getConnections().values().parallelStream().forEach(con -> {
 
-				LOGGER.debug("Instance process is starting {} : ({}) ...", con.getInstanceId(), con.isJmxEnable());
+				LOGGER.debug("Instance process is starting {} - Jmx Port {} : ({}) ...", con.getInstanceId(), con.getJmxPort(), con.isJmxEnable());
 
 				if (con.isJmxEnable()) {
 

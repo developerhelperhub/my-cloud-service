@@ -77,6 +77,7 @@ public class JmxService {
 
 		public <T> T read(String mBeanName, String operation, Object[] params, String[] signatures, TypeReference<T> t)
 				throws Exception {
+
 			try {
 
 				MBeanServerConnection mbsc = connector.getMBeanServerConnection();
@@ -178,7 +179,8 @@ public class JmxService {
 
 						try {
 
-							connection.setConnector(createJmxConnection(connection.getJmxPort()));
+							connection.setConnector(
+									createJmxConnection(instance.getApp().toLowerCase(), connection.getJmxPort()));
 
 							LOGGER.debug("Registered connector {} ", instance.getInstanceId());
 
@@ -261,9 +263,13 @@ public class JmxService {
 		return jmxRegistory.values();
 	}
 
-	private JMXConnector createJmxConnection(int port) throws IOException {
+	private JMXConnector createJmxConnection(String host, int port) throws IOException {
 
-		JMXServiceURL url = new JMXServiceURL("service:jmx:rmi:///jndi/rmi://:" + port + "/jmxrmi");
+		final String urlPath = String.format("service:jmx:rmi://%s:%s/jndi/rmi://%s:%s/jmxrmi", host, port, host, port);
+
+		LOGGER.debug("JMX RMI URL: " + urlPath);
+
+		JMXServiceURL url = new JMXServiceURL(urlPath);
 
 		JMXConnector jmxc = JMXConnectorFactory.connect(url, null);
 
