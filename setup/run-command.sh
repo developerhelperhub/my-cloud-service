@@ -40,4 +40,6 @@ docker rmi -f $(docker images -aq)
 docker-compose down
 docker rm -fv $(docker ps -aq)
 
+docker volume prune
+
 sudo lsof -i -P -n | grep 5432

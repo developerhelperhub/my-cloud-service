@@ -39,13 +39,16 @@ zuul:
       stripPrefix: false
 
 management:
+  server:
+    port: 9002
   endpoint:
     health:
       show-details: always
   endpoints:
     web:
       exposure:
-        exclude: "*" 
-    jmx:
-      exposure:
-        include: info, health, metrics 
+        include:
+          - jolokia 
+          - info
+          - health
+          - metrics 

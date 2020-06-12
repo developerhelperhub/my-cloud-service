@@ -1,26 +1,16 @@
 package com.developerhelperhub.ms.id.monitor;
 
-import java.io.IOException;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.LinkedHashMap;
-import java.util.List;
 import java.util.Map;
-
-import javax.management.InstanceNotFoundException;
-import javax.management.MBeanException;
-import javax.management.MBeanServerConnection;
-import javax.management.MalformedObjectNameException;
-import javax.management.ObjectName;
-import javax.management.ReflectionException;
-import javax.management.remote.JMXConnector;
-import javax.management.remote.JMXConnectorFactory;
-import javax.management.remote.JMXServiceURL;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.boot.json.JsonParserFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -30,11 +20,14 @@ import org.springframework.stereotype.Service;
 import com.developerhelperhub.ms.id.monitor.application.ApplicationEntity;
 import com.developerhelperhub.ms.id.monitor.application.InstanceEntity;
 import com.developerhelperhub.ms.id.monitor.model.DiscoveryResponseModel;
-import com.developerhelperhub.ms.id.monitor.model.DiscoveryResponseModel.LeaseInfo;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import org.springframework.boot.json.JsonParser;
+import org.springframework.boot.json.JsonParserFactory;
+
 import lombok.Data;
+import lombok.Getter;
 
 @Service
 public class JmxService {
@@ -63,37 +56,56 @@ public class JmxService {
 		private JmxApplication application;
 		private String instanceId;
 		private String hostName;
+		private String ipAddress;
+		private int managementPort;
+		private boolean managementEnable = false;
 		private int jmxPort;
-		private boolean jmxEnable = false;
-		private JMXConnector connector;
+		private boolean jmxEnabled = false;
+		private OAuth2RestTemplate template;
 
 		public JmxConnection(JmxApplication application) {
 			this.application = application;
 		}
 
-		public <T> T read(String mBeanName, String operation, TypeReference<T> t) throws Exception {
-			return read(mBeanName, operation, null, null, t);
+		public <T> T read(String mBeanName, String operation, TypeReference<T> responseType) throws Exception {
+			return read(mBeanName, operation, null, responseType);
 		}
 
-		public <T> T read(String mBeanName, String operation, Object[] params, String[] signatures, TypeReference<T> t)
+		public <T> T read(String mBeanName, String operation, String[] params, TypeReference<T> responseType)
 				throws Exception {
 
-			try {
+			String url = String.format("http://%s:%s/actuator/jolokia/exec/%s/%s", this.ipAddress, this.managementPort,
+					mBeanName, operation);
 
-				MBeanServerConnection mbsc = connector.getMBeanServerConnection();
+			if (params != null) {
+				url = url + "/" + String.join("/", params);
+			}
 
-				ObjectName mbeanName = new ObjectName(mBeanName);
+			LOGGER.debug(" JMX exec {} - {} ", this.instanceId, url);
 
-				Map data = (Map) mbsc.invoke(mbeanName, operation, params, signatures);
+			ResponseEntity<String> entity = this.template.getForEntity(url, String.class);
 
-				ObjectMapper mapper = new ObjectMapper();
+			if (entity.getStatusCode() == HttpStatus.OK) {
 
-				return mapper.convertValue(data, t);
+				final JsonParser springParser = JsonParserFactory.getJsonParser();
+				final Map<String, Object> map = springParser.parseMap(entity.getBody());
 
-			} catch (IOException | MBeanException | ReflectionException | InstanceNotFoundException
-					| MalformedObjectNameException e) {
+				if ((Integer) map.get("status") == 200) {
 
-				throw new Exception(e);
+					ObjectMapper mapper = new ObjectMapper();
+
+					return mapper.convertValue((Map<String, Object>) map.get("value"), responseType);
+
+				} else {
+
+					throw new RuntimeException(
+							String.format("Enpoint Jmx Response error %s - %s", url, entity.getBody()));
+
+				}
+
+			} else {
+				throw new RuntimeException(
+						String.format("Enpoint Response error %s - %d ", url, entity.getStatusCode()));
 			}
 
 		}
@@ -104,7 +116,12 @@ public class JmxService {
 	private MonitorDataService monitorDataService;
 
 	@Autowired
+	@Qualifier("loadBalance")
 	private OAuth2RestTemplate restTemplate;
+
+	@Autowired
+	@Qualifier("nonLoadBalance")
+	private OAuth2RestTemplate restTemplateNonLoadBalance;
 
 	private Map<String, JmxApplication> jmxRegistory = new Hashtable<>();
 
@@ -168,32 +185,33 @@ public class JmxService {
 						connections.put(instance.getInstanceId(), connection);
 					}
 
+					connection.setIpAddress(instance.getIpAddr());
 					connection.setInstanceId(instance.getInstanceId());
 					connection.setHostName(instance.getHostName());
+					connection.setTemplate(restTemplateNonLoadBalance);
+
+					if (instance.getMetadata().containsKey("management.port")) {
+
+						connection.setManagementEnable(true);
+						connection.setManagementPort(Integer.parseInt(instance.getMetadata().get("management.port")));
+
+					} else {
+
+						connection.setManagementEnable(false);
+
+						LOGGER.debug("{} Mangement endpoint not available", instance.getInstanceId());
+					}
 
 					if (instance.getMetadata().containsKey("jmx.port")) {
 
-						connection.setJmxEnable(true);
-
+						connection.setJmxEnabled(true);
 						connection.setJmxPort(Integer.parseInt(instance.getMetadata().get("jmx.port")));
 
-						try {
-
-							connection.setConnector(
-									createJmxConnection(instance.getApp().toLowerCase(), connection.getJmxPort()));
-
-							LOGGER.debug("Registered connector {} ", instance.getInstanceId());
-
-						} catch (IOException e) {
-
-							LOGGER.error("Jmx registration error {} :- {}", instance.getInstanceId(), e.getMessage());
-
-						}
 					} else {
 
-						connection.setJmxEnable(false);
+						connection.setJmxEnabled(false);
 
-						LOGGER.debug("{} JMX not available", instance.getInstanceId());
+						LOGGER.debug("{} Jmx endpoint not available", instance.getInstanceId());
 					}
 
 					instanceEntity.setInstanceId(instance.getInstanceId());
@@ -261,19 +279,6 @@ public class JmxService {
 
 	public Collection<JmxApplication> getApplications() {
 		return jmxRegistory.values();
-	}
-
-	private JMXConnector createJmxConnection(String host, int port) throws IOException {
-
-		final String urlPath = String.format("service:jmx:rmi://%s:%s/jndi/rmi://%s:%s/jmxrmi", host, port, host, port);
-
-		LOGGER.debug("JMX RMI URL: " + urlPath);
-
-		JMXServiceURL url = new JMXServiceURL(urlPath);
-
-		JMXConnector jmxc = JMXConnectorFactory.connect(url, null);
-
-		return jmxc;
 	}
 
 	private Map<String, DiscoveryResponseModel.Application> getDiscoveryApplication() {

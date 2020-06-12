@@ -48,13 +48,16 @@ eureka:
 
       
 management:
+  server:
+    port: 9005
   endpoint:
     health:
       show-details: always
   endpoints:
     web:
       exposure:
-        exclude: "*" 
-    jmx:
-      exposure:
-        include: info, health, metrics
+        include:
+          - jolokia 
+          - info
+          - health
+          - metrics

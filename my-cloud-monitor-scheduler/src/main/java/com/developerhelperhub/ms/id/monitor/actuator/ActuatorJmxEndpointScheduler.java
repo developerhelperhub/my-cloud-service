@@ -12,8 +12,8 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import com.developerhelperhub.ms.id.monitor.JmxService;
-import com.developerhelperhub.ms.id.monitor.MonitorDataService;
 import com.developerhelperhub.ms.id.monitor.JmxService.JmxApplication;
+import com.developerhelperhub.ms.id.monitor.MonitorDataService;
 import com.developerhelperhub.ms.id.monitor.actuator.health.HealthMonitor;
 import com.developerhelperhub.ms.id.monitor.actuator.info.InfoMonitor;
 
@@ -51,28 +51,28 @@ public class ActuatorJmxEndpointScheduler {
 	public ActuatorJmxEndpointScheduler() {
 
 		monitors.add(new InfoMonitor("org.springframework.boot:type=Endpoint,name=Info", "info", "info"));
-		monitors.add(new HealthMonitor("org.springframework.boot:type=Endpoint,name=Health", "health", "health"));
-
-		monitors.add(new MetricMonitor("org.springframework.boot:type=Endpoint,name=Metrics", "metric",
-				new Object[] { METRIX_JVM_MEMORY_USED }, new String[] { String.class.getName() }, "memory"));
-
-		monitors.add(new MetricMonitor("org.springframework.boot:type=Endpoint,name=Metrics", "metric",
-				new Object[] { METRIX_JVM_MEMORY_MAX }, new String[] { String.class.getName() }, "memory"));
-
-		monitors.add(new MetricMonitor("org.springframework.boot:type=Endpoint,name=Metrics", "metric",
-				new Object[] { METRIX_JVM_BUFFER_MEMORY_PROMPTED }, new String[] { String.class.getName() }, "memory"));
-
-		monitors.add(new MetricMonitor("org.springframework.boot:type=Endpoint,name=Metrics", "metric",
-				new Object[] { METRIX_JVM_BUFFER_TOTAL_CAPACITY }, new String[] { String.class.getName() }, "memory"));
-
-		monitors.add(new MetricMonitor("org.springframework.boot:type=Endpoint,name=Metrics", "metric",
-				new Object[] { METRIX_JVM_THREADS_DAEMON }, new String[] { String.class.getName() }, "thread"));
-
-		monitors.add(new MetricMonitor("org.springframework.boot:type=Endpoint,name=Metrics", "metric",
-				new Object[] { METRIX_JVM_THREADS_LIVE }, new String[] { String.class.getName() }, "thread"));
-
-		monitors.add(new MetricMonitor("org.springframework.boot:type=Endpoint,name=Metrics", "metric",
-				new Object[] { METRIX_JVM_THREADS_PEAK }, new String[] { String.class.getName() }, "thread"));
+//		monitors.add(new HealthMonitor("org.springframework.boot:type=Endpoint,name=Health", "health", "health"));
+//
+//		monitors.add(new MetricMonitor("org.springframework.boot:type=Endpoint,name=Metrics", "metric",
+//				new String[] { METRIX_JVM_MEMORY_USED }, "memory"));
+//
+//		monitors.add(new MetricMonitor("org.springframework.boot:type=Endpoint,name=Metrics", "metric",
+//				new String[] { METRIX_JVM_MEMORY_MAX }, "memory"));
+//
+//		monitors.add(new MetricMonitor("org.springframework.boot:type=Endpoint,name=Metrics", "metric",
+//				new String[] { METRIX_JVM_BUFFER_MEMORY_PROMPTED }, "memory"));
+//
+//		monitors.add(new MetricMonitor("org.springframework.boot:type=Endpoint,name=Metrics", "metric",
+//				new String[] { METRIX_JVM_BUFFER_TOTAL_CAPACITY }, "memory"));
+//
+//		monitors.add(new MetricMonitor("org.springframework.boot:type=Endpoint,name=Metrics", "metric",
+//				new String[] { METRIX_JVM_THREADS_DAEMON }, "thread"));
+//
+//		monitors.add(new MetricMonitor("org.springframework.boot:type=Endpoint,name=Metrics", "metric",
+//				new String[] { METRIX_JVM_THREADS_LIVE }, "thread"));
+//
+//		monitors.add(new MetricMonitor("org.springframework.boot:type=Endpoint,name=Metrics", "metric",
+//				new String[] { METRIX_JVM_THREADS_PEAK }, "thread"));
 
 	}
 
@@ -88,9 +88,10 @@ public class ActuatorJmxEndpointScheduler {
 
 			app.getConnections().values().parallelStream().forEach(con -> {
 
-				LOGGER.debug("Instance process is starting {} - Jmx Port {} : ({}) ...", con.getInstanceId(), con.getJmxPort(), con.isJmxEnable());
+				LOGGER.debug("Instance process is starting {} - Jmx Port {} : ({}) ...", con.getInstanceId(),
+						con.getJmxPort(), con.isJmxEnabled());
 
-				if (con.isJmxEnable()) {
+				if (con.isJmxEnabled()) {
 
 					monitors.parallelStream().forEach(monitor -> {
 
@@ -114,7 +115,7 @@ public class ActuatorJmxEndpointScheduler {
 
 				}
 
-				LOGGER.debug("IInstance process is completed {} : ({})", con.getInstanceId(), con.isJmxEnable());
+				LOGGER.debug("IInstance process is completed {} : ({})", con.getInstanceId(), con.isJmxEnabled());
 
 			});
 

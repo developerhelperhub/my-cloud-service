@@ -75,8 +75,25 @@ public class ResourceServerConfig extends ResourceServerConfigurerAdapter {
 		return store;
 	}
 
-	@Bean
+	@Bean("loadBalance")
 	@LoadBalanced
+	public OAuth2RestTemplate identityRestTemplateLoadBalance() {
+
+		final ClientCredentialsResourceDetails resourceDetails = new ClientCredentialsResourceDetails();
+
+		resourceDetails.setId(this.identityId);
+		resourceDetails.setClientId(this.identityClientId);
+		resourceDetails.setClientSecret(this.identityClientSecret);
+		resourceDetails.setGrantType(this.identityGrantType);
+		resourceDetails.setScope(Arrays.asList(this.identityScop));
+		resourceDetails.setAccessTokenUri(this.identityAccessTokenUri);
+
+		OAuth2RestTemplate template = new OAuth2RestTemplate(resourceDetails);
+
+		return template;
+	}
+	
+	@Bean("nonLoadBalance")
 	public OAuth2RestTemplate identityRestTemplate() {
 
 		final ClientCredentialsResourceDetails resourceDetails = new ClientCredentialsResourceDetails();
