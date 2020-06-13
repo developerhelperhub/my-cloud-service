@@ -23,6 +23,7 @@ This repostiry contains the development of the my cloud service. This project in
   * Other Framework
     * Jolokia
     * InfluxDB Java Client
+    * Lombok
   * Database
     * MongoDB
     * Influxdb
