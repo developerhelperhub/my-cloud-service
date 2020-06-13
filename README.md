@@ -11,19 +11,28 @@ This repostiry contains the development of the my cloud service. This project in
     * Netflix Loadbalancer
     * Oauth2 Server and Resource
     * MongoDB Repository
+    * Actuator
+      * JMX 
+      * Jolokia
     * JMX 
+    * Oauth2 Rest Template
     * Security
       * Basic Security
       * Oauth2 
       * JWT Token
   * Other Framework
     * Jolokia
+    * InfluxDB Java Client
   * Database
     * MongoDB
     * Influxdb
   * Docker
     * Docker Compose
     * Docker Hub
+    * Docker 
+      * Build
+      * Volume
+      * Links
   * Maven
     * Module
     * Dependency Management
