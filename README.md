@@ -34,6 +34,7 @@ This repostiry contains the development of the my cloud service. This project in
     * Monitor Service
     * Monitor Scheduler Service
     * API Gateway
+    * My Cloud Dashboard
 * Frontend 
   * React JS
   * Server Sent Event (Event Source)
