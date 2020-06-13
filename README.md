@@ -55,6 +55,10 @@ $ docker-compose up
 $ cd /my-cloud-dashboard
 $ npm start
 
+#### Stop the services
+$ cd /setup
+$ docker-compose down
+
 ## Screens
 * Login Page
 <img src="docs/screenshots/login.png" width="1000" height="600">
