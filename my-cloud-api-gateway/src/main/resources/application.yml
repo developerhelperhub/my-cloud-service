@@ -1,7 +1,8 @@
 spring:
   application:
     name: my-cloud-api-gateway
-
+  jmx:
+    enabled: true
 logging:
   level:
     org:
@@ -39,13 +40,19 @@ zuul:
       stripPrefix: false
 
 management:
+  server:
+    port: 9003
   endpoint:
     health:
       show-details: always
   endpoints:
     web:
       exposure:
-        exclude: "*" 
+        include:
+          - jolokia
     jmx:
       exposure:
-        include: info, health, metrics 
+        include:
+          - info
+          - health
+          - metrics 

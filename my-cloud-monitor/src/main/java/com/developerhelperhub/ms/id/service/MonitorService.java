@@ -364,7 +364,13 @@ public class MonitorService {
 		model.getDetail().setLastDirtyTimestamp(formatter.format(new Date(instanceEntity.getLastDirtyTimestamp())));
 		model.getDetail().setActionType(instanceEntity.getActionType());
 		model.getDetail().setAsgName(instanceEntity.getAsgName());
-		model.getDetail().setMetadata(instanceEntity.getMetadata());
+
+		if (instanceEntity.getMetadata() != null) {
+			for (Map.Entry<String, String> entry : instanceEntity.getMetadata().entrySet()) {
+				model.getDetail().getMetadata()
+						.add(new ApplicationInstanceInfoModel.Metadata(entry.getKey(), entry.getValue()));
+			}
+		}
 
 		infoRepository.findById(instanceEntity.getInstanceId()).ifPresent(info -> {
 			model.setBuild(info.getBuild());

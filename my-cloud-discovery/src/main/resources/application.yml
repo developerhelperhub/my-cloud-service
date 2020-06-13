@@ -2,6 +2,8 @@
 spring:
   application:
     name: my-cloud-discovery
+  jmx:
+    enabled: true
   security:
     user:
       name: ${ENV_MYC_DISCOVERY_USERNAME}
@@ -32,14 +34,19 @@ eureka:
   
 
 management:
+  server:
+    port: 9001
   endpoint:
     health:
       show-details: always
   endpoints:
     web:
       exposure:
-        exclude: "*" 
+        include:
+          - jolokia
     jmx:
       exposure:
-        include: info, health, metrics 
-         
+        include:
+          - info
+          - health
+          - metrics      

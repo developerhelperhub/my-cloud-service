@@ -52,6 +52,10 @@
 			<scope>provided</scope>
 		</dependency>
 
+		<dependency>
+			<groupId>org.jolokia</groupId>
+			<artifactId>jolokia-core</artifactId>
+		</dependency>
 	</dependencies>
 
 
@@ -74,11 +78,11 @@
 			<plugin>
 				<groupId>com.spotify</groupId>
 				<artifactId>dockerfile-maven-plugin</artifactId>
-				
+
 				<configuration>
 					<repository>developerhelperhub/${project.artifactId}</repository>
 				</configuration>
-				
+
 				<executions>
 					<execution>
 						<id>default</id>

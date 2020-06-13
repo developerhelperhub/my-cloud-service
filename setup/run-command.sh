@@ -2,10 +2,13 @@
 ## Run Commands
 
 #### Network creation for my cloud service
-docker network create --gateway 172.16.1.1 --subnet 172.16.1.0/24 mycloud_network
+#docker network create --gateway 172.16.1.1 --subnet 172.16.1.0/24 mycloud_network
 
 #### Running the services
 docker-compose up
+
+#### Stop the services
+docker-compose down
 
 #### Stoping the service
 docker stop my_cloud_mongodb
@@ -34,10 +37,15 @@ docker rmi developerhelperhub/my-cloud-monitor
 docker rmi developerhelperhub/my-cloud-identity
 
 
+#### Remove all unwanted process, contairs
 docker system prune
 docker rmi -f $(docker images -aq)
 
 docker-compose down
 docker rm -fv $(docker ps -aq)
 
+#### Remove all unwanted volume
+docker volume prune
+
+#### lsof meaning 'LiSt Open Files' is used to find out which files are open by which process. 
 sudo lsof -i -P -n | grep 5432
