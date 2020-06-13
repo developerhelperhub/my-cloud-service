@@ -1,6 +1,8 @@
 spring:
   application:
     name: my-cloud-monitor-scheduler
+  jmx:
+    enabled: true
   data:
     mongodb:
       authentication-database: ${ENV_MYC_MONITOR_SCHD_MONGO_AUTH_DB}
@@ -57,7 +59,10 @@ management:
     web:
       exposure:
         include:
-          - jolokia 
+          - jolokia
+    jmx:
+      exposure:
+        include:
           - info
           - health
           - metrics

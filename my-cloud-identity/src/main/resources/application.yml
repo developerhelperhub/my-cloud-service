@@ -1,6 +1,8 @@
 spring:
   application:
     name: my-cloud-identity
+  jmx:
+    enabled: true
   data:
     mongodb:
       authentication-database: ${ENV_MYC_IDENTIY_MONGO_AUTH_DB}
@@ -30,7 +32,7 @@ eureka:
 
 management:
   server:
-    port: 9004
+    port: 9002
   endpoint:
     health:
       show-details: always
@@ -38,7 +40,10 @@ management:
     web:
       exposure:
         include:
-          - jolokia 
+          - jolokia
+    jmx:
+      exposure:
+        include:
           - info
           - health
           - metrics

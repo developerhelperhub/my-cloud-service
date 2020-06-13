@@ -3,75 +3,48 @@ services:
   my-cloud-mongodb:
     image: mongo
     container_name: my-cloud-mongodb
-    networks:
-      mycloud_network:
-        ipv4_address: 172.16.1.5
     environment:
       - MONGO_INITDB_DATABASE=myidsrvdb
       - MONGO_INITDB_ROOT_USERNAME=myidsrvdbuser
       - MONGO_INITDB_ROOT_PASSWORD=myidsrvdbpwd@1234
     volumes:
       - ./init-mongo.js:/docker-entrypoint-initdb.d/init-mongo.js:ro
-      - ./mongo-volume:/var/db/mongodb
+      - /tmp/db/my-cloud/mongo-volume:/data/db
     ports:
       - '27017:27017'
   my-cloud-influxdb:
     image: influxdb
-    networks:
-      mycloud_network:
-        ipv4_address: 172.16.1.2
     container_name: my-cloud-influxdb
     environment:
       - INFLUX_USERNAME=todd
       - INFLUX_PASSWORD=influxdb4ever
     volumes:
-      - ./influx-volume:/var/lib/influxdb
+      - /tmp/db/my-cloud/influx-volume:/var/lib/influxdb
     ports:
       - '8086:8086'
   my-cloud-discovery:
     image: developerhelperhub/my-cloud-discovery
-    networks:
-      mycloud_network:
-        ipv4_address: 172.16.1.3
     container_name: my-cloud-discovery
     environment:
       - ENV_MYC_DISCOVERY_USERNAME=discovery
       - ENV_MYC_DISCOVERY_PASSWORD=discoverypass
       - ENV_MYC_DISCOVERY_HOST=my-cloud-discovery
       - ENV_MYC_DISCOVERY_PORT=8761
-      - |-
+      - |
         JAVA_OPTS=
-        -Dcom.sun.management.jmxremote 
-        -Dcom.sun.management.jmxremote.port=9001 
-        -Dcom.sun.management.jmxremote.rmi.port=9001 
-        -Dcom.sun.management.jmxremote.ssl=false
-        -Dcom.sun.management.jmxremote.host=my-cloud-discovery
-        -Djava.rmi.server.hostname=my-cloud-discovery
+        -Djava.rmi.server.logCalls=true
+        -Djava.rmi.server.hostname=localhost
+        -Dcom.sun.management.jmxremote=true
+        -Dcom.sun.management.jmxremote.local.only=false 
+        -Dcom.sun.management.jmxremote.port=7001
+        -Dcom.sun.management.jmxremote.rmi.port=7001
+        -Dcom.sun.management.jmxremote.ssl=false 
+        -Dcom.sun.management.jmxremote.authenticate=false
     ports:
       - '8761:8761'
       - '9001:9001'
-  # apigateway:
-  #   image: developerhelperhub/my-cloud-api-gateway
-  #   networks:
-  #     mycloud_network:
-  #       ipv4_address: 172.16.1.4
-  #   container_name: my-cloud-api-gateway
-  #   environment:
-  #     - ENV_MYC_DISCOVERY_USERNAME=discovery
-  #     - ENV_MYC_DISCOVERY_PASSWORD=discoverypass
-  #     - ENV_MYC_DISCOVERY_HOST=172.16.1.3
-  #     - ENV_MYC_DISCOVERY_PORT=8761
-  #     - ENV_MYC_APIGATEWAY_RMI_HOST=my-cloud-api-gateway
-  #     - ENV_MYC_APIGATEWAY_JMX_PORT=9002
-  #     - ENV_MYC_APIGATEWAY_JMX_RMI_PORT=9002
-  #   ports:
-  #     - '8085:8085'
-  #     - '9002:9002'
   my-cloud-identity:
     image: developerhelperhub/my-cloud-identity
-    networks:
-      mycloud_network:
-        ipv4_address: 172.16.1.6
     container_name: my-cloud-identity
     links:
       - my-cloud-mongodb
@@ -87,51 +60,81 @@ services:
       - ENV_MYC_IDENTIY_MONGO_PASSWORD=myidsrvdbpwd@1234
       - ENV_MYC_IDENTIY_MONGO_PORT=27017
       - ENV_MYC_IDENTIY_MONGO_HOST=my-cloud-mongodb
-      - |-
+      - |
         JAVA_OPTS=
-        -Dcom.sun.management.jmxremote 
-        -Dcom.sun.management.jmxremote.port=9005 
-        -Dcom.sun.management.jmxremote.rmi.port=9005 
+        -Djava.rmi.server.logCalls=true
+        -Djava.rmi.server.hostname=localhost
+        -Dcom.sun.management.jmxremote=true
+        -Dcom.sun.management.jmxremote.local.only=false
+        -Dcom.sun.management.jmxremote.port=7002
+        -Dcom.sun.management.jmxremote.rmi.port=7002
         -Dcom.sun.management.jmxremote.ssl=false 
-        -Dcom.sun.management.jmxremote.authenticate=false 
-        -Dcom.sun.management.jmxremote.host=my-cloud-identity
-        -Djava.rmi.server.hostname=my-cloud-identity
+        -Dcom.sun.management.jmxremote.authenticate=false
     ports:
       - '8081:8081'
+      - '9002:9002'
+  my-cloud-api-gateway:
+    image: developerhelperhub/my-cloud-api-gateway
+    container_name: my-cloud-api-gateway
+    links:
+      - my-cloud-discovery
+    environment:
+      - ENV_MYC_DISCOVERY_USERNAME=discovery
+      - ENV_MYC_DISCOVERY_PASSWORD=discoverypass
+      - ENV_MYC_DISCOVERY_HOST=my-cloud-discovery
+      - ENV_MYC_DISCOVERY_PORT=8761
+      - |
+        JAVA_OPTS=
+        -Djava.rmi.server.logCalls=true
+        -Djava.rmi.server.hostname=localhost
+        -Dcom.sun.management.jmxremote=true
+        -Dcom.sun.management.jmxremote.local.only=false
+        -Dcom.sun.management.jmxremote.port=7003
+        -Dcom.sun.management.jmxremote.rmi.port=7003
+        -Dcom.sun.management.jmxremote.ssl=false 
+        -Dcom.sun.management.jmxremote.authenticate=false
+    ports:
+      - '8085:8085'
       - '9003:9003'
-  # monitor:
-  #   image: developerhelperhub/my-cloud-monitor
-  #   networks:
-  #     mycloud_network:
-  #       ipv4_address: 172.16.1.7
-  #   container_name: my-cloud-monitor
-  #   environment:
-  #     - ENV_MYC_DISCOVERY_USERNAME=discovery
-  #     - ENV_MYC_DISCOVERY_PASSWORD=discoverypass
-  #     - ENV_MYC_DISCOVERY_HOST=172.16.1.3
-  #     - ENV_MYC_DISCOVERY_PORT=8761
-  #     - ENV_MYC_MONITOR_MONGO_DB=myidsrvdb
-  #     - ENV_MYC_MONITOR_MONGO_AUTH_DB=admin
-  #     - ENV_MYC_MONITOR_MONGO_USERNAME=myidsrvdbuser
-  #     - ENV_MYC_MONITOR_MONGO_PASSWORD=myidsrvdbpwd@1234
-  #     - ENV_MYC_MONITOR_MONGO_PORT=27017
-  #     - ENV_MYC_MONITOR_MONGO_HOST=172.16.1.5
-  #     - ENV_MYC_MONITOR_INFLUX_DB=mycloudmonitordb
-  #     - ENV_MYC_MONITOR_INFLUX_USERNAME=todd
-  #     - ENV_MYC_MONITOR_INFLUX_PASSWORD=influxdb4ever
-  #     - ENV_MYC_MONITOR_INFLUX_PORT=8086
-  #     - ENV_MYC_MONITOR_INFLUX_HOST=172.16.1.2
-  #     - ENV_MYC_MONITOR_RMI_HOST=172.16.1.7
-  #     - ENV_MYC_MONITOR_JMX_PORT=9004
-  #     - ENV_MYC_MONITOR_JMX_RMI_PORT=9004
-  #   ports:
-  #     - '8087:8087'
-  #     - '9004:9004'
-  monitorscheduler:
+  my-cloud-monitor:
+    image: developerhelperhub/my-cloud-monitor
+    container_name: my-cloud-monitor
+    links:
+      - my-cloud-mongodb
+      - my-cloud-influxdb
+      - my-cloud-discovery
+      - my-cloud-identity
+    environment:
+      - ENV_MYC_DISCOVERY_USERNAME=discovery
+      - ENV_MYC_DISCOVERY_PASSWORD=discoverypass
+      - ENV_MYC_DISCOVERY_HOST=my-cloud-discovery
+      - ENV_MYC_DISCOVERY_PORT=8761
+      - ENV_MYC_MONITOR_MONGO_DB=myidsrvdb
+      - ENV_MYC_MONITOR_MONGO_AUTH_DB=admin
+      - ENV_MYC_MONITOR_MONGO_USERNAME=myidsrvdbuser
+      - ENV_MYC_MONITOR_MONGO_PASSWORD=myidsrvdbpwd@1234
+      - ENV_MYC_MONITOR_MONGO_PORT=27017
+      - ENV_MYC_MONITOR_MONGO_HOST=my-cloud-mongodb
+      - ENV_MYC_MONITOR_INFLUX_DB=mycloudmonitordb
+      - ENV_MYC_MONITOR_INFLUX_USERNAME=todd
+      - ENV_MYC_MONITOR_INFLUX_PASSWORD=influxdb4ever
+      - ENV_MYC_MONITOR_INFLUX_PORT=8086
+      - ENV_MYC_MONITOR_INFLUX_HOST=my-cloud-influxdb
+      - |
+        JAVA_OPTS=
+        -Djava.rmi.server.logCalls=true
+        -Djava.rmi.server.hostname=localhost
+        -Dcom.sun.management.jmxremote=true
+        -Dcom.sun.management.jmxremote.local.only=false
+        -Dcom.sun.management.jmxremote.port=7004
+        -Dcom.sun.management.jmxremote.rmi.port=7004
+        -Dcom.sun.management.jmxremote.ssl=false 
+        -Dcom.sun.management.jmxremote.authenticate=false
+    ports:
+      - '8087:8087'
+      - '9004:9004'
+  my-cloud-monitor-scheduler:
     image: developerhelperhub/my-cloud-monitor-scheduler
-    networks:
-      mycloud_network:
-        ipv4_address: 172.16.1.8
     container_name: my-cloud-monitor-scheduler
     links:
       - my-cloud-mongodb
@@ -158,19 +161,16 @@ services:
       - ENV_MYC_IDENTIY_CLIENT_SECRET=VkZpzzKa3uMq4vqg
       - ENV_MYC_IDENTIY_HOST=my-cloud-identity
       - ENV_MYC_IDENTIY_PORT=8081
-      - |-
+      - |
         JAVA_OPTS=
-        -Dcom.sun.management.jmxremote 
-        -Dcom.sun.management.jmxremote.port=9005 
-        -Dcom.sun.management.jmxremote.rmi.port=9005 
+        -Djava.rmi.server.logCalls=true
+        -Djava.rmi.server.hostname=localhost
+        -Dcom.sun.management.jmxremote=true
+        -Dcom.sun.management.jmxremote.local.only=false
+        -Dcom.sun.management.jmxremote.port=7005
+        -Dcom.sun.management.jmxremote.rmi.port=7005
         -Dcom.sun.management.jmxremote.ssl=false 
-        -Dcom.sun.management.jmxremote.authenticate=false 
-        -Dcom.sun.management.jmxremote.host=my-cloud-monitor-scheduler
-        -Djava.rmi.server.hostname=my-cloud-monitor-scheduler
+        -Dcom.sun.management.jmxremote.authenticate=false
     ports:
       - '8088:8088'
       - '9005:9005'
-
-networks:
-  mycloud_network:
-    external: true

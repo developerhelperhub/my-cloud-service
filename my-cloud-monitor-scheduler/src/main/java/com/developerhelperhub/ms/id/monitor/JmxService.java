@@ -74,7 +74,7 @@ public class JmxService {
 		public <T> T read(String mBeanName, String operation, String[] params, TypeReference<T> responseType)
 				throws Exception {
 
-			String url = String.format("http://%s:%s/actuator/jolokia/exec/%s/%s", this.hostName, this.managementPort,
+			String url = String.format("http://%s:%s/actuator/jolokia/exec/%s/%s", this.ipAddress, this.managementPort,
 					mBeanName, operation);
 
 			if (params != null) {
