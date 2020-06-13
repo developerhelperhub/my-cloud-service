@@ -59,7 +59,6 @@ $ npm start
 $ cd /setup
 $ docker-compose down
 
-
 ## Screens
 * Login Page
 <img src="docs/screenshots/login.png" width="1000" height="600">
