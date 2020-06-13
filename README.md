@@ -11,24 +11,40 @@ This repostiry contains the development of the my cloud service. This project in
     * Netflix Loadbalancer
     * Oauth2 Server and Resource
     * MongoDB Repository
-    * JMX Client
+    * Actuator
+      * JMX 
+      * Jolokia
+    * JMX 
+    * Oauth2 Rest Template
     * Security
       * Basic Security
       * Oauth2 
       * JWT Token
+  * Other Framework
+    * Jolokia
+    * InfluxDB Java Client
+    * Lombok
   * Database
     * MongoDB
     * Influxdb
   * Docker
     * Docker Compose
     * Docker Hub
+    * Docker 
+      * Build
+      * Volume
+      * Links
   * Maven
+    * Module
+    * Dependency Management
+    * Dockerfile Maven Plugin
   * My Cloud Service 
     * Identity Service
     * Discovery Service
     * Monitor Service
     * Monitor Scheduler Service
     * API Gateway
+    * My Cloud Dashboard
 * Frontend 
   * React JS
   * Server Sent Event (Event Source)
@@ -43,9 +59,6 @@ This repostiry contains the development of the my cloud service. This project in
 #### In progress .....
 
 ## Run Commands
-
-#### Network creation for my cloud service
-$ docker network create --gateway 172.16.1.1 --subnet 172.16.1.0/24 mycloud_network
 
 #### Running all the services
 $ cd /setup
