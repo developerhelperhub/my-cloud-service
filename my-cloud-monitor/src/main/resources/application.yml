@@ -40,7 +40,7 @@ eureka:
       
 management:
   server:
-    port: 9004
+    port: 9006
   endpoint:
     health:
       show-details: always

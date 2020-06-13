@@ -1,5 +1,6 @@
 package com.developerhelperhub.ms.id.model.monitor;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -22,7 +23,7 @@ public class ApplicationInstanceInfoModel {
 		public int evictionTimestamp;
 		public String serviceUpTimestamp;
 	}
-	
+
 	@Data
 	public static class Instance {
 		private String instanceId;
@@ -46,9 +47,24 @@ public class ApplicationInstanceInfoModel {
 		private String lastDirtyTimestamp;
 		private String actionType;
 		private String asgName;
-		private Map<String, String> metadata;
+		private List<Metadata> metadata = new ArrayList<>();
 	}
-	
+
+	@Data
+	public static class Metadata {
+		private String key;
+		private String value;
+
+		public Metadata() {
+
+		}
+
+		public Metadata(String key, String value) {
+			this.key = key;
+			this.value = value;
+		}
+	}
+
 	private String id;
 	private boolean found;
 	private String application;

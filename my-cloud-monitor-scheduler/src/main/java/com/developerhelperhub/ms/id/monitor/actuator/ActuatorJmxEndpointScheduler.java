@@ -51,28 +51,28 @@ public class ActuatorJmxEndpointScheduler {
 	public ActuatorJmxEndpointScheduler() {
 
 		monitors.add(new InfoMonitor("org.springframework.boot:type=Endpoint,name=Info", "info", "info"));
-//		monitors.add(new HealthMonitor("org.springframework.boot:type=Endpoint,name=Health", "health", "health"));
-//
-//		monitors.add(new MetricMonitor("org.springframework.boot:type=Endpoint,name=Metrics", "metric",
-//				new String[] { METRIX_JVM_MEMORY_USED }, "memory"));
-//
-//		monitors.add(new MetricMonitor("org.springframework.boot:type=Endpoint,name=Metrics", "metric",
-//				new String[] { METRIX_JVM_MEMORY_MAX }, "memory"));
-//
-//		monitors.add(new MetricMonitor("org.springframework.boot:type=Endpoint,name=Metrics", "metric",
-//				new String[] { METRIX_JVM_BUFFER_MEMORY_PROMPTED }, "memory"));
-//
-//		monitors.add(new MetricMonitor("org.springframework.boot:type=Endpoint,name=Metrics", "metric",
-//				new String[] { METRIX_JVM_BUFFER_TOTAL_CAPACITY }, "memory"));
-//
-//		monitors.add(new MetricMonitor("org.springframework.boot:type=Endpoint,name=Metrics", "metric",
-//				new String[] { METRIX_JVM_THREADS_DAEMON }, "thread"));
-//
-//		monitors.add(new MetricMonitor("org.springframework.boot:type=Endpoint,name=Metrics", "metric",
-//				new String[] { METRIX_JVM_THREADS_LIVE }, "thread"));
-//
-//		monitors.add(new MetricMonitor("org.springframework.boot:type=Endpoint,name=Metrics", "metric",
-//				new String[] { METRIX_JVM_THREADS_PEAK }, "thread"));
+		monitors.add(new HealthMonitor("org.springframework.boot:type=Endpoint,name=Health", "health", "health"));
+
+		monitors.add(new MetricMonitor("org.springframework.boot:type=Endpoint,name=Metrics", "metric",
+				new String[] { METRIX_JVM_MEMORY_USED, "null" }, "memory"));
+
+		monitors.add(new MetricMonitor("org.springframework.boot:type=Endpoint,name=Metrics", "metric",
+				new String[] { METRIX_JVM_MEMORY_MAX, "null" }, "memory"));
+
+		monitors.add(new MetricMonitor("org.springframework.boot:type=Endpoint,name=Metrics", "metric",
+				new String[] { METRIX_JVM_BUFFER_MEMORY_PROMPTED, "null" }, "memory"));
+
+		monitors.add(new MetricMonitor("org.springframework.boot:type=Endpoint,name=Metrics", "metric",
+				new String[] { METRIX_JVM_BUFFER_TOTAL_CAPACITY, "null" }, "memory"));
+
+		monitors.add(new MetricMonitor("org.springframework.boot:type=Endpoint,name=Metrics", "metric",
+				new String[] { METRIX_JVM_THREADS_DAEMON, "null" }, "thread"));
+
+		monitors.add(new MetricMonitor("org.springframework.boot:type=Endpoint,name=Metrics", "metric",
+				new String[] { METRIX_JVM_THREADS_LIVE, "null" }, "thread"));
+
+		monitors.add(new MetricMonitor("org.springframework.boot:type=Endpoint,name=Metrics", "metric",
+				new String[] { METRIX_JVM_THREADS_PEAK, "null" }, "thread"));
 
 	}
 
