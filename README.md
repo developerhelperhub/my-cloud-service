@@ -11,11 +11,13 @@ This repostiry contains the development of the my cloud service. This project in
     * Netflix Loadbalancer
     * Oauth2 Server and Resource
     * MongoDB Repository
-    * JMX Client
+    * JMX 
     * Security
       * Basic Security
       * Oauth2 
       * JWT Token
+  * Other Framework
+    * Jolokia
   * Database
     * MongoDB
     * Influxdb
@@ -23,6 +25,9 @@ This repostiry contains the development of the my cloud service. This project in
     * Docker Compose
     * Docker Hub
   * Maven
+    * Module
+    * Dependency Management
+    * Dockerfile Maven Plugin
   * My Cloud Service 
     * Identity Service
     * Discovery Service
