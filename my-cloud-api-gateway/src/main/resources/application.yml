@@ -3,10 +3,6 @@ spring:
     name: my-cloud-api-gateway
   jmx:
     enabled: true
-logging:
-  level:
-    org:
-      springframework: DEBUG
 
 server:
   port: 8085

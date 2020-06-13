@@ -28,16 +28,6 @@ mycloud:
     scop: ADMIN
     access-token-uri: http://${ENV_MYC_IDENTIY_HOST}:${ENV_MYC_IDENTIY_PORT}/oauth/token
 
-logging:
-  level:
-    org:
-      springframework: INFO
-    com:
-      developerhelperhub: DEBUG
-      netflix:
-        eureka: OFF
-        discovery: OFF
-
 server:
   port: 8088
   #servlet:

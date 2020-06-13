@@ -11,13 +11,6 @@ spring:
       password: ${ENV_MYC_IDENTIY_MONGO_PASSWORD}
       port: ${ENV_MYC_IDENTIY_MONGO_PORT}
       host: ${ENV_MYC_IDENTIY_MONGO_HOST}
-      
-logging:
-  level:
-    org:
-      springframework: DEBUG
-    com:
-      developerhelperhub: DEBUG
 
 server:
   port: 8081

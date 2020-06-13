@@ -49,3 +49,15 @@ docker volume prune
 
 #### lsof meaning 'LiSt Open Files' is used to find out which files are open by which process. 
 sudo lsof -i -P -n | grep 5432
+
+
+####you can run any command in a running container just knowing its ID (or name):
+docker exec my-cloud-discovery ls /var/mycloud/logs
+
+####tail contailer logs
+docker exec my-cloud-discovery tail -f  /var/mycloud/logs/app.log
+
+
+
+
+

@@ -11,6 +11,10 @@ This repostiry contains the development of the my cloud service. This project in
     * Netflix Loadbalancer
     * Oauth2 Server and Resource
     * MongoDB Repository
+    * Spring Logback
+      * ANSI Color
+      * Human Readable Format
+      * Retention Policy
     * Actuator
       * JMX 
       * Jolokia

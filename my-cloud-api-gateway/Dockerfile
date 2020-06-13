@@ -1,6 +1,12 @@
 FROM openjdk:8-jdk-alpine
 
-VOLUME /tmp
+RUN addgroup -S mycloud
+ 
+RUN adduser -S mycloud -G mycloud
+
+RUN mkdir -pv /var/mycloud/logs
+ 
+RUN chown mycloud:mycloud /var/mycloud/logs
 
 COPY target/*.jar app.jar
 

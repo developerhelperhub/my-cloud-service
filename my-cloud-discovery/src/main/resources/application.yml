@@ -9,20 +9,9 @@ spring:
       name: ${ENV_MYC_DISCOVERY_USERNAME}
       password: ${ENV_MYC_DISCOVERY_PASSWORD}
 
-logging:
-  level:
-    org:
-      springframework: DEBUG
-    com:
-      developerhelperhub: DEBUG
-      netflix:
-        eureka: OFF
-        discovery: OFF
-
 server:
   port: 8761
   
-
 eureka:
   dashboard:
     enabled: false
