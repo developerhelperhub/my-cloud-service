@@ -31,6 +31,10 @@ This repostiry contains the development of the my cloud service. This project in
   * Database
     * MongoDB
     * Influxdb
+  * ELK
+    * Filebeat
+    * Elasticsearch
+    * Kibana
   * Docker
     * Docker Compose
     * Docker Hub
