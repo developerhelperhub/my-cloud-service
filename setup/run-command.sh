@@ -36,6 +36,12 @@ docker rmi developerhelperhub/my_cloud_influxdb
 docker rmi developerhelperhub/my-cloud-monitor
 docker rmi developerhelperhub/my-cloud-identity
 
+#### Running db only
+docker-compose -f docker-compose-db.yml up
+
+#### Stop db only
+docker-compose -f docker-compose-db.yml up
+
 
 #### Remove all unwanted process, contairs
 docker system prune
@@ -58,6 +64,9 @@ docker exec my-cloud-discovery ls /var/mycloud/logs
 docker exec my-cloud-discovery tail -f  /var/mycloud/logs/app.log
 
 
+docker exec -it my-cloud-discovery /bin/sh
 
+### 
+cat /etc/*-release
 
 

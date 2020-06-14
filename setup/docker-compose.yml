@@ -9,7 +9,7 @@ services:
       - MONGO_INITDB_ROOT_PASSWORD=myidsrvdbpwd@1234
     volumes:
       - ./init-mongo.js:/docker-entrypoint-initdb.d/init-mongo.js:ro
-      - /tmp/db/my-cloud/mongo-volume:/data/db
+      - /var/mycloud/volume/db/mongo:/data/db
     ports:
       - '27017:27017'
   my-cloud-influxdb:
@@ -19,7 +19,7 @@ services:
       - INFLUX_USERNAME=todd
       - INFLUX_PASSWORD=influxdb4ever
     volumes:
-      - /tmp/db/my-cloud/influx-volume:/var/lib/influxdb
+      - /var/mycloud/volume/db/influx:/var/lib/influxdb
     ports:
       - '8086:8086'
   my-cloud-discovery:
