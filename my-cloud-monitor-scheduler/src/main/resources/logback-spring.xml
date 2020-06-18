@@ -11,7 +11,7 @@
 		<encoder
 			class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
 			
-			<pattern>%d|%blue(%thread)|%highlight(%5p)|%yellow(%logger{25})|%msg%n%throwable</pattern>
+			<pattern>%d|%thread|%5p|%logger{25}|%msg%n%throwable</pattern>
 			
 		</encoder>
 
