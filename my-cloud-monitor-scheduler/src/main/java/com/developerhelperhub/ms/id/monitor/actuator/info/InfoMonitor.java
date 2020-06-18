@@ -54,6 +54,8 @@ public class InfoMonitor extends ActuatorJmxMonitor {
 
 		} catch (Exception e) {
 
+			e.printStackTrace();
+
 			LOGGER.debug("{} JMX connection error :- {} ", getConnection().getInstanceId(), e.getMessage());
 
 		}

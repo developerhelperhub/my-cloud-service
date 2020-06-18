@@ -2,6 +2,7 @@ package com.developerhelperhub.ms.id.config;
 
 import java.util.Arrays;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cloud.client.loadbalancer.LoadBalanced;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -24,6 +25,24 @@ import org.springframework.security.oauth2.provider.token.store.JwtTokenStore;
 public class ResourceServerConfig extends ResourceServerConfigurerAdapter {
 
 	private static final String RESOURCE_ID = "my_cloud_monitor_scheduler_id";
+
+	@Value("${mycloud.oauth.id}")
+	private String identityId;
+
+	@Value("${mycloud.oauth.client-id}")
+	private String identityClientId;
+
+	@Value("${mycloud.oauth.client-secret}")
+	private String identityClientSecret;
+
+	@Value("${mycloud.oauth.grant-type}")
+	private String identityGrantType;
+
+	@Value("${mycloud.oauth.scop}")
+	private String identityScop;
+
+	@Value("${mycloud.oauth.access-token-uri}")
+	private String identityAccessTokenUri;
 
 	@Override
 	public void configure(ResourceServerSecurityConfigurer resources) throws Exception {
@@ -56,16 +75,35 @@ public class ResourceServerConfig extends ResourceServerConfigurerAdapter {
 		return store;
 	}
 
-	@Bean
+	@Bean("loadBalance")
 	@LoadBalanced
-	public OAuth2RestTemplate identityRestTemplate() {
+	public OAuth2RestTemplate identityRestTemplateLoadBalance() {
+
 		final ClientCredentialsResourceDetails resourceDetails = new ClientCredentialsResourceDetails();
-		resourceDetails.setId("identity-service");
-		resourceDetails.setClientId("my-cloud-identity-credentials");
-		resourceDetails.setClientSecret("VkZpzzKa3uMq4vqg");
-		resourceDetails.setGrantType("client_credentials");
-		resourceDetails.setScope(Arrays.asList("ADMIN"));
-		resourceDetails.setAccessTokenUri("http://localhost:8081/oauth/token");
+
+		resourceDetails.setId(this.identityId);
+		resourceDetails.setClientId(this.identityClientId);
+		resourceDetails.setClientSecret(this.identityClientSecret);
+		resourceDetails.setGrantType(this.identityGrantType);
+		resourceDetails.setScope(Arrays.asList(this.identityScop));
+		resourceDetails.setAccessTokenUri(this.identityAccessTokenUri);
+
+		OAuth2RestTemplate template = new OAuth2RestTemplate(resourceDetails);
+
+		return template;
+	}
+	
+	@Bean("nonLoadBalance")
+	public OAuth2RestTemplate identityRestTemplate() {
+
+		final ClientCredentialsResourceDetails resourceDetails = new ClientCredentialsResourceDetails();
+
+		resourceDetails.setId(this.identityId);
+		resourceDetails.setClientId(this.identityClientId);
+		resourceDetails.setClientSecret(this.identityClientSecret);
+		resourceDetails.setGrantType(this.identityGrantType);
+		resourceDetails.setScope(Arrays.asList(this.identityScop));
+		resourceDetails.setAccessTokenUri(this.identityAccessTokenUri);
 
 		OAuth2RestTemplate template = new OAuth2RestTemplate(resourceDetails);
 

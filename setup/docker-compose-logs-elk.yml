@@ -1,0 +1,47 @@
+version: '3'
+services: 
+
+  elasticsearch:
+    image: "docker.elastic.co/elasticsearch/elasticsearch:7.2.0"
+    environment:
+      - "ES_JAVA_OPTS=-Xms1g -Xmx1g"
+      - "discovery.type=single-node"
+    ports:
+      - "9200:9200"
+    volumes:
+      - elasticsearch_data:/usr/share/elasticsearch/data
+
+  kibana:
+    image: "docker.elastic.co/kibana/kibana:7.2.0"
+    ports:
+      - "5601:5601"
+      
+  my-cloud-discovery:
+    image: developerhelperhub/my-cloud-discovery
+    container_name: my-cloud-discovery
+    links:
+      - elasticsearch
+    environment:
+      - ENV_MYC_DISCOVERY_USERNAME=discovery
+      - ENV_MYC_DISCOVERY_PASSWORD=discoverypass
+      - ENV_MYC_DISCOVERY_HOST=my-cloud-discovery
+      - ENV_MYC_DISCOVERY_PORT=8761
+      - ENV_FILEBEAT_ELASTICSEARCH_HOSTS=["elasticsearch:9200"]
+      - ENV_FILEBEAT_INDEX="my-cloud-logs-discovery-%{+yyyy.MM.dd}"
+      - ENV_FILEBEAT_LOGGING_LEVEL="info"
+      - |
+        JAVA_OPTS=
+        -Djava.rmi.server.logCalls=true
+        -Djava.rmi.server.hostname=localhost
+        -Dcom.sun.management.jmxremote=true
+        -Dcom.sun.management.jmxremote.local.only=false 
+        -Dcom.sun.management.jmxremote.port=7001
+        -Dcom.sun.management.jmxremote.rmi.port=7001
+        -Dcom.sun.management.jmxremote.ssl=false 
+        -Dcom.sun.management.jmxremote.authenticate=false
+    ports:
+      - '8761:8761'
+      - '9001:9001'
+  
+volumes:
+    elasticsearch_data:

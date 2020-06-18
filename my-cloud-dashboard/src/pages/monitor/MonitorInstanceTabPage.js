@@ -68,10 +68,8 @@ class MonitorInstanceTabPage extends React.Component {
                     lastUpdatedTimestamp: 0,
                     lastDirtyTimestamp: 0,
                     actionType: "",
+                    metadata: [],
                     asgName: "",
-                    metadata: {
-                        managementport: 0
-                    },
                     coordinatingDiscoveryServer: false
                 }
             },
@@ -205,39 +203,49 @@ class MonitorInstanceTabPage extends React.Component {
                 selected.application = eventData.application;
                 selected.lastUpdated = eventData.lastUpdated;
 
-                selected.build.version = eventData.build.version;
-                selected.build.artifact = eventData.build.artifact;
-                selected.build.name = eventData.build.name;
-                selected.build.group = eventData.build.group;
-                selected.build.time = eventData.build.time;
+                if (eventData.build != null) {
+                    selected.build.version = eventData.build.version;
+                    selected.build.artifact = eventData.build.artifact;
+                    selected.build.name = eventData.build.name;
+                    selected.build.group = eventData.build.group;
+                    selected.build.time = eventData.build.time;
+                }
 
-                selected.diskSpace.free = self.fileSizeFormat(eventData.diskSpace.data.free);
-                selected.diskSpace.total = self.fileSizeFormat(eventData.diskSpace.data.total);
-                selected.diskSpace.threshold = self.fileSizeFormat(eventData.diskSpace.data.threshold);
+                if (eventData.diskSpace != null) {
+                    selected.diskSpace.free = self.fileSizeFormat(eventData.diskSpace.data.free);
+                    selected.diskSpace.total = self.fileSizeFormat(eventData.diskSpace.data.total);
+                    selected.diskSpace.threshold = self.fileSizeFormat(eventData.diskSpace.data.threshold);
+                }
 
-                selected.detail.instanceId = eventData.detail.instanceId;
-                selected.detail.appGroupName = eventData.detail.appGroupName;
-                selected.detail.ipAddr = eventData.detail.ipAddr;
-                selected.detail.sid = eventData.detail.sid;
-                selected.detail.homePageUrl = eventData.detail.homePageUrl;
-                selected.detail.vipAddress = eventData.detail.vipAddress;
-                selected.detail.secureVipAddress = eventData.detail.secureVipAddress;
-                selected.detail.countryId = eventData.detail.countryId;
-                selected.detail.hostName = eventData.detail.hostName;
-                selected.detail.overriddenStatus = eventData.detail.overriddenStatus;
-                selected.detail.leaseInfo.renewalIntervalInSecs = eventData.detail.leaseInfo.renewalIntervalInSecs;
-                selected.detail.leaseInfo.durationInSecs = eventData.detail.leaseInfo.durationInSecs;
-                selected.detail.leaseInfo.registrationTimestamp = eventData.detail.leaseInfo.registrationTimestamp;
-                selected.detail.leaseInfo.lastRenewalTimestamp = eventData.detail.leaseInfo.lastRenewalTimestamp;
-                selected.detail.leaseInfo.evictionTimestamp = eventData.detail.leaseInfo.evictionTimestamp;
-                selected.detail.leaseInfo.serviceUpTimestamp = eventData.detail.leaseInfo.serviceUpTimestamp;
-                selected.detail.lastUpdatedTimestamp = eventData.detail.lastUpdatedTimestamp;
-                selected.detail.lastDirtyTimestamp = eventData.detail.lastDirtyTimestamp;
-                selected.detail.actionType = eventData.detail.actionType;
-                selected.detail.asgName = eventData.detail.asgName;
-                selected.detail.metadata.managementport = eventData.detail.metadata.managementport;
-                selected.detail.coordinatingDiscoveryServer = eventData.detail.coordinatingDiscoveryServer;
-                
+                if (eventData.detail != null) {
+                    selected.detail.instanceId = eventData.detail.instanceId;
+                    selected.detail.appGroupName = eventData.detail.appGroupName;
+                    selected.detail.ipAddr = eventData.detail.ipAddr;
+                    selected.detail.sid = eventData.detail.sid;
+                    selected.detail.homePageUrl = eventData.detail.homePageUrl;
+                    selected.detail.vipAddress = eventData.detail.vipAddress;
+                    selected.detail.secureVipAddress = eventData.detail.secureVipAddress;
+                    selected.detail.countryId = eventData.detail.countryId;
+                    selected.detail.hostName = eventData.detail.hostName;
+                    selected.detail.overriddenStatus = eventData.detail.overriddenStatus;
+                    selected.detail.leaseInfo.renewalIntervalInSecs = eventData.detail.leaseInfo.renewalIntervalInSecs;
+                    selected.detail.leaseInfo.durationInSecs = eventData.detail.leaseInfo.durationInSecs;
+                    selected.detail.leaseInfo.registrationTimestamp = eventData.detail.leaseInfo.registrationTimestamp;
+                    selected.detail.leaseInfo.lastRenewalTimestamp = eventData.detail.leaseInfo.lastRenewalTimestamp;
+                    selected.detail.leaseInfo.evictionTimestamp = eventData.detail.leaseInfo.evictionTimestamp;
+                    selected.detail.leaseInfo.serviceUpTimestamp = eventData.detail.leaseInfo.serviceUpTimestamp;
+                    selected.detail.lastUpdatedTimestamp = eventData.detail.lastUpdatedTimestamp;
+                    selected.detail.lastDirtyTimestamp = eventData.detail.lastDirtyTimestamp;
+                    selected.detail.actionType = eventData.detail.actionType;
+                    selected.detail.asgName = eventData.detail.asgName;
+                    selected.detail.coordinatingDiscoveryServer = eventData.detail.coordinatingDiscoveryServer;
+
+                    selected.detail.metadata = [];
+                    eventData.detail.metadata.forEach(data=> {
+                        selected.detail.metadata.push(<p class="m-0">{data.key} = {data.value}</p>)
+                    });
+                }
+
                 var values = [];
                 var items = [];
                 var legends = [];
@@ -588,6 +596,9 @@ class MonitorInstanceTabPage extends React.Component {
                                 <InfoBoxItem label="Action Type">{selected.detail.actionType}</InfoBoxItem>
                                 <InfoBoxItem label="ASG Name">{selected.detail.asgName}</InfoBoxItem>
                                 <InfoBoxItem label="Coordinating Discovery Server">{selected.detail.coordinatingDiscoveryServer}</InfoBoxItem>
+                                <InfoBoxItem label="Meta Data">
+                                    {selected.detail.metadata}
+                                </InfoBoxItem>
                             </InfoBox>
                         </div>
                     </div>

@@ -1,21 +1,16 @@
 spring:
   application:
     name: my-cloud-identity
+  jmx:
+    enabled: true
   data:
     mongodb:
-      authentication-database: admin
-      database: myidsrvdb
-      username: myidsrvdbuser
-      password: myidsrvdbpwd@1234
-      port: 27017
-      host: localhost
-      
-logging:
-  level:
-    org:
-      springframework: DEBUG
-    com:
-      developerhelperhub: DEBUG
+      authentication-database: ${ENV_MYC_IDENTIY_MONGO_AUTH_DB}
+      database: ${ENV_MYC_IDENTIY_MONGO_DB}
+      username: ${ENV_MYC_IDENTIY_MONGO_USERNAME}
+      password: ${ENV_MYC_IDENTIY_MONGO_PASSWORD}
+      port: ${ENV_MYC_IDENTIY_MONGO_PORT}
+      host: ${ENV_MYC_IDENTIY_MONGO_HOST}
 
 server:
   port: 8081
@@ -25,15 +20,23 @@ server:
 eureka:
   client:
     serviceUrl:
-      defaultZone: http://discovery:discoverypass@localhost:8761/eureka/
+      defaultZone: http://${ENV_MYC_DISCOVERY_USERNAME}:${ENV_MYC_DISCOVERY_PASSWORD}@${ENV_MYC_DISCOVERY_HOST}:${ENV_MYC_DISCOVERY_PORT}/eureka/
 
 
 management:
+  server:
+    port: 9002
   endpoint:
     health:
       show-details: always
   endpoints:
     web:
       exposure:
-        #include: info, health, metrics, auditevents, beans, caches, conditions, configprops, env, httptrace, loggers, mappings, scheduledtasks, sessions, shutdown, threaddump
-        include: "*"
+        include:
+          - jolokia
+    jmx:
+      exposure:
+        include:
+          - info
+          - health
+          - metrics

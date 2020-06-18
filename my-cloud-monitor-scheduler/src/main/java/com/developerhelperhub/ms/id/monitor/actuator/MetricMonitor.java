@@ -13,8 +13,8 @@ public class MetricMonitor extends ActuatorJmxMonitor {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(MetricMonitor.class);
 
-	public MetricMonitor(String mBeanName, String operation, Object[] args, String[] signatures, String measurement) {
-		super(mBeanName, operation, args, signatures, measurement);
+	public MetricMonitor(String mBeanName, String operation, String[] args, String measurement) {
+		super(mBeanName, operation, args, measurement);
 	}
 
 	@Override
@@ -25,16 +25,14 @@ public class MetricMonitor extends ActuatorJmxMonitor {
 
 		try {
 
-			MatricModel body = getConnection().read(getMBeanName(), getOperation(), getArgs(), getSignatures(),
+			MatricModel body = getConnection().read(getMBeanName(), getOperation(), getArgs(),
 					new TypeReference<MatricModel>() {
 					});
 
 			LOGGER.debug("Matric of {} : {}", instanceId, body.toString());
 
-			Point.Builder builder = Point.measurement(getMeasurement())
-					.tag("metric", (String) getArgs()[0])
-					.tag("host_name", getConnection().getHostName())
-					.tag("instance_id", instanceId)
+			Point.Builder builder = Point.measurement(getMeasurement()).tag("metric", (String) getArgs()[0])
+					.tag("host_name", getConnection().getHostName()).tag("instance_id", instanceId)
 					.time(System.currentTimeMillis(), TimeUnit.MILLISECONDS).addField("instance_id", instanceId)
 					.addField("application", application).addField("baseUnit", body.getBaseUnit());
 
@@ -51,6 +49,8 @@ public class MetricMonitor extends ActuatorJmxMonitor {
 			getInfluxDB().close();
 
 		} catch (Exception e) {
+
+			e.printStackTrace();
 
 			LOGGER.debug("{} JMX connection error :- {} ", instanceId, e.getMessage());
 

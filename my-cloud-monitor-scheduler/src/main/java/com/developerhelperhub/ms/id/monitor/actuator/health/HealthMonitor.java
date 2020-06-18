@@ -78,6 +78,8 @@ public class HealthMonitor extends ActuatorJmxMonitor {
 
 		} catch (Exception e) {
 
+			e.printStackTrace();
+			
 			LOGGER.debug("{} JMX connection error :- {} ", instanceId, e.getMessage());
 
 			builder.addField("status", STATUS_DOWN);

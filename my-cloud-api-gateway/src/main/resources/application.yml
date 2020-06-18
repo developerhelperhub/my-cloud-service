@@ -1,11 +1,8 @@
 spring:
   application:
     name: my-cloud-api-gateway
-
-logging:
-  level:
-    org:
-      springframework: DEBUG
+  jmx:
+    enabled: true
 
 server:
   port: 8085
@@ -13,7 +10,7 @@ server:
 eureka:
   client:
     serviceUrl:
-      defaultZone: http://discovery:discoverypass@localhost:8761/eureka/
+      defaultZone: http://${ENV_MYC_DISCOVERY_USERNAME}:${ENV_MYC_DISCOVERY_PASSWORD}@${ENV_MYC_DISCOVERY_HOST}:${ENV_MYC_DISCOVERY_PORT}/eureka/
     
 zuul:
   routes:
@@ -36,14 +33,22 @@ zuul:
       path: /discovery/**
       sensitiveHeaders: Cookie,Set-Cookie
       serviceId: my-cloud-discovery
-      #url: http://localhost:8761
       stripPrefix: false
 
 management:
+  server:
+    port: 9003
   endpoint:
     health:
       show-details: always
   endpoints:
     web:
       exposure:
-        include: info, health, metrics
+        include:
+          - jolokia
+    jmx:
+      exposure:
+        include:
+          - info
+          - health
+          - metrics 

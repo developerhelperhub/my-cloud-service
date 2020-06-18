@@ -1,0 +1,17 @@
+filebeat.inputs:
+- type: log
+  paths: 
+    - '/var/mycloud/logs/*.log'
+    
+output.elasticsearch:
+  hosts: ${ENV_FILEBEAT_ELASTICSEARCH_HOSTS}
+  indices:
+    - index: ${ENV_FILEBEAT_INDEX}
+
+logging.level: ${ENV_FILEBEAT_LOGGING_LEVEL}
+logging.to_files: true
+logging.files:
+  path: /var/mycloud/filebeat/logs
+  name: filebeat
+  keepfiles: 7
+  permissions: 0644

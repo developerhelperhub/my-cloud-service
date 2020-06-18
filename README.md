@@ -11,6 +11,10 @@ This repostiry contains the development of the my cloud service. This project in
     * Netflix Loadbalancer
     * Oauth2 Server and Resource
     * MongoDB Repository
+    * Spring Logback
+      * ANSI Color
+      * Human Readable Format
+      * Retention Policy
     * Actuator
       * JMX 
       * Jolokia
@@ -27,6 +31,10 @@ This repostiry contains the development of the my cloud service. This project in
   * Database
     * MongoDB
     * Influxdb
+  * ELK
+    * Filebeat
+    * Elasticsearch
+    * Kibana
   * Docker
     * Docker Compose
     * Docker Hub
@@ -60,13 +68,17 @@ This repostiry contains the development of the my cloud service. This project in
 
 ## Run Commands
 
-#### Running the services
+#### Running all the services
 $ cd /setup
 $ docker-compose up
 
 #### Running My Cloud Dashboard
 $ cd /my-cloud-dashboard
 $ npm start
+
+#### Stop all the services
+$ cd /setup
+$ docker-compose down
 
 ## Screens
 * Login Page

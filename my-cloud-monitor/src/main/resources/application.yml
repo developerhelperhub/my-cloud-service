@@ -1,28 +1,23 @@
 spring:
   application:
     name: my-cloud-monitor
-  security:
-    user:
-      name: breaker
-      password: breaker
+  jmx:
+    enabled: true
   data:
     mongodb:
-      authentication-database: admin
-      database: myidsrvdb
-      username: myidsrvdbuser
-      password: myidsrvdbpwd@1234
-      port: 27017
-      host: localhost
+      authentication-database: ${ENV_MYC_MONITOR_MONGO_AUTH_DB}
+      database: ${ENV_MYC_MONITOR_MONGO_DB}
+      username: ${ENV_MYC_MONITOR_MONGO_USERNAME}
+      password: ${ENV_MYC_MONITOR_MONGO_PASSWORD}
+      port: ${ENV_MYC_MONITOR_MONGO_PORT}
+      host: ${ENV_MYC_MONITOR_MONGO_HOST}
 
-logging:
-  level:
-    org:
-      springframework: DEBUG
-    com:
-      developerhelperhub: DEBUG
-      netflix:
-        eureka: OFF
-        discovery: OFF
+influxdb:
+  database: ${ENV_MYC_MONITOR_INFLUX_DB}
+  username: ${ENV_MYC_MONITOR_INFLUX_USERNAME}
+  password: ${ENV_MYC_MONITOR_INFLUX_PASSWORD}
+  port: ${ENV_MYC_MONITOR_INFLUX_PORT}
+  host: ${ENV_MYC_MONITOR_INFLUX_HOST}
 
 server:
   port: 8087
@@ -32,14 +27,23 @@ server:
 eureka:
   client:
     serviceUrl:
-      defaultZone: http://discovery:discoverypass@localhost:8761/eureka/
+      defaultZone: http://${ENV_MYC_DISCOVERY_USERNAME}:${ENV_MYC_DISCOVERY_PASSWORD}@${ENV_MYC_DISCOVERY_HOST}:${ENV_MYC_DISCOVERY_PORT}/eureka/
 
       
 management:
+  server:
+    port: 9004
   endpoint:
     health:
       show-details: always
   endpoints:
     web:
       exposure:
-        include: info, health, metrics, hystrix.stream
+        include:
+          - jolokia
+    jmx:
+      exposure:
+        include:
+          - info
+          - health
+          - metrics

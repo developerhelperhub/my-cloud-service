@@ -9,6 +9,524 @@
 			"name": "Identity Service",
 			"item": [
 				{
+					"name": "Actuators",
+					"item": [
+						{
+							"name": "health",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{accessToken}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "localhost:8085/actuator/health",
+									"host": [
+										"localhost"
+									],
+									"port": "8085",
+									"path": [
+										"actuator",
+										"health"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "metrics",
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{accessToken}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [],
+								"body": {
+									"mode": "formdata",
+									"formdata": []
+								},
+								"url": {
+									"raw": "http://localhost:8081/actuator/metrics",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8081",
+									"path": [
+										"actuator",
+										"metrics"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "metrics-by-name",
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{accessToken}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [],
+								"body": {
+									"mode": "formdata",
+									"formdata": []
+								},
+								"url": {
+									"raw": "http://localhost:8081/actuator/metrics/http.server.requests",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8081",
+									"path": [
+										"actuator",
+										"metrics",
+										"http.server.requests"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "info",
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{accessToken}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [],
+								"body": {
+									"mode": "formdata",
+									"formdata": []
+								},
+								"url": {
+									"raw": "http://localhost:8081/actuator/info",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8081",
+									"path": [
+										"actuator",
+										"info"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "beans",
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{accessToken}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [],
+								"body": {
+									"mode": "formdata",
+									"formdata": []
+								},
+								"url": {
+									"raw": "http://localhost:8081/actuator/beans",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8081",
+									"path": [
+										"actuator",
+										"beans"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "caches",
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{accessToken}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [],
+								"body": {
+									"mode": "formdata",
+									"formdata": []
+								},
+								"url": {
+									"raw": "http://localhost:8081/actuator/caches",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8081",
+									"path": [
+										"actuator",
+										"caches"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "conditions",
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{accessToken}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [],
+								"body": {
+									"mode": "formdata",
+									"formdata": []
+								},
+								"url": {
+									"raw": "http://localhost:8081/actuator/conditions",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8081",
+									"path": [
+										"actuator",
+										"conditions"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "configprops",
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{accessToken}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [],
+								"body": {
+									"mode": "formdata",
+									"formdata": []
+								},
+								"url": {
+									"raw": "http://localhost:8081/actuator/configprops",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8081",
+									"path": [
+										"actuator",
+										"configprops"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "env",
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{accessToken}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [],
+								"body": {
+									"mode": "formdata",
+									"formdata": []
+								},
+								"url": {
+									"raw": "http://localhost:8081/actuator/env",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8081",
+									"path": [
+										"actuator",
+										"env"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "loggers",
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{accessToken}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [],
+								"body": {
+									"mode": "formdata",
+									"formdata": []
+								},
+								"url": {
+									"raw": "http://localhost:8081/actuator/loggers",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8081",
+									"path": [
+										"actuator",
+										"loggers"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "mappings",
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{accessToken}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [],
+								"body": {
+									"mode": "formdata",
+									"formdata": []
+								},
+								"url": {
+									"raw": "http://localhost:8081/actuator/mappings",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8081",
+									"path": [
+										"actuator",
+										"mappings"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "scheduledtasks",
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{accessToken}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [],
+								"body": {
+									"mode": "formdata",
+									"formdata": []
+								},
+								"url": {
+									"raw": "http://localhost:8081/actuator/scheduledtasks",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8081",
+									"path": [
+										"actuator",
+										"scheduledtasks"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "threaddump",
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{accessToken}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [],
+								"body": {
+									"mode": "formdata",
+									"formdata": []
+								},
+								"url": {
+									"raw": "http://localhost:8081/actuator/threaddump",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8081",
+									"path": [
+										"actuator",
+										"threaddump"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "httptrace",
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{accessToken}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [],
+								"body": {
+									"mode": "formdata",
+									"formdata": []
+								},
+								"url": {
+									"raw": "http://localhost:8081/actuator/httptrace",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8081",
+									"path": [
+										"actuator",
+										"httptrace"
+									]
+								}
+							},
+							"response": []
+						}
+					],
+					"protocolProfileBehavior": {},
+					"_postman_isSubFolder": true
+				},
+				{
 					"name": "login",
 					"event": [
 						{
@@ -165,35 +683,6 @@
 						}
 					},
 					"response": []
-				},
-				{
-					"name": "health",
-					"request": {
-						"auth": {
-							"type": "bearer",
-							"bearer": [
-								{
-									"key": "token",
-									"value": "{{accessToken}}",
-									"type": "string"
-								}
-							]
-						},
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "localhost:8085/actuator/health",
-							"host": [
-								"localhost"
-							],
-							"port": "8085",
-							"path": [
-								"actuator",
-								"health"
-							]
-						}
-					},
-					"response": []
 				}
 			],
 			"protocolProfileBehavior": {}
@@ -201,6 +690,253 @@
 		{
 			"name": "Discovery",
 			"item": [
+				{
+					"name": "Jolokia",
+					"item": [
+						{
+							"name": "jolokia",
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{accessToken}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [],
+								"body": {
+									"mode": "formdata",
+									"formdata": []
+								},
+								"url": {
+									"raw": "http://localhost:9001/actuator/jolokia",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "9001",
+									"path": [
+										"actuator",
+										"jolokia"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "jolokia-list",
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{accessToken}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [],
+								"body": {
+									"mode": "formdata",
+									"formdata": []
+								},
+								"url": {
+									"raw": "http://localhost:9001/actuator/jolokia/list",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "9001",
+									"path": [
+										"actuator",
+										"jolokia",
+										"list"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "info",
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{accessToken}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [],
+								"body": {
+									"mode": "formdata",
+									"formdata": []
+								},
+								"url": {
+									"raw": "http://localhost:9001/actuator/jolokia/exec/org.springframework.boot:type=Endpoint,name=Info/info",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "9001",
+									"path": [
+										"actuator",
+										"jolokia",
+										"exec",
+										"org.springframework.boot:type=Endpoint,name=Info",
+										"info"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "java memory gc",
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{accessToken}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [],
+								"body": {
+									"mode": "formdata",
+									"formdata": []
+								},
+								"url": {
+									"raw": "http://localhost:9001/actuator/jolokia/exec/java.lang:type=Memory/gc",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "9001",
+									"path": [
+										"actuator",
+										"jolokia",
+										"exec",
+										"java.lang:type=Memory",
+										"gc"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "health",
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{accessToken}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [],
+								"body": {
+									"mode": "formdata",
+									"formdata": []
+								},
+								"url": {
+									"raw": "http://192.168.0.103:9001/actuator/jolokia/exec/org.springframework.boot:type=Endpoint,name=Health/health",
+									"protocol": "http",
+									"host": [
+										"192",
+										"168",
+										"0",
+										"103"
+									],
+									"port": "9001",
+									"path": [
+										"actuator",
+										"jolokia",
+										"exec",
+										"org.springframework.boot:type=Endpoint,name=Health",
+										"health"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "metrics-jvm.memory.max",
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{accessToken}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [],
+								"body": {
+									"mode": "formdata",
+									"formdata": []
+								},
+								"url": {
+									"raw": "http://localhost:9001/actuator/jolokia/exec/org.springframework.boot:type=Endpoint,name=Metrics/metric/jvm.memory.max/null",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "9001",
+									"path": [
+										"actuator",
+										"jolokia",
+										"exec",
+										"org.springframework.boot:type=Endpoint,name=Metrics",
+										"metric",
+										"jvm.memory.max",
+										"null"
+									]
+								}
+							},
+							"response": []
+						}
+					],
+					"protocolProfileBehavior": {},
+					"_postman_isSubFolder": true
+				},
 				{
 					"name": "sumary",
 					"protocolProfileBehavior": {
@@ -261,12 +997,12 @@
 							"formdata": []
 						},
 						"url": {
-							"raw": "http://localhost:8085/discovery/applications",
+							"raw": "http://localhost:8761/discovery/applications",
 							"protocol": "http",
 							"host": [
 								"localhost"
 							],
-							"port": "8085",
+							"port": "8761",
 							"path": [
 								"discovery",
 								"applications"
@@ -311,155 +1047,6 @@
 						}
 					},
 					"response": []
-				},
-				{
-					"name": "health",
-					"protocolProfileBehavior": {
-						"disableBodyPruning": true
-					},
-					"request": {
-						"auth": {
-							"type": "bearer",
-							"bearer": [
-								{
-									"key": "token",
-									"value": "{{accessToken}}",
-									"type": "string"
-								}
-							]
-						},
-						"method": "GET",
-						"header": [],
-						"body": {
-							"mode": "formdata",
-							"formdata": []
-						},
-						"url": {
-							"raw": "http://localhost:8761/actuator/health",
-							"protocol": "http",
-							"host": [
-								"localhost"
-							],
-							"port": "8761",
-							"path": [
-								"actuator",
-								"health"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "metrics",
-					"protocolProfileBehavior": {
-						"disableBodyPruning": true
-					},
-					"request": {
-						"auth": {
-							"type": "bearer",
-							"bearer": [
-								{
-									"key": "token",
-									"value": "{{accessToken}}",
-									"type": "string"
-								}
-							]
-						},
-						"method": "GET",
-						"header": [],
-						"body": {
-							"mode": "formdata",
-							"formdata": []
-						},
-						"url": {
-							"raw": "http://localhost:8761/actuator/metrics",
-							"protocol": "http",
-							"host": [
-								"localhost"
-							],
-							"port": "8761",
-							"path": [
-								"actuator",
-								"metrics"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "metrics-by-name",
-					"protocolProfileBehavior": {
-						"disableBodyPruning": true
-					},
-					"request": {
-						"auth": {
-							"type": "bearer",
-							"bearer": [
-								{
-									"key": "token",
-									"value": "{{accessToken}}",
-									"type": "string"
-								}
-							]
-						},
-						"method": "GET",
-						"header": [],
-						"body": {
-							"mode": "formdata",
-							"formdata": []
-						},
-						"url": {
-							"raw": "http://localhost:8761/actuator/metrics/process.start.time",
-							"protocol": "http",
-							"host": [
-								"localhost"
-							],
-							"port": "8761",
-							"path": [
-								"actuator",
-								"metrics",
-								"process.start.time"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "info",
-					"protocolProfileBehavior": {
-						"disableBodyPruning": true
-					},
-					"request": {
-						"auth": {
-							"type": "bearer",
-							"bearer": [
-								{
-									"key": "token",
-									"value": "{{accessToken}}",
-									"type": "string"
-								}
-							]
-						},
-						"method": "GET",
-						"header": [],
-						"body": {
-							"mode": "formdata",
-							"formdata": []
-						},
-						"url": {
-							"raw": "http://localhost:8761/actuator/info",
-							"protocol": "http",
-							"host": [
-								"localhost"
-							],
-							"port": "8761",
-							"path": [
-								"actuator",
-								"info"
-							]
-						}
-					},
-					"response": []
 				}
 			],
 			"protocolProfileBehavior": {}
@@ -490,12 +1077,12 @@
 							"formdata": []
 						},
 						"url": {
-							"raw": "http://localhost:8085/monitor/applications/all",
+							"raw": "http://localhost:8087/monitor/applications/all",
 							"protocol": "http",
 							"host": [
 								"localhost"
 							],
-							"port": "8085",
+							"port": "8087",
 							"path": [
 								"monitor",
 								"applications",
@@ -506,7 +1093,7 @@
 					"response": []
 				},
 				{
-					"name": "applications basic-info",
+					"name": "applications info by id",
 					"protocolProfileBehavior": {
 						"disableBodyPruning": true
 					},
@@ -528,83 +1115,7 @@
 							"formdata": []
 						},
 						"url": {
-							"raw": "http://localhost:8085/monitor/applications/basic-info",
-							"protocol": "http",
-							"host": [
-								"localhost"
-							],
-							"port": "8085",
-							"path": [
-								"monitor",
-								"applications",
-								"basic-info"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "applications by id",
-					"protocolProfileBehavior": {
-						"disableBodyPruning": true
-					},
-					"request": {
-						"auth": {
-							"type": "bearer",
-							"bearer": [
-								{
-									"key": "token",
-									"value": "{{accessToken}}",
-									"type": "string"
-								}
-							]
-						},
-						"method": "GET",
-						"header": [],
-						"body": {
-							"mode": "formdata",
-							"formdata": []
-						},
-						"url": {
-							"raw": "http://localhost:8085/monitor/applications/basic-info",
-							"protocol": "http",
-							"host": [
-								"localhost"
-							],
-							"port": "8085",
-							"path": [
-								"monitor",
-								"applications",
-								"basic-info"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "applications by id (direct)",
-					"protocolProfileBehavior": {
-						"disableBodyPruning": true
-					},
-					"request": {
-						"auth": {
-							"type": "bearer",
-							"bearer": [
-								{
-									"key": "token",
-									"value": "{{accessToken}}",
-									"type": "string"
-								}
-							]
-						},
-						"method": "GET",
-						"header": [],
-						"body": {
-							"mode": "formdata",
-							"formdata": []
-						},
-						"url": {
-							"raw": "http://localhost:8087/monitor/applications/my-cloud-discovery",
+							"raw": "http://localhost:8087/monitor/applications/my-cloud-discovery/info",
 							"protocol": "http",
 							"host": [
 								"localhost"
@@ -613,7 +1124,85 @@
 							"path": [
 								"monitor",
 								"applications",
-								"my-cloud-discovery"
+								"my-cloud-discovery",
+								"info"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "instances by application",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{accessToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": []
+						},
+						"url": {
+							"raw": "http://localhost:8087/monitor/instances/4707ac3d-4b2a-4b49-b083-60248e1c2c78/info",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8087",
+							"path": [
+								"monitor",
+								"instances",
+								"4707ac3d-4b2a-4b49-b083-60248e1c2c78",
+								"info"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "instances by id",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{accessToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": []
+						},
+						"url": {
+							"raw": "http://localhost:8085/monitor/instances/my-cloud-monitor",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8085",
+							"path": [
+								"monitor",
+								"instances",
+								"my-cloud-monitor"
 							]
 						}
 					},
