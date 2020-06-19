@@ -39,20 +39,38 @@
 		</layout>
 	</appender>
 
-	<!-- LOG everything at INFO level -->
-	<root level="info">
-		<appender-ref ref="Console" />
-		<appender-ref ref="RollingFile" />
-	</root>
+	<springProfile name="staging, production">
+		<!-- LOG everything at INFO level -->
+		<root level="info">
+			<appender-ref ref="Console" />
+			<appender-ref ref="RollingFile" />
+		</root>
 
-	<logger name="org.springframework" level="debug">
-		<appender-ref ref="Console" />
-		<appender-ref ref="RollingFile" />
-	</logger>
+		<logger name="org.springframework" level="info">
+			<appender-ref ref="Console" />
+			<appender-ref ref="RollingFile" />
+		</logger>
 
-	<logger name="com.developerhelperhub" level="debug">
-		<appender-ref ref="Console" />
-		<appender-ref ref="RollingFile" />
-	</logger>
+		<logger name="com.developerhelperhub" level="debug">
+			<appender-ref ref="Console" />
+			<appender-ref ref="RollingFile" />
+		</logger>
+	</springProfile>
+	
+	
+	<springProfile name="dev">
+		<!-- LOG everything at INFO level -->
+		<root level="info">
+			<appender-ref ref="Console" />
+		</root>
+
+		<logger name="org.springframework" level="debug">
+			<appender-ref ref="Console" />
+		</logger>
+
+		<logger name="com.developerhelperhub" level="debug">
+			<appender-ref ref="Console" />
+		</logger>
+	</springProfile>
 
 </configuration>

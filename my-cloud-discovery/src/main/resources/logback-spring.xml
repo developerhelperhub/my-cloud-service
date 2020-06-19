@@ -5,21 +5,21 @@
 
 	<appender name="RollingFile"
 		class="ch.qos.logback.core.rolling.RollingFileAppender">
-		
+
 		<file>${LOGS}/app.log</file>
-		
+
 		<encoder
 			class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
-			
+
 			<pattern>%d|%thread|%5p|%logger{25}|%msg%n%throwable</pattern>
-			
+
 		</encoder>
 
 		<rollingPolicy
 			class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
-			
+
 			<!-- rollover daily and when the file reaches 10 MegaBytes -->
-			
+
 			<fileNamePattern>${LOGS}/archived/app-%d{yyyy-MM-dd}.%i.log
 			</fileNamePattern>
 			<timeBasedFileNamingAndTriggeringPolicy
@@ -34,25 +34,44 @@
 
 		<layout class="ch.qos.logback.classic.PatternLayout">
 
-			<pattern>%d|%blue(%thread)|%highlight(%5p)|%yellow(%logger{25})|%msg%n%throwable</pattern>
+			<pattern>%d|%blue(%thread)|%highlight(%5p)|%yellow(%logger{25})|%msg%n%throwable
+			</pattern>
 
 		</layout>
 	</appender>
 
-	<!-- LOG everything at INFO level -->
-	<root level="info">
-		<appender-ref ref="Console" />
-		<appender-ref ref="RollingFile" />
-	</root>
+	<springProfile name="staging, production">
+		<!-- LOG everything at INFO level -->
+		<root level="info">
+			<appender-ref ref="Console" />
+			<appender-ref ref="RollingFile" />
+		</root>
 
-	<logger name="org.springframework" level="debug">
-		<appender-ref ref="Console" />
-		<appender-ref ref="RollingFile" />
-	</logger>
+		<logger name="org.springframework" level="info">
+			<appender-ref ref="Console" />
+			<appender-ref ref="RollingFile" />
+		</logger>
 
-	<logger name="com.developerhelperhub" level="debug">
-		<appender-ref ref="Console" />
-		<appender-ref ref="RollingFile" />
-	</logger>
+		<logger name="com.developerhelperhub" level="debug">
+			<appender-ref ref="Console" />
+			<appender-ref ref="RollingFile" />
+		</logger>
+	</springProfile>
+	
+	
+	<springProfile name="dev">
+		<!-- LOG everything at INFO level -->
+		<root level="info">
+			<appender-ref ref="Console" />
+		</root>
+
+		<logger name="org.springframework" level="debug">
+			<appender-ref ref="Console" />
+		</logger>
+
+		<logger name="com.developerhelperhub" level="debug">
+			<appender-ref ref="Console" />
+		</logger>
+	</springProfile>
 
 </configuration>

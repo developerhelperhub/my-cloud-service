@@ -1,0 +1,49 @@
+spring:
+  application:
+    name: my-cloud-monitor
+  jmx:
+    enabled: true
+  data:
+    mongodb:
+      authentication-database: ${ENV_MYC_MONITOR_MONGO_AUTH_DB}
+      database: ${ENV_MYC_MONITOR_MONGO_DB}
+      username: ${ENV_MYC_MONITOR_MONGO_USERNAME}
+      password: ${ENV_MYC_MONITOR_MONGO_PASSWORD}
+      port: ${ENV_MYC_MONITOR_MONGO_PORT}
+      host: ${ENV_MYC_MONITOR_MONGO_HOST}
+
+influxdb:
+  database: ${ENV_MYC_MONITOR_INFLUX_DB}
+  username: ${ENV_MYC_MONITOR_INFLUX_USERNAME}
+  password: ${ENV_MYC_MONITOR_INFLUX_PASSWORD}
+  port: ${ENV_MYC_MONITOR_INFLUX_PORT}
+  host: ${ENV_MYC_MONITOR_INFLUX_HOST}
+
+server:
+  port: 8087
+  #servlet:
+  #  context-path: /monitor  
+
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://${ENV_MYC_DISCOVERY_USERNAME}:${ENV_MYC_DISCOVERY_PASSWORD}@${ENV_MYC_DISCOVERY_HOST}:${ENV_MYC_DISCOVERY_PORT}/eureka/
+
+      
+management:
+  server:
+    port: 9004
+  endpoint:
+    health:
+      show-details: always
+  endpoints:
+    web:
+      exposure:
+        include:
+          - jolokia
+    jmx:
+      exposure:
+        include:
+          - info
+          - health
+          - metrics

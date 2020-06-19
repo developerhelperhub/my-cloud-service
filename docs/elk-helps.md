@@ -2,6 +2,10 @@
 
 http://localhost:9200/_cat/indices?v
 
+http://localhost:5601/
+
+
+https://hub.docker.com/_/elasticsearch
 
 
 ### filebeat reading logs from docker container
