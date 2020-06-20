@@ -105,7 +105,7 @@ $ docker-compose down
 <img src="docs/screenshots/monitor-dashboard-instance-details.png" width="1000" height="600">
 
 * Monitor Dashboard Page (Logs)
-<img src="docs/screenshots/monitor-dashboard-logs.png" width="1000" height="600">
+<img src="docs/screenshots/monitor-dashboard-logs.png" width="1000" height="400">
 
 * Identity Client Page
 <img src="docs/screenshots/identity-client.png" width="1000" height="600">
