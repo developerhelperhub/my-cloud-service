@@ -1,6 +1,6 @@
 {
 	"info": {
-		"_postman_id": "7aa7202a-f18a-4852-9491-3b16ab71394a",
+		"_postman_id": "9c3d81a1-80d9-4332-8349-a6a9af2f0af2",
 		"name": "My Cloud",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
@@ -532,7 +532,7 @@
 						{
 							"listen": "test",
 							"script": {
-								"id": "be48da95-49dd-4f45-a3d3-f7881db11e3a",
+								"id": "7691ee88-a11e-4cff-8a9d-b1adb142bc74",
 								"exec": [
 									"var jsonData = JSON.parse(responseBody);",
 									"postman.setEnvironmentVariable(\"accessToken\", jsonData.access_token);",
@@ -581,11 +581,11 @@
 							]
 						},
 						"url": {
-							"raw": "localhost:8085/oauth/token",
+							"raw": "localhost:8081/oauth/token",
 							"host": [
 								"localhost"
 							],
-							"port": "8085",
+							"port": "8081",
 							"path": [
 								"oauth",
 								"token"
@@ -670,11 +670,11 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "localhost:8085/identity/clients/",
+							"raw": "localhost:8081/identity/clients/",
 							"host": [
 								"localhost"
 							],
-							"port": "8085",
+							"port": "8081",
 							"path": [
 								"identity",
 								"clients",
@@ -1203,6 +1203,110 @@
 								"monitor",
 								"instances",
 								"my-cloud-monitor"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "elasticsearch",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{accessToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": []
+						},
+						"url": {
+							"raw": "http://localhost:8087/monitor/elasticsearch/search?indexName=my-cloud-logs-discovery-*&type=_doc&page=0&size=100",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8087",
+							"path": [
+								"monitor",
+								"elasticsearch",
+								"search"
+							],
+							"query": [
+								{
+									"key": "indexName",
+									"value": "my-cloud-logs-discovery-*"
+								},
+								{
+									"key": "type",
+									"value": "_doc"
+								},
+								{
+									"key": "page",
+									"value": "0"
+								},
+								{
+									"key": "size",
+									"value": "100"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "logs-search",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{accessToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": []
+						},
+						"url": {
+							"raw": "http://localhost:8087/monitor/logs/search?applicationId=my-cloud-discovery&size=100",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8087",
+							"path": [
+								"monitor",
+								"logs",
+								"search"
+							],
+							"query": [
+								{
+									"key": "applicationId",
+									"value": "my-cloud-discovery"
+								},
+								{
+									"key": "size",
+									"value": "100"
+								}
 							]
 						}
 					},

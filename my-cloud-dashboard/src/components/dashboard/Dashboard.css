@@ -677,11 +677,13 @@
   .chiller-theme div.dataTables_wrapper div.dataTables_length select,
   .chiller-theme div.dataTables_wrapper div.dataTables_filter input,
   .chiller-theme div.dataTables_wrapper div.dataTables_paginate li.paginate_button,
-  .chiller-theme div.dataTables_wrapper div.dataTables_paginate a.page-link {
+  .chiller-theme div.dataTables_wrapper div.dataTables_paginate a.page-link,
+  .form-control, button, .form-control:focus {
     /* styling */
     background-color: #2f3136;
     color: #818896!important;
     border: thin solid #2c2f33;
+    font-size: 12px;
   }
 
   .chiller-theme div.dataTables_wrapper div.dataTables_length select.custom-select {

@@ -12,6 +12,8 @@ import PageTabContent from '../../components/dashboard/panel/PageTabContent'
 import MonitorInfoTabPage from './MonitorInfoTabPage';
 import MonitorInstanceTabPage from './MonitorInstanceTabPage';
 import MonitorApplicationPage from './MonitorApplicationPage';
+import MonitorLogTabPage from './MonitorLogTabPage';
+
 
 
 import './MonitorPage.css'
@@ -68,11 +70,13 @@ class MonitorPage extends React.Component {
                         <PageTab id="applicationInfoTab">
                             <PageTabHead onClickTab={this.onClickTab} id="info-tab" active="true" href="#info" controls="info" selected="true" title="Info"></PageTabHead>
                             <PageTabHead onClickTab={this.onClickTab} id="instance-tab" href="#instance" controls="instance" title="Instance"></PageTabHead>
+                            <PageTabHead onClickTab={this.onClickTab} id="logs-tab" href="#logs" controls="logs" title="Logs"></PageTabHead>
                         </PageTab>
 
                         <PageTabContent id="applicationInfoTabContent">
                             <MonitorInfoTabPage selectedTab = {this.state.selectedTab} selectedApplication = {this.state.selectedApplication}></MonitorInfoTabPage>
                             <MonitorInstanceTabPage selectedTab = {this.state.selectedTab} selectedApplication = {this.state.selectedApplication}></MonitorInstanceTabPage>
+                            <MonitorLogTabPage selectedTab = {this.state.selectedTab} selectedApplication = {this.state.selectedApplication}></MonitorLogTabPage>
                         </PageTabContent>
                     </PageTabPanel>
                 </Row>

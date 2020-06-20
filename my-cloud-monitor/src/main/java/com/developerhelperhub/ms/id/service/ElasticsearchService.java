@@ -8,6 +8,8 @@ import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.search.SearchHit;
 import org.elasticsearch.search.sort.SortBuilders;
 import org.elasticsearch.search.sort.SortOrder;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.elasticsearch.core.ElasticsearchTemplate;
@@ -23,6 +25,8 @@ import com.developerhelperhub.ms.id.model.monitor.LogMessageModel;
 @Service
 public class ElasticsearchService {
 
+	private static final Logger LOGGER = LoggerFactory.getLogger(ElasticsearchService.class);
+
 	@Autowired
 	private ElasticsearchTemplate template;
 
@@ -30,6 +34,8 @@ public class ElasticsearchService {
 		if (size == 0) {
 			size = 100;
 		}
+
+		LOGGER.debug("Searching.... indexName: {} type: {} page: {} size: {}", indexName, type, page, size);
 
 		SearchQuery query = new NativeSearchQueryBuilder().withIndices(indexName).withTypes(type)
 				.withSort(new SortBuilders().fieldSort("@timestamp").order(SortOrder.DESC))
@@ -59,7 +65,13 @@ public class ElasticsearchService {
 			}
 		};
 
-		return template.query(query, extractor);
+		LOGGER.debug("Searching.... indexName: {} type: {} page: {} size: {}", indexName, type, page, size);
+
+		ElastiSearchLogModel model = template.query(query, extractor);
+
+		LOGGER.debug("Search result loaded {}!", model.getData().size());
+
+		return model;
 
 	}
 
@@ -70,7 +82,21 @@ public class ElasticsearchService {
 
 		list = model.getData().stream().map(data -> {
 			LogMessageModel log = new LogMessageModel();
-			log.setMessage((String) data.getData().get("message"));
+			String text = (String) data.getData().get("message");
+
+			try {
+
+				String[] split = text.split("\\|");
+				log.setDatetime(split[0]);
+				log.setThreadName(split[1]);
+				log.setLogLevel(split[2]);
+				log.setClassName(split[3]);
+				log.setMessage(split[4]);
+
+			} catch (IndexOutOfBoundsException e) {
+				LOGGER.warn("Log message parse issue found!");
+			}
+
 			return log;
 		}).collect(Collectors.toList());
 

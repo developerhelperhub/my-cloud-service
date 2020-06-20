@@ -48,7 +48,7 @@ services:
       - ENV_MYC_DISCOVERY_HOST=my-cloud-discovery
       - ENV_MYC_DISCOVERY_PORT=8761
       - ENV_FILEBEAT_ELASTICSEARCH_HOSTS=["elasticsearch:9200"]
-      - ENV_FILEBEAT_INDEX="my-cloud-logs-discovery-%{+yyyy.MM.dd}"
+      - ENV_FILEBEAT_INDEX="my-cloud-logs-my-cloud-discovery-%{+yyyy.MM.dd}"
       - ENV_FILEBEAT_LOGGING_LEVEL="info"
       - |
         JAVA_OPTS=
@@ -81,7 +81,7 @@ services:
       - ENV_MYC_IDENTIY_MONGO_PORT=27017
       - ENV_MYC_IDENTIY_MONGO_HOST=my-cloud-mongodb
       - ENV_FILEBEAT_ELASTICSEARCH_HOSTS=["elasticsearch:9200"]
-      - ENV_FILEBEAT_INDEX="my-cloud-logs-identity-%{+yyyy.MM.dd}"
+      - ENV_FILEBEAT_INDEX="my-cloud-logs-my-cloud-identity-%{+yyyy.MM.dd}"
       - ENV_FILEBEAT_LOGGING_LEVEL="info"
       - |
         JAVA_OPTS=
@@ -107,7 +107,7 @@ services:
       - ENV_MYC_DISCOVERY_HOST=my-cloud-discovery
       - ENV_MYC_DISCOVERY_PORT=8761
       - ENV_FILEBEAT_ELASTICSEARCH_HOSTS=["elasticsearch:9200"]
-      - ENV_FILEBEAT_INDEX="my-cloud-logs-api-gateway-%{+yyyy.MM.dd}"
+      - ENV_FILEBEAT_INDEX="my-cloud-logs-my-cloud-api-gateway-%{+yyyy.MM.dd}"
       - ENV_FILEBEAT_LOGGING_LEVEL="info"
       - |
         JAVA_OPTS=
@@ -147,7 +147,7 @@ services:
       - ENV_MYC_MONITOR_INFLUX_PORT=8086
       - ENV_MYC_MONITOR_INFLUX_HOST=my-cloud-influxdb
       - ENV_FILEBEAT_ELASTICSEARCH_HOSTS=["elasticsearch:9200"]
-      - ENV_FILEBEAT_INDEX="my-cloud-logs-monitor-%{+yyyy.MM.dd}"
+      - ENV_FILEBEAT_INDEX="my-cloud-logs-my-cloud-monitor-%{+yyyy.MM.dd}"
       - ENV_FILEBEAT_LOGGING_LEVEL="info"
       - |
         JAVA_OPTS=
@@ -191,7 +191,7 @@ services:
       - ENV_MYC_IDENTIY_HOST=my-cloud-identity
       - ENV_MYC_IDENTIY_PORT=8081
       - ENV_FILEBEAT_ELASTICSEARCH_HOSTS=["elasticsearch:9200"]
-      - ENV_FILEBEAT_INDEX="my-cloud-logs-monitor-scheduler-%{+yyyy.MM.dd}"
+      - ENV_FILEBEAT_INDEX="my-cloud-logs-my-cloud-monitor-scheduler-%{+yyyy.MM.dd}"
       - ENV_FILEBEAT_LOGGING_LEVEL="info"
       - |
         JAVA_OPTS=

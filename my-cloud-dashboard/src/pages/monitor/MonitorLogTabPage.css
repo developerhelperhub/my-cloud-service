@@ -1,0 +1,59 @@
+.logbox {
+    background:rgb(48, 50, 56, 1);
+    padding: 10px;
+    border-radius: 4px;
+}
+
+.logbox .datetime {
+    width: 170px;
+    font-size: 12px;
+    flex: 0 0 170px;
+    color: #818896!important;
+}
+
+.logbox .logbox-detail .message {
+    font-size: 12px;
+    padding: 0px 0px 0px 0px;
+    margin: 0px 0px 5px 0px;
+    color: #818896!important;
+}
+
+.logbox .logbox-detail .head-info {
+    font-size: 12px;
+    margin: 0px 10px 0px 0px;
+    color: #818896!important;
+}
+
+.logs-inputs-box .logs-inputs {
+    margin: 0px 10px 0px 0px;
+}
+
+.logs-inputs-box .logs-inputs.space {
+    margin: 0px 200px 0px 0px;
+}
+
+.logbox .logbox-detail .head-info.thread,
+.logbox .logbox-detail .head-info.classname {
+    color: #8d9003!important;
+}
+
+.logbox .logbox-detail .head-info.level-fatal {
+    color: red!important;
+}
+
+.logbox .logbox-detail .head-info.level-warning,
+.logbox .logbox-detail .head-info.level-error {
+    color: rgb(209, 87, 5)!important;
+}
+
+.logbox .logbox-detail .head-info.level-info {
+    color: green!important;
+}
+
+.logbox .logbox-detail .head-info.level-debug {
+    color: rgb(0, 236, 0)!important;
+}
+
+.logbox .logbox-detail .head-info.level-trace {
+    color: rgb(0, 236, 0)!important;
+}
