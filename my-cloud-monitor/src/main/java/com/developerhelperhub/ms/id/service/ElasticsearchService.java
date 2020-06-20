@@ -1,5 +1,9 @@
 package com.developerhelperhub.ms.id.service;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
+
 import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.search.SearchHit;
 import org.elasticsearch.search.sort.SortBuilders;
@@ -14,6 +18,7 @@ import org.springframework.stereotype.Service;
 
 import com.developerhelperhub.ms.id.model.monitor.ElastiSearchLogModel;
 import com.developerhelperhub.ms.id.model.monitor.ElastiSearchLogModel.ElastiSearchLogData;
+import com.developerhelperhub.ms.id.model.monitor.LogMessageModel;
 
 @Service
 public class ElasticsearchService {
@@ -56,5 +61,19 @@ public class ElasticsearchService {
 
 		return template.query(query, extractor);
 
+	}
+
+	public List<LogMessageModel> searchLogs(String applicationId, int size) {
+		String indexName = "my-cloud-logs-" + applicationId + "-*";
+		ElastiSearchLogModel model = search(indexName, "_doc", 0, size);
+		List<LogMessageModel> list;
+
+		list = model.getData().stream().map(data -> {
+			LogMessageModel log = new LogMessageModel();
+			log.setMessage((String) data.getData().get("message"));
+			return log;
+		}).collect(Collectors.toList());
+
+		return list;
 	}
 }

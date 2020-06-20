@@ -15,6 +15,7 @@ import com.developerhelperhub.ms.id.model.monitor.ApplicationInstanceInfoModel;
 import com.developerhelperhub.ms.id.model.monitor.ApplicationInstanceModel;
 import com.developerhelperhub.ms.id.model.monitor.ApplicationModel;
 import com.developerhelperhub.ms.id.model.monitor.ElastiSearchLogModel;
+import com.developerhelperhub.ms.id.model.monitor.LogMessageModel;
 import com.developerhelperhub.ms.id.service.ElasticsearchService;
 import com.developerhelperhub.ms.id.service.MonitorApplication;
 import com.developerhelperhub.ms.id.service.MonitorService;
@@ -84,4 +85,9 @@ public class Controller {
 		return elasticsearchService.search(indexName, type, page, size);
 	}
 
+	@GetMapping(value = "/logs/search")
+	public List<LogMessageModel> getEasticsearchLogs(@QueryParam("applicationId") String applicationId,
+			@QueryParam("size") int size) {
+		return elasticsearchService.searchLogs(applicationId, size);
+	}
 }
