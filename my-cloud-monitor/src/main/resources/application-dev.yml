@@ -11,7 +11,7 @@ spring:
       password: ${ENV_MYC_MONITOR_MONGO_PASSWORD}
       port: ${ENV_MYC_MONITOR_MONGO_PORT}
       host: ${ENV_MYC_MONITOR_MONGO_HOST}
-
+      
 influxdb:
   database: ${ENV_MYC_MONITOR_INFLUX_DB}
   username: ${ENV_MYC_MONITOR_INFLUX_USERNAME}
@@ -28,6 +28,8 @@ eureka:
   client:
     serviceUrl:
       defaultZone: http://${ENV_MYC_DISCOVERY_USERNAME}:${ENV_MYC_DISCOVERY_PASSWORD}@${ENV_MYC_DISCOVERY_HOST}:${ENV_MYC_DISCOVERY_PORT}/eureka/
+
+
 
       
 management:

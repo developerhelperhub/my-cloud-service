@@ -2,6 +2,8 @@ package com.developerhelperhub.ms.id.controller;
 
 import java.util.List;
 
+import javax.ws.rs.QueryParam;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -12,6 +14,8 @@ import com.developerhelperhub.ms.id.model.monitor.ApplicationInfoModel;
 import com.developerhelperhub.ms.id.model.monitor.ApplicationInstanceInfoModel;
 import com.developerhelperhub.ms.id.model.monitor.ApplicationInstanceModel;
 import com.developerhelperhub.ms.id.model.monitor.ApplicationModel;
+import com.developerhelperhub.ms.id.model.monitor.ElastiSearchLogModel;
+import com.developerhelperhub.ms.id.service.ElasticsearchService;
 import com.developerhelperhub.ms.id.service.MonitorApplication;
 import com.developerhelperhub.ms.id.service.MonitorService;
 
@@ -26,6 +30,9 @@ public class Controller {
 
 	@Autowired
 	private MonitorApplication application;
+
+	@Autowired
+	private ElasticsearchService elasticsearchService;
 
 	@GetMapping(value = "/applications/all")
 	public List<ApplicationModel> getApplications() {
@@ -70,4 +77,11 @@ public class Controller {
 			@PathVariable(value = "id", required = true) String id) {
 		return monitorService.streamInstanceInfo(id);
 	}
+
+	@GetMapping(value = "/elasticsearch/search")
+	public ElastiSearchLogModel getEasticsearch(@QueryParam("indexName") String indexName,
+			@QueryParam("indexName") String type, @QueryParam("page") int page, @QueryParam("size") int size) {
+		return elasticsearchService.search(indexName, type, page, size);
+	}
+
 }
