@@ -10,7 +10,9 @@ This repostiry contains the development of the my cloud service. This project in
     * Netflix Circuit Breaker
     * Netflix Loadbalancer
     * Oauth2 Server and Resource
-    * MongoDB Repository
+    * Spring Data
+      * MongoDB
+      * Elasticsearch 
     * Spring Logback
       * ANSI Color
       * Human Readable Format
@@ -101,6 +103,9 @@ $ docker-compose down
 
 * Monitor Dashboard Page (Info Instance Details)
 <img src="docs/screenshots/monitor-dashboard-instance-details.png" width="1000" height="600">
+
+* Monitor Dashboard Page (Logs)
+<img src="docs/screenshots/monitor-dashboard-logs.png" width="1000" height="600">
 
 * Identity Client Page
 <img src="docs/screenshots/identity-client.png" width="1000" height="600">
