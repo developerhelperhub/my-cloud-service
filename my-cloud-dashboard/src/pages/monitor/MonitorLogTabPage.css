@@ -41,7 +41,7 @@
     color: red!important;
 }
 
-.logbox .logbox-detail .head-info.level-warning,
+.logbox .logbox-detail .head-info.level-warn,
 .logbox .logbox-detail .head-info.level-error {
     color: rgb(209, 87, 5)!important;
 }
@@ -50,10 +50,7 @@
     color: green!important;
 }
 
-.logbox .logbox-detail .head-info.level-debug {
-    color: rgb(0, 236, 0)!important;
-}
-
+.logbox .logbox-detail .head-info.level-debug,
 .logbox .logbox-detail .head-info.level-trace {
     color: rgb(0, 236, 0)!important;
 }

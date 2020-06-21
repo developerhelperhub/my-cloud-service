@@ -23,7 +23,7 @@ class MonitorLogTabPage extends React.Component {
         this.refreshLogs = this.refreshLogs.bind(this);
     }
 
-    async refreshLogs () {
+    async refreshLogs() {
 
         const response = await AppApiRepo.fetch('/monitor/logs/search?applicationId=my-cloud-discovery&size=100', 'GET', {
             'Content-Type': 'application/json',
@@ -38,7 +38,11 @@ class MonitorLogTabPage extends React.Component {
 
             response.data.forEach(item => {
 
-                var levelClassname = "head-info level-" + item.logLevel.toLowerCase();
+                var levelClassname = "head-info level-info";
+
+                if (item.logLevel != null) {
+                    levelClassname = "head-info level-" + item.logLevel.toLowerCase();
+                }
 
                 messages.push(
                     <div class="d-flex flex-row bd-highlight">
@@ -81,7 +85,7 @@ class MonitorLogTabPage extends React.Component {
         })
 
         this.refreshLogs();
-        
+
     }
 
 

@@ -130,6 +130,7 @@ services:
       - my-cloud-influxdb
       - my-cloud-discovery
       - my-cloud-identity
+      - elasticsearch
     environment:
       - ENV_MYC_DISCOVERY_USERNAME=discovery
       - ENV_MYC_DISCOVERY_PASSWORD=discoverypass
