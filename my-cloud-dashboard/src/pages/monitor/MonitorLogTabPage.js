@@ -41,7 +41,8 @@ class MonitorLogTabPage extends React.Component {
                 var levelClassname = "head-info level-info";
 
                 if (item.logLevel != null) {
-                    levelClassname = "head-info level-" + item.logLevel.toLowerCase();
+                    levelClassname = "head-info level-" + item.logLevel.toLowerCase().trim();
+                    console.log(levelClassname);
                 }
 
                 messages.push(

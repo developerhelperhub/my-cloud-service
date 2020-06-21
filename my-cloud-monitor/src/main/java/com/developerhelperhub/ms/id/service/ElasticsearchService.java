@@ -3,6 +3,7 @@ package com.developerhelperhub.ms.id.service;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.search.SearchHit;
@@ -79,10 +80,12 @@ public class ElasticsearchService {
 		String indexName = "my-cloud-logs-" + applicationId + "-application-*";
 		ElastiSearchLogModel model = search(indexName, "_doc", 0, size);
 		List<LogMessageModel> list;
+		List<Integer> errorIndex = new ArrayList<Integer>();
 
-		list = model.getData().stream().map(data -> {
+		list = IntStream.range(0, model.getData().size()).mapToObj(index -> {
+
 			LogMessageModel log = new LogMessageModel();
-			String text = (String) data.getData().get("message");
+			String text = (String) model.getData().get(index).getData().get("message");
 
 			try {
 
@@ -95,10 +98,32 @@ public class ElasticsearchService {
 
 			} catch (IndexOutOfBoundsException e) {
 				LOGGER.warn("Log message parse issue found!");
+
+				errorIndex.add(index);
+
+				log = null;
 			}
 
 			return log;
-		}).collect(Collectors.toList());
+
+		}).filter(d -> d != null).collect(Collectors.toList());
+
+		if (errorIndex.size() > 0) {
+
+			LOGGER.warn("errorIndex {} ", errorIndex);
+			
+			int index = errorIndex.get(0);
+
+			for (int errorIndx : errorIndex) {
+
+				if (errorIndx == index) {
+					index++;
+				} else {
+					index = errorIndx;
+				}
+
+			}
+		}
 
 		return list;
 	}
