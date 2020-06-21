@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <configuration>
 
-	<property name="LOGS" value="/var/mycloud/logs" />
+	<property name="LOGS" value="/var/mycloud/logs/app_logs" />
 
 	<appender name="RollingFile"
 		class="ch.qos.logback.core.rolling.RollingFileAppender">

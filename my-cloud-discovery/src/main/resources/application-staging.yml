@@ -10,7 +10,15 @@ spring:
 
 server:
   port: 8761
-  
+  tomcat:
+    accesslog:
+      enabled: true
+      directory: /var/mycloud/logs/access_logs
+      prefix: access_log
+      buffered: false
+      suffix: .log
+      pattern: "%t|%a|%h|%p|%m|%U|%q|%s|%D|%T|%F|%l|%S|%I|%v|%u"
+      
 eureka:
   dashboard:
     enabled: false
