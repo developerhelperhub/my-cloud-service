@@ -13,10 +13,12 @@ This repostiry contains the development of the my cloud service. This project in
     * Spring Data
       * MongoDB
       * Elasticsearch 
-    * Spring Logback
-      * ANSI Color
-      * Human Readable Format
-      * Retention Policy
+    * Logs 
+      * Logback
+        * ANSI Color
+        * Human Readable Format
+        * Retention Policy
+      * Tomcat Access Log
     * Actuator
       * JMX 
       * Jolokia
