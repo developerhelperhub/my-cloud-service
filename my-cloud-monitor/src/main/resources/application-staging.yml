@@ -19,8 +19,21 @@ influxdb:
   port: ${ENV_MYC_MONITOR_INFLUX_PORT}
   host: ${ENV_MYC_MONITOR_INFLUX_HOST}
 
+elasticsearch:
+  host: ${ENV_MYC_ELASTICSEARCH_HOST}
+  port: ${ENV_MYC_ELASTICSEARCH_PORT}
+  cluster-name: ${ENV_MYC_ELASTICSEARCH_CLUSTER_NAME}
+  
 server:
   port: 8087
+  tomcat:
+    accesslog:
+      enabled: true
+      directory: /var/mycloud/logs/access_logs
+      prefix: access_log
+      buffered: false
+      suffix: .log
+      pattern: "%t|%a|%h|%p|%m|%U|%q|%s|%D|%T|%F|%l|%S|%I|%v|%u"
   #servlet:
   #  context-path: /monitor  
 

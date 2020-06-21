@@ -76,7 +76,7 @@ public class ElasticsearchService {
 	}
 
 	public List<LogMessageModel> searchLogs(String applicationId, int size) {
-		String indexName = "my-cloud-logs-" + applicationId + "-*";
+		String indexName = "my-cloud-logs-" + applicationId + "-application-*";
 		ElastiSearchLogModel model = search(indexName, "_doc", 0, size);
 		List<LogMessageModel> list;
 

@@ -1,14 +1,22 @@
 filebeat.inputs:
 - type: log
   paths: 
-    - '/var/mycloud/logs/*.log'
+    - '/var/mycloud/logs/app_logs/*.log'
+  fields:
+    log_type: application
+
+- type: log
+  paths: 
+    - '/var/mycloud/logs/access_logs/access_log*.log'
+  fields:
+    log_type: access_log
     
 output.elasticsearch:
-  hosts: ${ENV_FILEBEAT_ELASTICSEARCH_HOSTS}
+  hosts: ${ENV_MYC_FILEBEAT_ELASTICSEARCH_HOSTS}
   indices:
-    - index: ${ENV_FILEBEAT_INDEX}
+    - index: "my-cloud-logs-my-cloud-identity-%{[fields.log_type]}-%{+yyyy.MM.dd}"
 
-logging.level: ${ENV_FILEBEAT_LOGGING_LEVEL}
+logging.level: ${ENV_MYC_FILEBEAT_LOGGING_LEVEL}
 logging.to_files: true
 logging.files:
   path: /var/mycloud/filebeat/logs

@@ -5,9 +5,13 @@ RUN adduser -S mycloud -G mycloud
 
 
 RUN mkdir -pv /var/mycloud/logs
+RUN mkdir -pv /var/mycloud/logs/app_logs
+RUN mkdir -pv /var/mycloud/logs/access_logs
 RUN mkdir -pv /var/mycloud/filebeat/logs
 
 RUN chown mycloud:mycloud /var/mycloud/logs
+RUN chown mycloud:mycloud /var/mycloud/logs/app_logs
+RUN chown mycloud:mycloud /var/mycloud/logs/access_logs
 RUN chown mycloud:mycloud /var/mycloud/filebeat/logs
 
 
