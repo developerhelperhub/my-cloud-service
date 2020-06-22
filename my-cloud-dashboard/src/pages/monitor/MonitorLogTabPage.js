@@ -38,11 +38,11 @@ class MonitorLogTabPage extends React.Component {
 
         var pageSize = 100;
 
-        if (!isNaN(this.state.pageSize) && this.state.pageSize<=5000) {
+        if (!isNaN(this.state.pageSize) && this.state.pageSize <= 5000) {
             pageSize = this.state.pageSize;
         }
 
-        var path = '/monitor/logs/search?applicationId=' + this.state.selectedApplication + '&size=' + pageSize;
+        var path = '/monitor/logs/search?applicationId=' + this.state.selectedApplication + '&searchKey=' + this.state.search + '&size=' + pageSize;
 
         const response = await AppApiRepo.fetch(path, 'GET', {
             'Content-Type': 'application/json',

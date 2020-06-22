@@ -23,7 +23,10 @@ elasticsearch:
   host: ${ENV_MYC_ELASTICSEARCH_HOST}
   port: ${ENV_MYC_ELASTICSEARCH_PORT}
   cluster-name: ${ENV_MYC_ELASTICSEARCH_CLUSTER_NAME}
-  
+  pagsize:
+    min: 10
+    max: 5000
+    
 server:
   port: 8087
   tomcat:

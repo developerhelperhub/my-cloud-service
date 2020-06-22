@@ -81,13 +81,14 @@ public class Controller {
 
 	@GetMapping(value = "/elasticsearch/search")
 	public ElastiSearchLogModel getEasticsearch(@QueryParam("indexName") String indexName,
-			@QueryParam("indexName") String type, @QueryParam("page") int page, @QueryParam("size") int size) {
-		return elasticsearchService.search(indexName, type, page, size);
+			@QueryParam("type") String type, @QueryParam("searchKey") String searchKey, @QueryParam("page") int page,
+			@QueryParam("size") int size) {
+		return elasticsearchService.search(indexName, type, searchKey, page, size);
 	}
 
 	@GetMapping(value = "/logs/search")
 	public List<LogMessageModel> getEasticsearchLogs(@QueryParam("applicationId") String applicationId,
-			@QueryParam("size") int size) {
-		return elasticsearchService.searchLogs(applicationId, size);
+			@QueryParam("searchKey") String searchKey, @QueryParam("size") int size) {
+		return elasticsearchService.searchLogs(applicationId, searchKey, size);
 	}
 }

@@ -8,12 +8,14 @@ import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 import org.elasticsearch.action.search.SearchResponse;
+import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.search.SearchHit;
 import org.elasticsearch.search.sort.SortBuilders;
 import org.elasticsearch.search.sort.SortOrder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.elasticsearch.core.ElasticsearchTemplate;
 import org.springframework.data.elasticsearch.core.ResultsExtractor;
@@ -30,19 +32,34 @@ public class ElasticsearchService {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(ElasticsearchService.class);
 
+	@Value("${elasticsearch.pagsize.min}")
+	private String minPageSize;
+
+	@Value("${elasticsearch.pagsize.max}")
+	private String maxPageSize;
+
 	@Autowired
 	private ElasticsearchTemplate template;
 
-	public ElastiSearchLogModel search(String indexName, String type, int page, int size) {
-		if (size == 0) {
-			size = 100;
+	public ElastiSearchLogModel search(String indexName, String type, String search, int page, int size) {
+		if (size <= 0) {
+			size = Integer.parseInt(minPageSize);
+		}
+		if (size > Integer.parseInt(maxPageSize)) {
+			size = Integer.parseInt(maxPageSize);
 		}
 
 		LOGGER.debug("Searching.... indexName: {} type: {} page: {} size: {}", indexName, type, page, size);
 
-		SearchQuery query = new NativeSearchQueryBuilder().withIndices(indexName).withTypes(type)
+		NativeSearchQueryBuilder bulider = new NativeSearchQueryBuilder().withIndices(indexName).withTypes(type)
 				.withSort(new SortBuilders().fieldSort("@timestamp").order(SortOrder.ASC))
-				.withPageable(PageRequest.of(page, size)).build();
+				.withPageable(PageRequest.of(page, size));
+
+		if (search != null && !search.trim().isEmpty()) {
+			bulider.withQuery(QueryBuilders.matchQuery("message", search.trim()));
+		}
+
+		SearchQuery query = bulider.build();
 
 		ResultsExtractor<ElastiSearchLogModel> extractor = new ResultsExtractor<ElastiSearchLogModel>() {
 
@@ -78,9 +95,9 @@ public class ElasticsearchService {
 
 	}
 
-	public List<LogMessageModel> searchLogs(String applicationId, int size) {
+	public List<LogMessageModel> searchLogs(String applicationId, String search, int size) {
 		String indexName = "my-cloud-logs-" + applicationId + "-application-*";
-		ElastiSearchLogModel model = search(indexName, "_doc", 0, size);
+		ElastiSearchLogModel model = search(indexName, "_doc", search, 0, size);
 		List<LogMessageModel> list;
 
 		List<Integer> errorIndexs = new ArrayList<Integer>();
