@@ -50,6 +50,8 @@ class MonitorPage extends React.Component {
         
         if (row != null) {
             
+            console.log("MonitorPage onclickApplicationTable: " + row);
+
             this.setState({
                 selectedApplication: row
             });

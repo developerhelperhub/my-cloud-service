@@ -1,7 +1,9 @@
 package com.developerhelperhub.ms.id.service;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
@@ -39,7 +41,7 @@ public class ElasticsearchService {
 		LOGGER.debug("Searching.... indexName: {} type: {} page: {} size: {}", indexName, type, page, size);
 
 		SearchQuery query = new NativeSearchQueryBuilder().withIndices(indexName).withTypes(type)
-				.withSort(new SortBuilders().fieldSort("@timestamp").order(SortOrder.DESC))
+				.withSort(new SortBuilders().fieldSort("@timestamp").order(SortOrder.ASC))
 				.withPageable(PageRequest.of(page, size)).build();
 
 		ResultsExtractor<ElastiSearchLogModel> extractor = new ResultsExtractor<ElastiSearchLogModel>() {
@@ -80,7 +82,8 @@ public class ElasticsearchService {
 		String indexName = "my-cloud-logs-" + applicationId + "-application-*";
 		ElastiSearchLogModel model = search(indexName, "_doc", 0, size);
 		List<LogMessageModel> list;
-		List<Integer> errorIndex = new ArrayList<Integer>();
+
+		List<Integer> errorIndexs = new ArrayList<Integer>();
 
 		list = IntStream.range(0, model.getData().size()).mapToObj(index -> {
 
@@ -97,32 +100,63 @@ public class ElasticsearchService {
 				log.setMessage(split[4]);
 
 			} catch (IndexOutOfBoundsException e) {
-				LOGGER.warn("Log message parse issue found!");
-
-				errorIndex.add(index);
-
-				log = null;
+				errorIndexs.add(index);
 			}
 
 			return log;
 
 		}).filter(d -> d != null).collect(Collectors.toList());
 
-		if (errorIndex.size() > 0) {
+		if (errorIndexs.size() > 0) {
 
-			LOGGER.warn("errorIndex {} ", errorIndex);
-			
-			int index = errorIndex.get(0);
+			LOGGER.warn("Error index found {}!", errorIndexs.size());
 
-			for (int errorIndx : errorIndex) {
+			List<LogMessageModel> removes = new ArrayList<>();
 
-				if (errorIndx == index) {
+			Map<Integer, String> mapping = new HashMap<>();
+
+			int index = errorIndexs.get(0);
+			int errorFor = index;
+			mapping.put(errorFor, "");
+
+			for (int errorIndex : errorIndexs) {
+				String message = "";
+
+				removes.add(list.get(errorIndex));
+
+				if (errorIndex == index) {
+
+					message = mapping.get(errorFor);
+
+					message = message + model.getData().get(errorIndex).getData().get("message") + "\n";
+
 					index++;
+
 				} else {
-					index = errorIndx;
+
+					message = model.getData().get(errorIndex).getData().get("message") + "\n";
+
+					index = errorIndex + 1;
+					errorFor = errorIndex;
+
 				}
 
+				mapping.put(errorFor, message);
 			}
+
+			for (Map.Entry<Integer, String> entry : mapping.entrySet()) {
+
+				int errorIndex = entry.getKey() - 1;
+				if (errorIndex < 0) {
+					errorIndex = 0;
+				}
+
+				LogMessageModel message = list.get(errorIndex);
+
+				message.setMessage(message.getMessage() + "\n" + entry.getValue());
+			}
+
+			list.removeAll(removes);
 		}
 
 		return list;
