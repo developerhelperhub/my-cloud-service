@@ -124,57 +124,57 @@ public class ElasticsearchService {
 
 		}).filter(d -> d != null).collect(Collectors.toList());
 
-		if (errorIndexs.size() > 0) {
-
-			LOGGER.warn("Error index found {}!", errorIndexs.size());
-
-			List<LogMessageModel> removes = new ArrayList<>();
-
-			Map<Integer, String> mapping = new HashMap<>();
-
-			int index = errorIndexs.get(0);
-			int errorFor = index;
-			mapping.put(errorFor, "");
-
-			for (int errorIndex : errorIndexs) {
-				String message = "";
-
-				removes.add(list.get(errorIndex));
-
-				if (errorIndex == index) {
-
-					message = mapping.get(errorFor);
-
-					message = message + model.getData().get(errorIndex).getData().get("message") + "\n";
-
-					index++;
-
-				} else {
-
-					message = model.getData().get(errorIndex).getData().get("message") + "\n";
-
-					index = errorIndex + 1;
-					errorFor = errorIndex;
-
-				}
-
-				mapping.put(errorFor, message);
-			}
-
-			for (Map.Entry<Integer, String> entry : mapping.entrySet()) {
-
-				int errorIndex = entry.getKey() - 1;
-				if (errorIndex < 0) {
-					errorIndex = 0;
-				}
-
-				LogMessageModel message = list.get(errorIndex);
-
-				message.setMessage(message.getMessage() + "\n" + entry.getValue());
-			}
-
-			list.removeAll(removes);
-		}
+//		if (errorIndexs.size() > 0) {
+//
+//			LOGGER.warn("Error index found {}!", errorIndexs.size());
+//
+//			List<LogMessageModel> removes = new ArrayList<>();
+//
+//			Map<Integer, String> mapping = new HashMap<>();
+//
+//			int index = errorIndexs.get(0);
+//			int errorFor = index;
+//			mapping.put(errorFor, "");
+//
+//			for (int errorIndex : errorIndexs) {
+//				String message = "";
+//
+//				removes.add(list.get(errorIndex));
+//
+//				if (errorIndex == index) {
+//
+//					message = mapping.get(errorFor);
+//
+//					message = message + model.getData().get(errorIndex).getData().get("message") + "\n";
+//
+//					index++;
+//
+//				} else {
+//
+//					message = model.getData().get(errorIndex).getData().get("message") + "\n";
+//
+//					index = errorIndex + 1;
+//					errorFor = errorIndex;
+//
+//				}
+//
+//				mapping.put(errorFor, message);
+//			}
+//
+//			for (Map.Entry<Integer, String> entry : mapping.entrySet()) {
+//
+//				int errorIndex = entry.getKey() - 1;
+//				if (errorIndex < 0) {
+//					errorIndex = 0;
+//				}
+//
+//				LogMessageModel message = list.get(errorIndex);
+//
+//				message.setMessage(message.getMessage() + "\n" + entry.getValue());
+//			}
+//
+//			list.removeAll(removes);
+//		}
 
 		return list;
 	}

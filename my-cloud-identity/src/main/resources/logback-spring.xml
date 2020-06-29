@@ -3,23 +3,26 @@
 
 	<property name="LOGS" value="/var/mycloud/logs/app_logs" />
 
+	<conversionRule conversionWord="exception"
+		converterClass="com.developerhelperhub.ms.id.config.CompressedStackTraceConverter" />
+
 	<appender name="RollingFile"
 		class="ch.qos.logback.core.rolling.RollingFileAppender">
-		
+
 		<file>${LOGS}/app.log</file>
-		
+
 		<encoder
 			class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
-			
-			<pattern>%d|%thread|%5p|%logger{25}|%msg%n%throwable</pattern>
-			
+
+			<pattern>%d|%thread|%5p|%logger{25}|%msg %exception %n</pattern>
+
 		</encoder>
 
 		<rollingPolicy
 			class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
-			
+
 			<!-- rollover daily and when the file reaches 10 MegaBytes -->
-			
+
 			<fileNamePattern>${LOGS}/archived/app-%d{yyyy-MM-dd}.%i.log
 			</fileNamePattern>
 			<timeBasedFileNamingAndTriggeringPolicy
@@ -34,7 +37,8 @@
 
 		<layout class="ch.qos.logback.classic.PatternLayout">
 
-			<pattern>%d|%blue(%thread)|%highlight(%5p)|%yellow(%logger{25})|%msg%n%throwable</pattern>
+			<pattern>%d|%blue(%thread)|%highlight(%5p)|%yellow(%logger{25})|%msg%n%throwable
+			</pattern>
 
 		</layout>
 	</appender>
@@ -56,8 +60,8 @@
 			<appender-ref ref="RollingFile" />
 		</logger>
 	</springProfile>
-	
-	
+
+
 	<springProfile name="dev">
 		<!-- LOG everything at INFO level -->
 		<root level="info">

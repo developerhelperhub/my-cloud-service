@@ -27,14 +27,14 @@ public class LogErrorMessageTests {
 		List<String> messages = new ArrayList<>();
 		messages.add("error0-1");
 		messages.add("error0-2");
-		
+
 		messages.add("time1|message1");
 		messages.add("time2|message2");
 		messages.add("time3|message3");
 		messages.add("error3-1");
 		messages.add("error3-2");
 		messages.add("error3-3");
-		
+
 		messages.add("time4|message4");
 		messages.add("error4-1");
 		messages.add("error4-2");
@@ -67,7 +67,7 @@ public class LogErrorMessageTests {
 
 		if (errorIndexs.size() > 0) {
 			List<TestMessage> removes = new ArrayList<>();
-			
+
 			Map<Integer, String> mapping = new HashMap<>();
 
 			int index = errorIndexs.get(0);
@@ -76,7 +76,7 @@ public class LogErrorMessageTests {
 
 			for (int errorIndex : errorIndexs) {
 				String message = "";
-				
+
 				removes.add(list.get(errorIndex));
 
 				if (errorIndex == index) {
@@ -109,10 +109,10 @@ public class LogErrorMessageTests {
 				}
 
 				TestMessage message = list.get(errorIndex);
-				
+
 				message.setMessage(message.getMessage() + "\n" + entry.getValue());
 			}
-			
+
 			list.removeAll(removes);
 		}
 

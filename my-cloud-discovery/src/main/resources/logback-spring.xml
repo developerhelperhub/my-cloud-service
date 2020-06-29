@@ -2,6 +2,9 @@
 <configuration>
 
 	<property name="LOGS" value="/var/mycloud/logs/app_logs" />
+	
+	<conversionRule conversionWord="exception"
+		converterClass="com.developerhelperhub.ms.id.config.CompressedStackTraceConverter" />
 
 	<appender name="RollingFile"
 		class="ch.qos.logback.core.rolling.RollingFileAppender">
@@ -11,7 +14,7 @@
 		<encoder
 			class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
 
-			<pattern>%d|%thread|%5p|%logger{25}|%msg%n%throwable</pattern>
+			<pattern>%d|%thread|%5p|%logger{25}|%msg %exception %n</pattern>
 
 		</encoder>
 
@@ -57,8 +60,8 @@
 			<appender-ref ref="RollingFile" />
 		</logger>
 	</springProfile>
-	
-	
+
+
 	<springProfile name="dev">
 		<!-- LOG everything at INFO level -->
 		<root level="info">
