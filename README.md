@@ -22,7 +22,6 @@ This repostiry contains the development of the my cloud service. This project in
     * Actuator
       * JMX 
       * Jolokia
-    * JMX 
     * Oauth2 Rest Template
     * Security
       * Basic Security
