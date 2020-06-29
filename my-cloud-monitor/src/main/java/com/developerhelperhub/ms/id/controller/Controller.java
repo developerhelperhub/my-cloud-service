@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.developerhelperhub.ms.id.model.monitor.AccessLogMessageModel;
 import com.developerhelperhub.ms.id.model.monitor.ApplicationInfoModel;
 import com.developerhelperhub.ms.id.model.monitor.ApplicationInstanceInfoModel;
 import com.developerhelperhub.ms.id.model.monitor.ApplicationInstanceModel;
@@ -82,13 +83,21 @@ public class Controller {
 	@GetMapping(value = "/elasticsearch/search")
 	public ElastiSearchLogModel getEasticsearch(@QueryParam("indexName") String indexName,
 			@QueryParam("type") String type, @QueryParam("searchKey") String searchKey, @QueryParam("page") int page,
-			@QueryParam("size") int size) {
-		return elasticsearchService.search(indexName, type, searchKey, page, size);
+			@QueryParam("size") int size, @QueryParam("order") String order) {
+		return elasticsearchService.search(indexName, type, searchKey, page, size, order);
 	}
 
 	@GetMapping(value = "/logs/search")
 	public List<LogMessageModel> getEasticsearchLogs(@QueryParam("applicationId") String applicationId,
-			@QueryParam("searchKey") String searchKey, @QueryParam("size") int size) {
-		return elasticsearchService.searchLogs(applicationId, searchKey, size);
+			@QueryParam("searchKey") String searchKey, @QueryParam("size") int size,
+			@QueryParam("order") String order) {
+		return elasticsearchService.searchLogs(applicationId, searchKey, size, order);
+	}
+
+	@GetMapping(value = "/access-logs/search")
+	public List<AccessLogMessageModel> getEasticsearchAccessLogs(@QueryParam("applicationId") String applicationId,
+			@QueryParam("searchKey") String searchKey, @QueryParam("size") int size,
+			@QueryParam("order") String order) {
+		return elasticsearchService.searchAccessLogs(applicationId, searchKey, size, order);
 	}
 }

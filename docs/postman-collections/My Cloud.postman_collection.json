@@ -1231,7 +1231,7 @@
 							"formdata": []
 						},
 						"url": {
-							"raw": "http://localhost:8087/monitor/elasticsearch/search?indexName=my-cloud-logs-discovery-*&type=_doc&page=0&size=100",
+							"raw": "http://localhost:8087/monitor/elasticsearch/search?indexName=my-cloud-logs-my-cloud-discovery-access_log-*&type=_doc&searchKey=&page=0&size=100&order=desc",
 							"protocol": "http",
 							"host": [
 								"localhost"
@@ -1245,11 +1245,15 @@
 							"query": [
 								{
 									"key": "indexName",
-									"value": "my-cloud-logs-discovery-*"
+									"value": "my-cloud-logs-my-cloud-discovery-access_log-*"
 								},
 								{
 									"key": "type",
 									"value": "_doc"
+								},
+								{
+									"key": "searchKey",
+									"value": ""
 								},
 								{
 									"key": "page",
@@ -1258,6 +1262,10 @@
 								{
 									"key": "size",
 									"value": "100"
+								},
+								{
+									"key": "order",
+									"value": "desc"
 								}
 							]
 						}
@@ -1287,7 +1295,7 @@
 							"formdata": []
 						},
 						"url": {
-							"raw": "http://localhost:8087/monitor/logs/search?applicationId=my-cloud-discovery&size=100",
+							"raw": "http://localhost:8087/monitor/logs/search?applicationId=my-cloud-discovery&searchKey=&size=100",
 							"protocol": "http",
 							"host": [
 								"localhost"
@@ -1304,8 +1312,64 @@
 									"value": "my-cloud-discovery"
 								},
 								{
+									"key": "searchKey",
+									"value": ""
+								},
+								{
 									"key": "size",
 									"value": "100"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "access-logs-search",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{accessToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": []
+						},
+						"url": {
+							"raw": "http://localhost:8087/monitor/access-logs/search?applicationId=my-cloud-discovery&size=100&order=desc",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8087",
+							"path": [
+								"monitor",
+								"access-logs",
+								"search"
+							],
+							"query": [
+								{
+									"key": "applicationId",
+									"value": "my-cloud-discovery"
+								},
+								{
+									"key": "size",
+									"value": "100"
+								},
+								{
+									"key": "order",
+									"value": "desc"
 								}
 							]
 						}
