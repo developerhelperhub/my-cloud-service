@@ -13,6 +13,7 @@ import MonitorInfoTabPage from './MonitorInfoTabPage';
 import MonitorInstanceTabPage from './MonitorInstanceTabPage';
 import MonitorApplicationPage from './MonitorApplicationPage';
 import MonitorLogTabPage from './MonitorLogTabPage';
+import MonitorHttpRequestTabPage from './MonitorHttpRequestTabPage';
 
 
 
@@ -73,12 +74,16 @@ class MonitorPage extends React.Component {
                             <PageTabHead onClickTab={this.onClickTab} id="info-tab" active="true" href="#info" controls="info" selected="true" title="Info"></PageTabHead>
                             <PageTabHead onClickTab={this.onClickTab} id="instance-tab" href="#instance" controls="instance" title="Instance"></PageTabHead>
                             <PageTabHead onClickTab={this.onClickTab} id="logs-tab" href="#logs" controls="logs" title="Logs"></PageTabHead>
+                            <PageTabHead onClickTab={this.onClickTab} id="http-request-tab" href="#http-request" controls="http-request" title="HTTP Request"></PageTabHead>
+                            
                         </PageTab>
 
                         <PageTabContent id="applicationInfoTabContent">
                             <MonitorInfoTabPage selectedTab = {this.state.selectedTab} selectedApplication = {this.state.selectedApplication}></MonitorInfoTabPage>
                             <MonitorInstanceTabPage selectedTab = {this.state.selectedTab} selectedApplication = {this.state.selectedApplication}></MonitorInstanceTabPage>
                             <MonitorLogTabPage selectedTab = {this.state.selectedTab} selectedApplication = {this.state.selectedApplication}></MonitorLogTabPage>
+                            <MonitorHttpRequestTabPage selectedTab = {this.state.selectedTab} selectedApplication = {this.state.selectedApplication}></MonitorHttpRequestTabPage>
+                            
                         </PageTabContent>
                     </PageTabPanel>
                 </Row>

@@ -6,7 +6,7 @@ import InfoBoxItem from '../../components/dashboard/InfoBoxItem'
 
 import AppApiRepo from '../../common/AppApiRepo'
 
-import './MonitorLogTabPage.css'
+import './MonitorPage.css'
 
 class MonitorLogTabPage extends React.Component {
 

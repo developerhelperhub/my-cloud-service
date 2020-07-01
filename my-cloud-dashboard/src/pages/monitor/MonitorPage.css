@@ -1,4 +1,90 @@
 
+.logbox {
+    background:rgb(48, 50, 56, 1);
+    padding: 10px;
+    border-radius: 4px;
+}
+
+.logbox .datetime {
+    width: 170px;
+    font-size: 12px;
+    flex: 0 0 170px;
+    color: #818896!important;
+}
+
+.logbox .logbox-detail .message {
+    font-size: 12px;
+    padding: 0px 0px 0px 0px;
+    margin: 0px 0px 5px 0px;
+    color: #818896!important;
+}
+
+.logbox .logbox-detail .head-info {
+    font-size: 12px;
+    margin: 0px 10px 0px 0px;
+    color: #818896!important;
+}
+
+.logs-inputs-box .logs-inputs {
+    margin: 0px 10px 0px 0px;
+}
+
+.logs-inputs-box .logs-inputs.space {
+    margin: 0px 200px 0px 0px;
+}
+
+.logbox .logbox-detail .head-info.thread,
+.logbox .logbox-detail .head-info.classname {
+    color: #8d9003!important;
+}
+
+.logbox .logbox-detail .head-info.level-fatal {
+    color: red!important;
+}
+
+.logbox .logbox-detail .head-info.level-warn,
+.logbox .logbox-detail .head-info.level-error {
+    color: rgb(209, 87, 5)!important;
+}
+
+.logbox .logbox-detail .head-info.level-info {
+    color: green!important;
+}
+
+.logbox .logbox-detail .head-info.level-debug,
+.logbox .logbox-detail .head-info.level-trace {
+    color: rgb(0, 236, 0)!important;
+}
+
+
+
+.label-http-method-post {
+    background-color: #49cc90;
+}
+
+.label-http-method-put {
+    background-color: #fca130;
+}
+
+.label-http-method-get {
+    background-color: #61affe;
+}
+
+.label-http-method-delete {
+    background-color: #f93e3e;
+}
+
+.label-http-method-patch {
+    background-color: #50e3c2;
+}
+
+.label-http-method-other {
+    background-color: #4532ea
+}
+
+
+
+
 .chiller-theme .monitor .info-box .item-head {
     background: rgb(48, 50, 56, 1);
     color: #818896!important;
