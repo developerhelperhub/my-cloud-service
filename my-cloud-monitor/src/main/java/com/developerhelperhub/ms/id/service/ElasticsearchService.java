@@ -1,6 +1,11 @@
 package com.developerhelperhub.ms.id.service;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
@@ -21,7 +26,8 @@ import org.springframework.data.elasticsearch.core.query.NativeSearchQueryBuilde
 import org.springframework.data.elasticsearch.core.query.SearchQuery;
 import org.springframework.stereotype.Service;
 
-import com.developerhelperhub.ms.id.model.monitor.AccessLogMessageModel;
+import com.developerhelperhub.ms.id.model.monitor.AccessLogModel;
+import com.developerhelperhub.ms.id.model.monitor.AccessLogModel.AccessLogMessageModel;
 import com.developerhelperhub.ms.id.model.monitor.ElastiSearchLogModel;
 import com.developerhelperhub.ms.id.model.monitor.ElastiSearchLogModel.ElastiSearchLogData;
 import com.developerhelperhub.ms.id.model.monitor.LogMessageModel;
@@ -39,6 +45,8 @@ public class ElasticsearchService {
 
 	@Autowired
 	private ElasticsearchTemplate template;
+
+	private SimpleDateFormat formatter = new SimpleDateFormat("dd/MMM/yyyy:hh:mm:ss");
 
 	public ElastiSearchLogModel search(String indexName, String type, String searchKey, int page, int size,
 			String order) {
@@ -151,13 +159,16 @@ public class ElasticsearchService {
 		return list;
 	}
 
-	public List<AccessLogMessageModel> searchAccessLogs(String applicationId, String search, int size, String order) {
+	public AccessLogModel searchAccessLogs(String applicationId, String search, int size, String order, String group) {
 		String indexName = "my-cloud-logs-" + applicationId + "-access_log-*";
 
 		ElastiSearchLogModel model = search(indexName, "_doc", search, 0, size, order);
-		List<AccessLogMessageModel> list;
 
-		list = IntStream.range(0, model.getData().size()).mapToObj(index -> {
+		AccessLogModel logModel = new AccessLogModel();
+
+		List<AccessLogModel.AccessLogMessageModel> messages;
+
+		messages = IntStream.range(0, model.getData().size()).mapToObj(index -> {
 
 			AccessLogMessageModel log = new AccessLogMessageModel();
 			String text = (String) model.getData().get(index).getData().get("message");
@@ -187,7 +198,9 @@ public class ElasticsearchService {
 				String[] split = text.split("\\|");
 
 				String[] datetimeSplit = split[0].split(" ");
-				log.setDatetime(datetimeSplit[0].replace("[", ""));
+				String datetime = datetimeSplit[0].replace("[", "");
+				log.setDatetime(formatter.parse(datetime));
+				log.setDatetimeFormatted(datetime);
 
 				log.setRemoteIpAddress(split[1]);
 				log.setRemoteHostname(split[2]);
@@ -205,7 +218,7 @@ public class ElasticsearchService {
 				log.setLocalServerName(split[14]);
 				log.setAuthenticatedRemoteUsername(split[15]);
 
-			} catch (IndexOutOfBoundsException e) {
+			} catch (IndexOutOfBoundsException | ParseException e) {
 
 				LOGGER.warn("Search parse access log error: {}", text);
 
@@ -215,6 +228,133 @@ public class ElasticsearchService {
 
 		}).filter(d -> d != null).collect(Collectors.toList());
 
-		return list;
+		Map<Object, List<AccessLogMessageModel>> grouped = messages.stream().collect(Collectors.groupingBy(x -> {
+
+			if (group.toLowerCase().equals("hour")) {
+
+				return x.getDatetime().getTime() / 3600000;
+
+			} else if (group.toLowerCase().equals("minute")) {
+
+				return x.getDatetime().getTime() / 60000;
+
+			} else if (group.toLowerCase().equals("second")) {
+
+				return (x.getDatetime().getTime() / 1000);
+
+			} else {
+				return x.getDatetime().getTime();
+			}
+
+		}));
+
+		Map<Long, AccessLogModel.Metric> metrics = new TreeMap<>();
+
+		for (Map.Entry<Object, List<AccessLogMessageModel>> entry : grouped.entrySet()) {
+
+			long time = (Long) entry.getKey();
+
+			AccessLogModel.Metric metric;
+
+			if (metrics.containsKey(time)) {
+				metric = metrics.get(time);
+			} else {
+				metric = new AccessLogModel.Metric();
+				metrics.put(time, metric);
+			}
+
+			Map<String, Integer> data = new HashMap<>();
+
+			for (AccessLogMessageModel log : entry.getValue()) {
+
+				String method = "other";
+
+				if (log.getRequestMethod().toLowerCase().contains("post")
+						|| log.getRequestMethod().toLowerCase().contains("put")
+						|| log.getRequestMethod().toLowerCase().contains("get")
+						|| log.getRequestMethod().toLowerCase().contains("delete")
+						|| log.getRequestMethod().toLowerCase().contains("patch")) {
+					method = log.getRequestMethod().toLowerCase();
+				}
+
+				String statusKey = "";
+
+				if (log.getStatusCode().toLowerCase().contains("2")) {
+					statusKey = "2x";
+				} else if (log.getStatusCode().toLowerCase().contains("3")) {
+					statusKey = "3x";
+				} else if (log.getStatusCode().toLowerCase().contains("4")) {
+					statusKey = "4x";
+				} else if (log.getStatusCode().toLowerCase().contains("5")) {
+					statusKey = "5x";
+				} else {
+					statusKey = "x";
+				}
+
+				String request = "request";
+
+				if (!data.containsKey(method)) {
+					data.put(method, 0);
+				}
+				data.put(method, data.get(method) + 1);
+
+				if (!data.containsKey(statusKey)) {
+					data.put(statusKey, 0);
+				}
+				data.put(statusKey, data.get(statusKey) + 1);
+
+				if (!data.containsKey(request)) {
+					data.put(request, 0);
+				}
+				data.put(request, data.get(request) + 1);
+			}
+
+			metric.setTime(time);
+
+			if (data.containsKey("post"))
+				metric.setMethodPost(data.get("post"));
+
+			if (data.containsKey("put"))
+				metric.setMethodPut(data.get("put"));
+
+			if (data.containsKey("get"))
+				metric.setMethodGet(data.get("get"));
+
+			if (data.containsKey("delete"))
+				metric.setMethodDelete(data.get("delete"));
+
+			if (data.containsKey("patch"))
+				metric.setMethodPatch(data.get("patch"));
+
+			if (data.containsKey("other"))
+				metric.setMethodOther(data.get("other"));
+
+			if (data.containsKey("request"))
+				metric.setRequest(data.get("request"));
+
+			if (data.containsKey("2x"))
+				metric.setStatus2x(data.get("2x"));
+
+			if (data.containsKey("3x"))
+				metric.setStatus3x(data.get("3x"));
+
+			if (data.containsKey("4x"))
+				metric.setStatus4x(data.get("4x"));
+
+			if (data.containsKey("5x"))
+				metric.setStatus5x(data.get("5x"));
+
+			if (data.containsKey("x"))
+				metric.setStatusx(data.get("x"));
+
+			metrics.put(time, metric);
+
+		}
+
+		logModel.setGroup(group);
+		logModel.setMatrics(metrics.values());
+		logModel.setMessages(messages);
+
+		return logModel;
 	}
 }
