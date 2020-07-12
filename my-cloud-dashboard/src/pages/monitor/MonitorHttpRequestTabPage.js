@@ -120,13 +120,8 @@ class MonitorHttpRequestTabPage extends React.Component {
             var methods = [];
             var methodsBars = [];
 
-            var statusValues = [];
-            var status2x = [];
-            var status3x = [];
-            var status4x = [];
-            var status5x = [];
-            var statusx = [];
-            var statusLegends = [];
+            var status = [];
+            var statusBars = [];
 
             response.data.matrics.forEach(metric => {
 
@@ -145,20 +140,14 @@ class MonitorHttpRequestTabPage extends React.Component {
                 })
 
                 //Status
-                statusValues.push({ time: metric.time, value: metric.status2x });
-                status2x.push({ time: metric.time, value: metric.status2x });
-
-                statusValues.push({ time: metric.time, value: metric.status3x });
-                status3x.push({ time: metric.time, value: metric.status3x });
-
-                statusValues.push({ time: metric.time, value: metric.status4x });
-                status4x.push({ time: metric.time, value: metric.status3x });
-
-                statusValues.push({ time: metric.time, value: metric.status5x });
-                status5x.push({ time: metric.time, value: metric.status5x });
-
-                statusValues.push({ time: metric.time, value: metric.statusx });
-                statusx.push({ time: metric.time, value: metric.statusx });
+                status.push({
+                    time: metric.time,
+                    status2x: metric.status2x,
+                    status3x: metric.status3x,
+                    status4x: metric.status4x,
+                    status5x: metric.status5x,
+                    statusx: metric.statusx,
+                });
 
             });
 
@@ -224,103 +213,50 @@ class MonitorHttpRequestTabPage extends React.Component {
                 },
                 "#chart-http-request-method");
 
-            items = [];
 
-            statusLegends.push({
+            statusBars.push({
                 value: "2x",
+                name: "status2x",
                 fill: "#49cc90",
                 stroke: "#49cc90",
                 strokeWidth: 1
             })
-            items.push(
-                {
-                    fill: "none",
-                    stroke: "#49cc90",
-                    strokeWidth: 1,
-                    data: status2x,
-                    x: function (d) { return d.time },
-                    y: function (d) { return d.value }
-                }
-            )
-
-            statusLegends.push({
+            statusBars.push({
                 value: "3x",
+                name: "status3x",
                 fill: "#fca130",
                 stroke: "#fca130",
                 strokeWidth: 1
             })
-            items.push(
-                {
-                    fill: "none",
-                    stroke: "#fca130",
-                    strokeWidth: 1,
-                    data: status3x,
-                    x: function (d) { return d.time },
-                    y: function (d) { return d.value }
-                }
-            )
-
-            statusLegends.push({
+            statusBars.push({
                 value: "4x",
+                name: "status4x",
                 fill: "#61affe",
                 stroke: "#61affe",
                 strokeWidth: 1
             })
-            items.push(
-                {
-                    fill: "none",
-                    stroke: "#61affe",
-                    strokeWidth: 1,
-                    data: status4x,
-                    x: function (d) { return d.time },
-                    y: function (d) { return d.value }
-                }
-            )
-
-            statusLegends.push({
+            statusBars.push({
                 value: "5x",
+                name: "status5x",
                 fill: "#f93e3e",
                 stroke: "#f93e3e",
                 strokeWidth: 1
             })
-            items.push(
-                {
-                    fill: "none",
-                    stroke: "#f93e3e",
-                    strokeWidth: 1,
-                    data: status5x,
-                    x: function (d) { return d.time },
-                    y: function (d) { return d.value }
-                }
-            )
-
-            statusLegends.push({
+            statusBars.push({
                 value: "x",
+                name: "statusx",
                 fill: "#4532ea",
                 stroke: "#4532ea",
                 strokeWidth: 1
             })
-            items.push(
-                {
-                    fill: "none",
-                    stroke: "#4532ea",
-                    strokeWidth: 1,
-                    data: statusx,
-                    x: function (d) { return d.time },
-                    y: function (d) { return d.value }
-                }
-            )
 
-            self.populateLineGraph('line',
+            self.d3BarChartStacked(
                 {
-                    items: items,
-                    values: statusValues,
-                    legends: statusLegends
+                    items: status,
+                    bars: statusBars
                 },
-                "#chart-http-request-status",
-                function (d) {
-                    return d;
-                });
+                "#chart-http-request-status");
+
         }
 
         this.setState({
