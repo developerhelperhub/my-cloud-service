@@ -44,7 +44,9 @@ class MonitorHttpRequestTabPage extends React.Component {
         }
 
         this.formatDate = this.formatDate.bind(this);
-        this.populateGraph = this.populateGraph.bind(this);
+        this.populateLineGraph = this.populateLineGraph.bind(this);
+        this.populateBarGraph = this.populateBarGraph.bind(this);
+        this.d3BarChartStacked = this.d3BarChartStacked.bind(this);
         this.renderStatusOnTable = this.renderStatusOnTable.bind(this);
         this.refreshAccessLogs = this.refreshAccessLogs.bind(this);
         this.handleChangePageSize = this.handleChangePageSize.bind(this);
@@ -85,7 +87,7 @@ class MonitorHttpRequestTabPage extends React.Component {
             pageSize = this.state.pageSize;
         }
 
-        var path = '/monitor/access-logs/search?applicationId=' + this.state.selectedApplication + '&searchKey=' + this.state.search + '&size=' + pageSize + '&order=desc' + '&group=second';
+        var path = '/monitor/access-logs/search?applicationId=' + this.state.selectedApplication + '&searchKey=' + this.state.search + '&size=' + pageSize + '&order=desc' + '&group=minute';
 
         const response = await AppApiRepo.fetch(path, 'GET', {
             'Content-Type': 'application/json',
@@ -114,18 +116,9 @@ class MonitorHttpRequestTabPage extends React.Component {
 
             var items = [];
 
-            var requestValues = [];
             var requestData = [];
-            var requestLegends = [];
-
-            var methodValues = [];
-            var methodsDataPost = [];
-            var methodsDataPut = [];
-            var methodsDataDelete = [];
-            var methodsDataGet = [];
-            var methodsDataPatch = [];
-            var methodsDataOther = [];
-            var methodsLegends = [];
+            var methods = [];
+            var methodsBars = [];
 
             var statusValues = [];
             var status2x = [];
@@ -138,27 +131,18 @@ class MonitorHttpRequestTabPage extends React.Component {
             response.data.matrics.forEach(metric => {
 
                 // Request
-                requestValues.push({ time: metric.time, value: metric.request });
                 requestData.push({ time: metric.time, value: metric.request });
 
                 //Method
-                methodValues.push({ time: metric.time, value: metric.methodPost });
-                methodsDataPost.push({ time: metric.time, value: metric.methodPost });
-
-                methodValues.push({ time: metric.time, value: metric.methodPut });
-                methodsDataPut.push({ time: metric.time, value: metric.methodPut });
-
-                methodValues.push({ time: metric.time, value: metric.methodDelete });
-                methodsDataDelete.push({ time: metric.time, value: metric.methodDelete });
-
-                methodValues.push({ time: metric.time, value: metric.methodGet });
-                methodsDataGet.push({ time: metric.time, value: metric.methodGet });
-
-                methodValues.push({ time: metric.time, value: metric.methodPatch });
-                methodsDataPatch.push({ time: metric.time, value: metric.methodPatch });
-
-                methodValues.push({ time: metric.time, value: metric.methodOther });
-                methodsDataOther.push({ time: metric.time, value: metric.methodOther });
+                methods.push({
+                    time: metric.time,
+                    methodPost: metric.methodPost,
+                    methodPut: metric.methodPut,
+                    methodDelete: metric.methodDelete,
+                    methodGet: metric.methodGet,
+                    methodPatch: metric.methodPatch,
+                    methodOther: metric.methodOther
+                })
 
                 //Status
                 statusValues.push({ time: metric.time, value: metric.status2x });
@@ -178,144 +162,67 @@ class MonitorHttpRequestTabPage extends React.Component {
 
             });
 
-            items.push(
-                {
-                    fill: "none",
-                    stroke: "blue",
-                    strokeWidth: 1,
-                    data: requestData,
-                    x: function (d) { return d.time },
-                    y: function (d) { return d.value }
-                }
-            )
-
-            self.populateGraph('line',
-                {
-                    items: items,
-                    values: requestValues,
-                    legends: requestLegends
-                },
+            self.populateBarGraph(
+                requestData,
                 "#chart-http-request-request",
                 function (d) {
                     return d;
                 });
 
-            items = [];
-
-            methodsLegends.push({
+            methodsBars.push({
                 value: "POST",
+                name: "methodPost",
                 fill: "#49cc90",
                 stroke: "#49cc90",
                 strokeWidth: 1
             })
-            items.push(
-                {
-                    fill: "none",
-                    stroke: "#49cc90",
-                    strokeWidth: 1,
-                    data: methodsDataPost,
-                    x: function (d) { return d.time },
-                    y: function (d) { return d.value }
-                }
-            )
 
-            methodsLegends.push({
+            methodsBars.push({
                 value: "PUT",
+                name: "methodPut",
                 fill: "#fca130",
                 stroke: "#fca130",
                 strokeWidth: 1
             })
-            items.push(
-                {
-                    fill: "none",
-                    stroke: "#fca130",
-                    strokeWidth: 1,
-                    data: methodsDataPut,
-                    x: function (d) { return d.time },
-                    y: function (d) { return d.value }
-                }
-            )
 
-
-            methodsLegends.push({
+            methodsBars.push({
                 value: "DELETE",
+                name: "methodDelete",
                 fill: "#f93e3e",
                 stroke: "#f93e3e",
                 strokeWidth: 1
             })
-            items.push(
-                {
-                    fill: "none",
-                    stroke: "#f93e3e",
-                    strokeWidth: 1,
-                    data: methodsDataDelete,
-                    x: function (d) { return d.time },
-                    y: function (d) { return d.value }
-                }
-            )
 
-            methodsLegends.push({
+            methodsBars.push({
                 value: "GET",
+                name: "methodGet",
                 fill: "#61affe",
                 stroke: "#61affe",
                 strokeWidth: 1
             })
-            items.push(
-                {
-                    fill: "none",
-                    stroke: "#61affe",
-                    strokeWidth: 1,
-                    data: methodsDataGet,
-                    x: function (d) { return d.time },
-                    y: function (d) { return d.value }
-                }
-            )
 
-            methodsLegends.push({
+            methodsBars.push({
                 value: "PATCH",
+                name: "methodPatch",
                 fill: "#50e3c2",
                 stroke: "#50e3c2",
                 strokeWidth: 1
             })
-            items.push(
-                {
-                    fill: "none",
-                    stroke: "#50e3c2",
-                    strokeWidth: 1,
-                    data: methodsDataPatch,
-                    x: function (d) { return d.time },
-                    y: function (d) { return d.value }
-                }
-            )
 
-            methodsLegends.push({
+            methodsBars.push({
                 value: "OTHER",
+                name: "methodOther",
                 fill: "#4532ea",
                 stroke: "#4532ea",
                 strokeWidth: 1
             })
-            items.push(
-                {
-                    fill: "none",
-                    stroke: "#4532ea",
-                    strokeWidth: 1,
-                    data: methodsDataOther,
-                    x: function (d) { return d.time },
-                    y: function (d) { return d.value }
-                }
-            )
 
-            self.populateGraph('line',
+            self.d3BarChartStacked(
                 {
-                    items: items,
-                    values: methodValues,
-                    legends: methodsLegends
+                    items: methods,
+                    bars: methodsBars
                 },
-                "#chart-http-request-method",
-                function (d) {
-                    return d;
-                });
-
+                "#chart-http-request-method");
 
             items = [];
 
@@ -404,7 +311,7 @@ class MonitorHttpRequestTabPage extends React.Component {
                 }
             )
 
-            self.populateGraph('line',
+            self.populateLineGraph('line',
                 {
                     items: items,
                     values: statusValues,
@@ -496,7 +403,107 @@ class MonitorHttpRequestTabPage extends React.Component {
 
     }
 
-    populateGraph(type, data, id, funTickFormat) {
+    d3BarChartStacked(data, id) {
+
+        window.d3BarChartStacked({
+            id: id,
+            margin: { top: 10, right: 30, bottom: 30, left: 60 },
+            fill: 'steelblue',
+            stroke: "steelblue",
+            strokeWidth: "1px",
+            items: data.items,
+            axis: {
+                x: {
+                    transform: function (width, height) {
+                        return "translate(0," + height + ")";
+                    },
+                    range: function (width, height) {
+                        return [0, width - 70];
+                    }
+                },
+                y: {
+                    range: function (width, height) {
+                        return [height, 0];
+                    }
+                },
+                stroke: "#818896",
+                fill: "none",
+                text: "#818896",
+                font: "10px Arial"
+            },
+            bars: {
+                legend: {
+                    transform: function (d, i, width, height) {
+                        return 'translate(' + 0 + ',' + (i * 20) + ')';
+                    },
+                    rect: {
+                        width: 10,
+                        height: 10,
+                        x: function (width, height) {
+                            return width - 40;
+                        },
+                        y: function (width, height) {
+                            return 0;
+                        }
+                    },
+                    text: {
+                        x: function (width, height) {
+                            return width - 20;
+                        },
+                        y: function (width, height) {
+                            return 10;
+                        },
+                        value: function (d) {
+                            return d.value;
+                        },
+                        font: "10px arial",
+                        fill: "#818896"
+                    }
+                },
+                data: data.bars
+            },
+            x: function (d) { return d.time }
+        });
+
+    }
+
+    populateBarGraph(data, id) {
+
+        window.d3BarChart({
+            id: id,
+            margin: { top: 10, right: 30, bottom: 30, left: 60 },
+            fill: 'steelblue',
+            stroke: "steelblue",
+            strokeWidth: "1px",
+            data: data,
+            axis: {
+                x: {
+                    transform: function (width, height) {
+                        return "translate(0," + height + ")";
+                    },
+                    range: function (width, height) {
+                        return [0, width];
+                    }
+                },
+                y: {
+                    range: function (width, height) {
+                        return [height, 0];
+                    }
+                },
+                stroke: "#818896",
+                fill: "none",
+                text: "#818896",
+                font: "10px Arial"
+            },
+            extent: function (d) { return d.time; },
+            max: function (d) { return d.value; },
+            x: function (d) { return d.time },
+            y: function (d) { return d.value }
+        });
+
+    }
+
+    populateLineGraph(type, data, id, funTickFormat) {
 
         let self = this;
 
