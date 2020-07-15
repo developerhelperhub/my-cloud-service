@@ -480,6 +480,14 @@
     color: #a3afb7;
   }
 
+  /*-------------------- date picker ----------------------*/  
+  .react-datepicker-wrapper input {
+    height: calc(1.5em + .75rem + 2px);
+    padding: .375rem .75rem;
+    border-radius: .25rem;
+    font-weight: 400;
+    width: 100%;
+  }
 
   /*-------------------- commons : css ----------------------*/  
   .pr-10 {
@@ -678,7 +686,10 @@
   .chiller-theme div.dataTables_wrapper div.dataTables_filter input,
   .chiller-theme div.dataTables_wrapper div.dataTables_paginate li.paginate_button,
   .chiller-theme div.dataTables_wrapper div.dataTables_paginate a.page-link,
-  .form-control, button, .form-control:focus {
+  .chiller-theme .form-control, 
+  .chiller-theme  button, 
+  .chiller-theme .form-control:focus,
+  .chiller-theme .react-datepicker-wrapper input {
     /* styling */
     background-color: #2f3136;
     color: #818896!important;
@@ -693,3 +704,4 @@
       linear-gradient(to right, #2f3136, #2f3136);
   }
 
+  

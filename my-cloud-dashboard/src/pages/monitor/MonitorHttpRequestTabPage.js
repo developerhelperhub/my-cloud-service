@@ -1,4 +1,5 @@
-import React from 'react';
+import React, { useState } from 'react';
+import DatePicker from 'react-datepicker';
 
 import PageTabPane from '../../components/dashboard/panel/PageTabPane'
 import InfoBox from '../../components/dashboard/InfoBox'
@@ -8,6 +9,7 @@ import DataTable from '../../components/table/DataTable'
 import AppApiRepo from '../../common/AppApiRepo'
 
 import './MonitorPage.css'
+import "react-datepicker/dist/react-datepicker.css";
 
 class MonitorHttpRequestTabPage extends React.Component {
 
@@ -18,6 +20,8 @@ class MonitorHttpRequestTabPage extends React.Component {
 
         this.state = {
             messages: [],
+            fromDate: new Date(),
+            toDate: new Date(),
             selectedApplication: null,
             selectedTab: null,
             pageSize: 100,
@@ -51,6 +55,21 @@ class MonitorHttpRequestTabPage extends React.Component {
         this.refreshAccessLogs = this.refreshAccessLogs.bind(this);
         this.handleChangePageSize = this.handleChangePageSize.bind(this);
         this.handleChangeSearch = this.handleChangeSearch.bind(this);
+        this.setFromDate = this.setFromDate.bind(this);
+        this.setToDate = this.setToDate.bind(this);
+
+    }
+
+    setFromDate(date) {
+        this.setState({
+            fromDate: date
+        })
+    }
+
+    setToDate(date) {
+        this.setState({
+            toDate: date
+        })
     }
 
     renderStatusOnTable(data, type, row) {
@@ -290,6 +309,8 @@ class MonitorHttpRequestTabPage extends React.Component {
 
     render() {
 
+        let self = this;
+
         return (
             <PageTabPane id="http-request" labelledby="http-request-tab">
                 <div class="container-fluid monitor">
@@ -300,11 +321,36 @@ class MonitorHttpRequestTabPage extends React.Component {
                             </div>
 
                             <div class="logs-inputs">
+                                From :
+                                <DatePicker
+                                    selected={this.state.fromDate}
+                                    onChange={date => self.setFromDate(date)}
+                                    locale="pt-BR"
+                                    showTimeSelect
+                                    timeFormat="p"
+                                    timeIntervals={15}
+                                    dateFormat="Pp"
+                                />
+                            </div>
+
+                            <div class="logs-inputs">
+                                To: 
+                                <DatePicker
+                                    selected={this.state.toDate}
+                                    onChange={date => self.setToDate(date)}
+                                    locale="pt-BR"
+                                    showTimeSelect
+                                    timeFormat="p"
+                                    timeIntervals={15}
+                                    dateFormat="Pp"
+                                />
+                            </div>
+
+                            <div class="logs-inputs">
                                 <button style={{ width: "70px", height: "32px" }} onClick={this.refreshAccessLogs}>Refresh</button>
                             </div>
 
-                            <div class="logs-inputs space" width="400px">
-
+                            <div class="logs-inputs space">
                             </div>
 
                             <div class="logs-inputs">
