@@ -18,10 +18,14 @@ class MonitorHttpRequestTabPage extends React.Component {
 
         let self = this;
 
+        var toDate =  new Date();
+        var fromDate =  new Date();
+        fromDate.setHours(fromDate.getHours() - 1);
+
         this.state = {
             messages: [],
-            fromDate: new Date(),
-            toDate: new Date(),
+            fromDate: fromDate,
+            toDate: toDate,
             selectedApplication: null,
             selectedTab: null,
             pageSize: 100,
@@ -106,7 +110,16 @@ class MonitorHttpRequestTabPage extends React.Component {
             pageSize = this.state.pageSize;
         }
 
-        var path = '/monitor/access-logs/search?applicationId=' + this.state.selectedApplication + '&searchKey=' + this.state.search + '&size=' + pageSize + '&order=desc' + '&group=minute';
+        console.log('this.state.fromDate:' + this.state.fromDate.getTime());
+        console.log('this.state.toDate:' + this.state.toDate.getTime());
+
+        var path = '/monitor/access-logs/search?applicationId=' + this.state.selectedApplication 
+        + '&searchKey=' + this.state.search 
+        + '&size=' + pageSize 
+        + '&fromDate=' + this.state.fromDate.getTime()
+        + '&toDate=' + this.state.toDate.getTime()
+        + '&order=desc' 
+        + '&group=minute';
 
         const response = await AppApiRepo.fetch(path, 'GET', {
             'Content-Type': 'application/json',

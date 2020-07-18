@@ -1,4 +1,5 @@
 import React from 'react';
+import DatePicker from 'react-datepicker';
 
 import PageTabPane from '../../components/dashboard/panel/PageTabPane'
 import InfoBox from '../../components/dashboard/InfoBox'
@@ -7,13 +8,20 @@ import InfoBoxItem from '../../components/dashboard/InfoBoxItem'
 import AppApiRepo from '../../common/AppApiRepo'
 
 import './MonitorPage.css'
+import "react-datepicker/dist/react-datepicker.css";
 
 class MonitorLogTabPage extends React.Component {
 
     constructor(props) {
         super(props);
 
+        var toDate = new Date();
+        var fromDate = new Date();
+        fromDate.setHours(fromDate.getHours() - 1);
+
         this.state = {
+            fromDate: fromDate,
+            toDate: toDate,
             messages: [],
             selectedApplication: null,
             selectedTab: null,
@@ -24,6 +32,20 @@ class MonitorLogTabPage extends React.Component {
         this.refreshLogs = this.refreshLogs.bind(this);
         this.handleChangePageSize = this.handleChangePageSize.bind(this);
         this.handleChangeSearch = this.handleChangeSearch.bind(this);
+        this.setFromDate = this.setFromDate.bind(this);
+        this.setToDate = this.setToDate.bind(this);
+    }
+
+    setFromDate(date) {
+        this.setState({
+            fromDate: date
+        })
+    }
+
+    setToDate(date) {
+        this.setState({
+            toDate: date
+        })
     }
 
     handleChangePageSize(e) {
@@ -42,7 +64,11 @@ class MonitorLogTabPage extends React.Component {
             pageSize = this.state.pageSize;
         }
 
-        var path = '/monitor/logs/search?applicationId=' + this.state.selectedApplication + '&searchKey=' + this.state.search + '&size=' + pageSize;
+        var path = '/monitor/logs/search?applicationId=' + this.state.selectedApplication
+            + '&searchKey=' + this.state.search 
+            + '&size=' + pageSize
+            + '&fromDate=' + this.state.fromDate.getTime()
+            + '&toDate=' + this.state.toDate.getTime();
 
         const response = await AppApiRepo.fetch(path, 'GET', {
             'Content-Type': 'application/json',
@@ -107,6 +133,7 @@ class MonitorLogTabPage extends React.Component {
 
 
     render() {
+        let self = this;
 
         return (
             <PageTabPane id="logs" labelledby="logs-tab">
@@ -115,6 +142,31 @@ class MonitorLogTabPage extends React.Component {
                         <div class="d-flex flex-row bd-highlight flex-grow-1 logs-inputs-box">
                             <div class="logs-inputs flex-grow-1">
                                 <input type="text" onChange={this.handleChangeSearch} class="form-control" id="inputSearch" placeholder="Search"></input>
+                            </div>
+
+                            <div class="logs-inputs">
+                                <label>From :</label>
+                                <DatePicker
+                                    selected={this.state.fromDate}
+                                    onChange={date => self.setFromDate(date)}
+                                    locale="pt-BR"
+                                    showTimeSelect
+                                    timeFormat="p"
+                                    timeIntervals={15}
+                                    dateFormat="Pp"
+                                />
+                            </div>
+                            <div class="logs-inputs">
+                                <label>To :</label>
+                                <DatePicker
+                                    selected={this.state.toDate}
+                                    onChange={date => self.setToDate(date)}
+                                    locale="pt-BR"
+                                    showTimeSelect
+                                    timeFormat="p"
+                                    timeIntervals={15}
+                                    dateFormat="Pp"
+                                />
                             </div>
 
                             <div class="logs-inputs">
