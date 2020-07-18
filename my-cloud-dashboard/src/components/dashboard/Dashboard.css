@@ -41,7 +41,7 @@
 
   /*-------------------- data table ----------------------*/
  
-  .dataTables_wrapper label,
+  label,
   div.dataTables_wrapper div.dataTables_paginate a.page-link {
     font-size: 12px;
   }
@@ -489,6 +489,10 @@
     width: 100%;
   }
 
+  .react-datepicker__navigation--next--with-time:not(.react-datepicker__navigation--next--with-today-button) {
+    right: 100px!important;
+  }
+
   /*-------------------- commons : css ----------------------*/  
   .pr-10 {
     padding-right: 10px!important;
@@ -593,25 +597,47 @@
 
   /*-------------------- theme: chiller -background color ----------------------*/  
 
+  .chiller-theme .react-datepicker,
+  .chiller-theme .react-datepicker__month,
+  .chiller-theme .react-datepicker__month-container,
+  .chiller-theme .react-datepicker__time-container,
+  .chiller-theme .react-datepicker__header 
+  .chiller-theme .react-datepicker__header--time
+  .chiller-theme .react-datepicker__time-box {
+    border-color: #818896!important;
+  }
+
   .chiller-theme .sidebar-wrapper,
   .chiller-theme .sidebar-wrapper .navbar.bg-light,
   .chiller-theme div.dataTables_wrapper div.dataTables_info,
-  .chiller-theme .page-content-wrapper .page-content .page-panel .body {
+  .chiller-theme .page-content-wrapper .page-content .page-panel .body,
+
+  /* datepicker */
+
+  .chiller-theme .react-datepicker,
+  .chiller-theme .react-datepicker__current-month,
+  .chiller-theme .react-datepicker__header,
+  .chiller-theme .react-datepicker__time-list-item {
     background-color: #31353D!important;
   }
 
   /*-------------------- theme: chiller - font color ----------------------*/  
 
   .chiller-theme .page-content-wrapper .page-content .page-panel .header,
-  .chiller-theme .dataTables_wrapper label,
+  .chiller-theme label,
   .chiller-theme div.dataTables_wrapper div.dataTables_info,
-  .chiller-theme .page-content-wrapper .page-content .page-panel .header .panel-icon .panel-icon-font {
+  .chiller-theme .page-content-wrapper .page-content .page-panel .header .panel-icon .panel-icon-font,
+  .chiller-theme .react-datepicker__day-name,
+  .chiller-theme .react-datepicker__day,
+  .chiller-theme .react-datepicker__current-month,
+  .chiller-theme .react-datepicker-time__header,
+  .chiller-theme .react-datepicker__time-list-item  {
     color: #818896!important;
   }
 
   
   /*-------------------- theme: chiller - page-content-wrapper color ----------------------*/  
-  .chiller-theme .page-content-wrapper {
+  .chiller-theme .page-content-wrapper  {
     background-color: #414348!important;
   }
 

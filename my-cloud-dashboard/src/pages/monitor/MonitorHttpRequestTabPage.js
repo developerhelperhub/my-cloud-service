@@ -321,7 +321,7 @@ class MonitorHttpRequestTabPage extends React.Component {
                             </div>
 
                             <div class="logs-inputs">
-                                From :
+                                <label>From :</label>
                                 <DatePicker
                                     selected={this.state.fromDate}
                                     onChange={date => self.setFromDate(date)}
@@ -334,7 +334,7 @@ class MonitorHttpRequestTabPage extends React.Component {
                             </div>
 
                             <div class="logs-inputs">
-                                To: 
+                                <label>To :</label>
                                 <DatePicker
                                     selected={this.state.toDate}
                                     onChange={date => self.setToDate(date)}
