@@ -83,21 +83,23 @@ public class Controller {
 	@GetMapping(value = "/elasticsearch/search")
 	public ElastiSearchLogModel getEasticsearch(@QueryParam("indexName") String indexName,
 			@QueryParam("type") String type, @QueryParam("searchKey") String searchKey, @QueryParam("page") int page,
-			@QueryParam("size") int size, @QueryParam("order") String order) {
-		return elasticsearchService.search(indexName, type, searchKey, page, size, order);
+			@QueryParam("size") int size, @QueryParam("order") String order, @QueryParam("fromDate") long fromDate,
+			@QueryParam("toDate") long toDate) {
+		return elasticsearchService.search(indexName, type, searchKey, page, size, order, fromDate, toDate);
 	}
 
 	@GetMapping(value = "/logs/search")
 	public List<LogMessageModel> getEasticsearchLogs(@QueryParam("applicationId") String applicationId,
-			@QueryParam("searchKey") String searchKey, @QueryParam("size") int size,
-			@QueryParam("order") String order) {
-		return elasticsearchService.searchLogs(applicationId, searchKey, size, order);
+			@QueryParam("searchKey") String searchKey, @QueryParam("size") int size, @QueryParam("order") String order,
+			@QueryParam("fromDate") long fromDate, @QueryParam("toDate") long toDate) {
+		return elasticsearchService.searchLogs(applicationId, searchKey, size, order, fromDate, toDate);
 	}
 
 	@GetMapping(value = "/access-logs/search")
 	public AccessLogModel getEasticsearchAccessLogs(@QueryParam("applicationId") String applicationId,
 			@QueryParam("searchKey") String searchKey, @QueryParam("size") int size, @QueryParam("order") String order,
-			@QueryParam("group") String group) {
-		return elasticsearchService.searchAccessLogs(applicationId, searchKey, size, order, group);
+			@QueryParam("group") String group, @QueryParam("fromDate") long fromDate,
+			@QueryParam("toDate") long toDate) {
+		return elasticsearchService.searchAccessLogs(applicationId, searchKey, size, order, group, fromDate, toDate);
 	}
 }

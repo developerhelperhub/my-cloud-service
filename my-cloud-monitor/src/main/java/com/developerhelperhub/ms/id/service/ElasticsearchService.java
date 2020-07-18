@@ -2,6 +2,7 @@ package com.developerhelperhub.ms.id.service;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -10,6 +11,8 @@ import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 import org.elasticsearch.action.search.SearchResponse;
+import org.elasticsearch.index.query.BoolQueryBuilder;
+import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.search.SearchHit;
 import org.elasticsearch.search.sort.FieldSortBuilder;
@@ -37,6 +40,8 @@ public class ElasticsearchService {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(ElasticsearchService.class);
 
+	private final String ELASTIC_DATE_FORMAT = "yyyy-MM-dd HH:mm:ss";
+
 	@Value("${elasticsearch.pagsize.min}")
 	private String minPageSize;
 
@@ -47,16 +52,28 @@ public class ElasticsearchService {
 	private ElasticsearchTemplate template;
 
 	private SimpleDateFormat formatter = new SimpleDateFormat("dd/MMM/yyyy:hh:mm:ss");
+	private SimpleDateFormat formatterElasticSearch = new SimpleDateFormat(ELASTIC_DATE_FORMAT);
 
 	public ElastiSearchLogModel search(String indexName, String type, String searchKey, int page, int size,
-			String order) {
+			String order, long fromDate, long toDate) {
 
 		NativeSearchQueryBuilder bulider = new NativeSearchQueryBuilder().withIndices(indexName).withTypes("_doc")
 				.withSort(buildLogSortByTimestamp(order));
 
+		String strFromDate = formatterElasticSearch.format(new Date(fromDate));
+		String strToDate = formatterElasticSearch.format(new Date(toDate));
+
+		LOGGER.debug("Query range ... {} {}", strFromDate, strToDate);
+		
+		BoolQueryBuilder qb = QueryBuilders.boolQuery();
+
+		qb.must(QueryBuilders.rangeQuery("@timestamp").gte(strFromDate).lte(strToDate).format(ELASTIC_DATE_FORMAT));
+
 		if (searchKey != null && !searchKey.trim().isEmpty()) {
-			bulider.withQuery(QueryBuilders.matchQuery("message", searchKey.trim()));
+			qb.must(QueryBuilders.matchQuery("message", searchKey.trim()));
 		}
+
+		bulider.withQuery(qb);
 
 		return search(bulider, page, size);
 	}
@@ -126,10 +143,11 @@ public class ElasticsearchService {
 		return sort;
 	}
 
-	public List<LogMessageModel> searchLogs(String applicationId, String search, int size, String order) {
+	public List<LogMessageModel> searchLogs(String applicationId, String search, int size, String order, long fromDate,
+			long toDate) {
 		String indexName = "my-cloud-logs-" + applicationId + "-application-*";
 
-		ElastiSearchLogModel model = search(indexName, "_doc", search, 0, size, order);
+		ElastiSearchLogModel model = search(indexName, "_doc", search, 0, size, order, fromDate, toDate);
 		List<LogMessageModel> list;
 
 		list = IntStream.range(0, model.getData().size()).mapToObj(index -> {
@@ -159,10 +177,11 @@ public class ElasticsearchService {
 		return list;
 	}
 
-	public AccessLogModel searchAccessLogs(String applicationId, String search, int size, String order, String group) {
+	public AccessLogModel searchAccessLogs(String applicationId, String search, int size, String order, String group,
+			long fromDate, long toDate) {
 		String indexName = "my-cloud-logs-" + applicationId + "-access_log-*";
 
-		ElastiSearchLogModel model = search(indexName, "_doc", search, 0, size, order);
+		ElastiSearchLogModel model = search(indexName, "_doc", search, 0, size, order, fromDate, toDate);
 
 		AccessLogModel logModel = new AccessLogModel();
 
