@@ -298,8 +298,8 @@ function d3BarChartStacked(value) {
 
     // Add Y axis
     var y = d3.scaleLinear()
-        .domain([0, 60])
-        .range([height, 0]);
+        .domain(value.axis.y.domain(width, height))
+        .range(value.axis.y.range(width, height));
 
     var yaxis = g.append("g")
         .call(d3.axisLeft(y));

@@ -178,7 +178,7 @@ class MonitorLogTabPage extends React.Component {
                             </div>
 
                             <div class="logs-inputs">
-                                <input type="text" onChange={this.handleChangePageSize} style={{ width: "70px" }} class="form-control" id="inputPagesize" placeholder="Page" ></input>
+                                <input type="text" onChange={this.handleChangePageSize} style={{ width: "70px" }} value={this.state.pageSize} class="form-control" id="inputPagesize" placeholder="Page" ></input>
                             </div>
                         </div>
                     </div>

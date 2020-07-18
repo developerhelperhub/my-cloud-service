@@ -18,14 +18,15 @@ class MonitorHttpRequestTabPage extends React.Component {
 
         let self = this;
 
-        var toDate =  new Date();
-        var fromDate =  new Date();
+        var toDate = new Date();
+        var fromDate = new Date();
         fromDate.setHours(fromDate.getHours() - 1);
 
         this.state = {
             messages: [],
             fromDate: fromDate,
             toDate: toDate,
+            timeGroup: 'minute',
             selectedApplication: null,
             selectedTab: null,
             pageSize: 100,
@@ -59,6 +60,7 @@ class MonitorHttpRequestTabPage extends React.Component {
         this.refreshAccessLogs = this.refreshAccessLogs.bind(this);
         this.handleChangePageSize = this.handleChangePageSize.bind(this);
         this.handleChangeSearch = this.handleChangeSearch.bind(this);
+        this.handleTimeGroup = this.handleTimeGroup.bind(this);
         this.setFromDate = this.setFromDate.bind(this);
         this.setToDate = this.setToDate.bind(this);
 
@@ -74,6 +76,10 @@ class MonitorHttpRequestTabPage extends React.Component {
         this.setState({
             toDate: date
         })
+    }
+
+    handleTimeGroup(e) {
+        this.setState({ timeGroup: e.target.value });
     }
 
     renderStatusOnTable(data, type, row) {
@@ -113,13 +119,13 @@ class MonitorHttpRequestTabPage extends React.Component {
         console.log('this.state.fromDate:' + this.state.fromDate.getTime());
         console.log('this.state.toDate:' + this.state.toDate.getTime());
 
-        var path = '/monitor/access-logs/search?applicationId=' + this.state.selectedApplication 
-        + '&searchKey=' + this.state.search 
-        + '&size=' + pageSize 
-        + '&fromDate=' + this.state.fromDate.getTime()
-        + '&toDate=' + this.state.toDate.getTime()
-        + '&order=desc' 
-        + '&group=minute';
+        var path = '/monitor/access-logs/search?applicationId=' + this.state.selectedApplication
+            + '&searchKey=' + this.state.search
+            + '&size=' + pageSize
+            + '&fromDate=' + this.state.fromDate.getTime()
+            + '&toDate=' + this.state.toDate.getTime()
+            + '&order=desc'
+            + '&group=' + this.state.timeGroup;
 
         const response = await AppApiRepo.fetch(path, 'GET', {
             'Content-Type': 'application/json',
@@ -151,9 +157,11 @@ class MonitorHttpRequestTabPage extends React.Component {
             var requestData = [];
             var methods = [];
             var methodsBars = [];
+            var methodMax = 0;
 
             var status = [];
             var statusBars = [];
+            var statusMax = 0;
 
             response.data.matrics.forEach(metric => {
 
@@ -161,6 +169,31 @@ class MonitorHttpRequestTabPage extends React.Component {
                 requestData.push({ time: metric.time, value: metric.request });
 
                 //Method
+                var max = 0;
+
+                if (metric.methodPost > max) {
+                    max = metric.methodPost;
+                }
+                if (metric.methodPut > max) {
+                    max = metric.methodPut;
+                }
+                if (metric.methodDelete > max) {
+                    max = metric.methodDelete;
+                }
+                if (metric.methodGet > max) {
+                    max = metric.methodGet;
+                }
+                if (metric.methodPatch > max) {
+                    max = metric.methodPatch;
+                }
+                if (metric.methodOther > max) {
+                    max = metric.methodOther;
+                }
+
+                if (max > methodMax) {
+                    methodMax = max;
+                }
+
                 methods.push({
                     time: metric.time,
                     methodPost: metric.methodPost,
@@ -172,8 +205,33 @@ class MonitorHttpRequestTabPage extends React.Component {
                 })
 
                 //Status
+                max = 0;
+                if (metric.status1x > max) {
+                    max = metric.status1x;
+                }
+                if (metric.status2x > max) {
+                    max = metric.status2x;
+                }
+                if (metric.status3x > max) {
+                    max = metric.status3x;
+                }
+                if (metric.status4x > max) {
+                    max = metric.status4x;
+                }
+                if (metric.status5x > max) {
+                    max = metric.status5x;
+                }
+                if (metric.statusx > max) {
+                    max = metric.statusx;
+                }
+
+                if (max > statusMax) {
+                    statusMax = max;
+                }
+
                 status.push({
                     time: metric.time,
+                    status1x: metric.status1x,
                     status2x: metric.status2x,
                     status3x: metric.status3x,
                     status4x: metric.status4x,
@@ -225,8 +283,8 @@ class MonitorHttpRequestTabPage extends React.Component {
             methodsBars.push({
                 value: "PATCH",
                 name: "methodPatch",
-                fill: "#50e3c2",
-                stroke: "#50e3c2",
+                fill: "#990099",
+                stroke: "#990099",
                 strokeWidth: 1
             })
 
@@ -241,11 +299,19 @@ class MonitorHttpRequestTabPage extends React.Component {
             self.d3BarChartStacked(
                 {
                     items: methods,
-                    bars: methodsBars
+                    bars: methodsBars,
+                    yDomainMax: methodMax
                 },
                 "#chart-http-request-method");
 
 
+            statusBars.push({
+                value: "1x",
+                name: "status1x",
+                fill: "#990099",
+                stroke: "#990099",
+                strokeWidth: 1
+            })
             statusBars.push({
                 value: "2x",
                 name: "status2x",
@@ -285,7 +351,8 @@ class MonitorHttpRequestTabPage extends React.Component {
             self.d3BarChartStacked(
                 {
                     items: status,
-                    bars: statusBars
+                    bars: statusBars,
+                    yDomainMax: statusMax
                 },
                 "#chart-http-request-status");
 
@@ -363,11 +430,16 @@ class MonitorHttpRequestTabPage extends React.Component {
                                 <button style={{ width: "70px", height: "32px" }} onClick={this.refreshAccessLogs}>Refresh</button>
                             </div>
 
-                            <div class="logs-inputs space">
+                            <div class="logs-inputs">
+                                <select class="form-control" id="time-group" onChange={this.handleTimeGroup} value={this.state.timeGroup}>
+                                    <option>hour</option>
+                                    <option>minute</option>
+                                    <option>second</option>
+                                </select>
                             </div>
 
                             <div class="logs-inputs">
-                                <input type="text" onChange={this.handleChangePageSize} style={{ width: "70px" }} class="form-control" id="inputPagesize" placeholder="Page" ></input>
+                                <input type="text" onChange={this.handleChangePageSize} style={{ width: "70px" }} value={this.state.pageSize} class="form-control" id="inputPagesize" placeholder="Page" ></input>
                             </div>
                         </div>
                     </div>
@@ -419,6 +491,9 @@ class MonitorHttpRequestTabPage extends React.Component {
                 y: {
                     range: function (width, height) {
                         return [height, 0];
+                    },
+                    domain: function (width, height) {
+                        return [0, data.yDomainMax];
                     }
                 },
                 stroke: "#818896",

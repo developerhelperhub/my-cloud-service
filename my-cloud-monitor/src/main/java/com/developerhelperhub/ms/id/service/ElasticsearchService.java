@@ -64,7 +64,7 @@ public class ElasticsearchService {
 		String strToDate = formatterElasticSearch.format(new Date(toDate));
 
 		LOGGER.debug("Query range ... {} {}", strFromDate, strToDate);
-		
+
 		BoolQueryBuilder qb = QueryBuilders.boolQuery();
 
 		qb.must(QueryBuilders.rangeQuery("@timestamp").gte(strFromDate).lte(strToDate).format(ELASTIC_DATE_FORMAT));
@@ -247,39 +247,43 @@ public class ElasticsearchService {
 
 		}).filter(d -> d != null).collect(Collectors.toList());
 
-		Map<Object, List<AccessLogMessageModel>> grouped = messages.stream().collect(Collectors.groupingBy(x -> {
+		Map<AccessLogModel.Group, List<AccessLogMessageModel>> grouped = messages.stream()
+				.collect(Collectors.groupingBy(x -> {
 
-			if (group.toLowerCase().equals("hour")) {
+					AccessLogModel.Group groupKey = new AccessLogModel.Group();
 
-				return x.getDatetime().getTime() / 3600000;
+					groupKey.setTimestamp(x.getDatetime().getTime());
 
-			} else if (group.toLowerCase().equals("minute")) {
+					if (group.toLowerCase().equals("hour")) {
 
-				return x.getDatetime().getTime() / 60000;
+						groupKey.setGroupTime(x.getDatetime().getTime() / 3600000);
 
-			} else if (group.toLowerCase().equals("second")) {
+					} else if (group.toLowerCase().equals("minute")) {
 
-				return (x.getDatetime().getTime() / 1000);
+						groupKey.setGroupTime(x.getDatetime().getTime() / 60000);
 
-			} else {
-				return x.getDatetime().getTime();
-			}
+					} else {
 
-		}));
+						groupKey.setGroupTime(x.getDatetime().getTime() / 1000);
+
+					}
+
+					return groupKey;
+				}));
 
 		Map<Long, AccessLogModel.Metric> metrics = new TreeMap<>();
 
-		for (Map.Entry<Object, List<AccessLogMessageModel>> entry : grouped.entrySet()) {
+		for (Map.Entry<AccessLogModel.Group, List<AccessLogMessageModel>> entry : grouped.entrySet()) {
 
-			long time = (Long) entry.getKey();
+			long groupTime = entry.getKey().getGroupTime();
 
 			AccessLogModel.Metric metric;
 
-			if (metrics.containsKey(time)) {
-				metric = metrics.get(time);
+			if (metrics.containsKey(groupTime)) {
+				metric = metrics.get(groupTime);
 			} else {
 				metric = new AccessLogModel.Metric();
-				metrics.put(time, metric);
+				metrics.put(groupTime, metric);
 			}
 
 			Map<String, Integer> data = new HashMap<>();
@@ -298,7 +302,9 @@ public class ElasticsearchService {
 
 				String statusKey = "";
 
-				if (log.getStatusCode().toLowerCase().contains("2")) {
+				if (log.getStatusCode().toLowerCase().contains("1")) {
+					statusKey = "1x";
+				} else if (log.getStatusCode().toLowerCase().contains("2")) {
 					statusKey = "2x";
 				} else if (log.getStatusCode().toLowerCase().contains("3")) {
 					statusKey = "3x";
@@ -328,7 +334,15 @@ public class ElasticsearchService {
 				data.put(request, data.get(request) + 1);
 			}
 
-			metric.setTime(time);
+			SimpleDateFormat formatterTime;
+
+			if (group.toLowerCase().equals("hour")) {
+				formatterTime = new SimpleDateFormat("HH:mm");
+			} else {
+				formatterTime = new SimpleDateFormat("mm:ss");
+			}
+
+			metric.setTime(formatterTime.format(new Date(entry.getKey().getTimestamp())));
 
 			if (data.containsKey("post"))
 				metric.setMethodPost(data.get("post"));
@@ -351,6 +365,9 @@ public class ElasticsearchService {
 			if (data.containsKey("request"))
 				metric.setRequest(data.get("request"));
 
+			if (data.containsKey("1x"))
+				metric.setStatus1x(data.get("1x"));
+
 			if (data.containsKey("2x"))
 				metric.setStatus2x(data.get("2x"));
 
@@ -366,7 +383,7 @@ public class ElasticsearchService {
 			if (data.containsKey("x"))
 				metric.setStatusx(data.get("x"));
 
-			metrics.put(time, metric);
+			metrics.put(groupTime, metric);
 
 		}
 

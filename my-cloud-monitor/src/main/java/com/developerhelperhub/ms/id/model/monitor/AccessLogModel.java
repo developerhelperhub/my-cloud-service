@@ -10,6 +10,18 @@ import lombok.Data;
 public class AccessLogModel {
 
 	@Data
+	public static class Group {
+
+		private Long groupTime;
+		private Long timestamp;
+
+		@Override
+		public int hashCode() {
+			return groupTime.hashCode();
+		}
+	}
+
+	@Data
 	public static class AccessLogMessageModel {
 
 		private Date datetime;
@@ -34,7 +46,7 @@ public class AccessLogModel {
 	@Data
 	public static class Metric {
 
-		private long time;
+		private String time;
 		private int methodPost;
 		private int methodPut;
 		private int methodDelete;
@@ -42,11 +54,13 @@ public class AccessLogModel {
 		private int methodPatch;
 		private int methodOther;
 		private int request;
+		private int status1x;
 		private int status2x;
 		private int status3x;
 		private int status4x;
 		private int status5x;
 		private int statusx;
+
 	}
 
 	private String group;
