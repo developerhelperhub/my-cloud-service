@@ -1295,7 +1295,7 @@
 							"formdata": []
 						},
 						"url": {
-							"raw": "http://localhost:8087/monitor/logs/search?applicationId=my-cloud-discovery&searchKey=&size=100",
+							"raw": "http://localhost:8087/monitor/logs/search?applicationId=my-cloud-discovery&searchKey=&size=100&fromDate=1595071861000&toDate=1595076952671",
 							"protocol": "http",
 							"host": [
 								"localhost"
@@ -1318,6 +1318,14 @@
 								{
 									"key": "size",
 									"value": "100"
+								},
+								{
+									"key": "fromDate",
+									"value": "1595071861000"
+								},
+								{
+									"key": "toDate",
+									"value": "1595076952671"
 								}
 							]
 						}
@@ -1347,7 +1355,7 @@
 							"formdata": []
 						},
 						"url": {
-							"raw": "http://localhost:8087/monitor/access-logs/search?applicationId=my-cloud-discovery&size=100&order=desc",
+							"raw": "http://localhost:8087/monitor/access-logs/search?applicationId=my-cloud-discovery&size=500&order=desc&group=second&fromDate=1595071861000&toDate=1595076952671",
 							"protocol": "http",
 							"host": [
 								"localhost"
@@ -1365,11 +1373,23 @@
 								},
 								{
 									"key": "size",
-									"value": "100"
+									"value": "500"
 								},
 								{
 									"key": "order",
 									"value": "desc"
+								},
+								{
+									"key": "group",
+									"value": "second"
+								},
+								{
+									"key": "fromDate",
+									"value": "1595071861000"
+								},
+								{
+									"key": "toDate",
+									"value": "1595076952671"
 								}
 							]
 						}
