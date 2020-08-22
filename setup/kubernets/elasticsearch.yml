@@ -1,0 +1,102 @@
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: pvc-elasticsearch
+  namespace: my-cloud-local
+  labels:
+    app.mycloud.io/name: presistent
+    app.mycloud.io/version: 1.0.0
+    app.mycloud.io/component: volume-claim
+    app.mycloud.io/part-of: volume
+spec:
+  storageClassName: manual
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 1Gi
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: elasticsearch
+  namespace: my-cloud-local
+  labels:
+    app.mycloud.io/name: elasticsearch
+    app.mycloud.io/version: 1.0.0
+    app.mycloud.io/component: analytics
+    app.mycloud.io/part-of: backend
+
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app.mycloud.io/name: elasticsearch
+
+  template:
+    metadata:
+      labels:
+        app.mycloud.io/name: elasticsearch
+
+    spec:
+      containers:
+        - name: elasticsearch
+          image: elasticsearch:7.7.1
+          volumeMounts: 
+            - name: vol-elasticsearch
+              mountPath: /usr/share/elasticsearch/data
+          env:
+            - name: ES_JAVA_OPTS
+              value: -Xms1g -Xmx1g
+            - name: discovery.type
+              value: single-node
+          ports:
+            - containerPort: 9200
+            - containerPort: 9300
+      
+      initContainers:
+        - name: create 
+          image: busybox:1.28
+          command: ['mkdir', '/usr/share/elasticsearch/data/nodes/']
+          volumeMounts: 
+            - name: vol-elasticsearch
+              mountPath: /usr/share/elasticsearch/data
+
+        - name: file-permissions 
+          image: busybox:1.28 
+          command: ['chown', '-R', '1000:1000', '/usr/share/elasticsearch/']    
+          volumeMounts: 
+            - name: vol-elasticsearch
+              mountPath: /usr/share/elasticsearch/data
+
+      volumes:
+        - name: vol-elasticsearch
+          persistentVolumeClaim:
+            claimName: pvc-elasticsearch
+
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: elasticsearch
+  namespace: my-cloud-local
+  labels:
+    app.mycloud.io/name: elasticsearch
+    app.mycloud.io/version: 1.0.0
+    app.mycloud.io/component: analytics
+    app.mycloud.io/part-of: backend
+
+spec:
+  selector:
+    app.mycloud.io/name: elasticsearch
+    
+  ports:
+    - name: http
+      protocol: TCP
+      port: 9200
+      targetPort: 9200
+    - name: transport
+      protocol: TCP
+      port: 9300
+      targetPort: 9300

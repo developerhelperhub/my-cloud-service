@@ -38,6 +38,9 @@ This repostiry contains the development of the my cloud service. This project in
     * Filebeat
     * Elasticsearch
     * Kibana
+  * Kubernetes
+    * Deployment Elastic Search
+    * In progress.........
   * Docker
     * Docker Compose
     * Docker Hub
@@ -56,6 +59,7 @@ This repostiry contains the development of the my cloud service. This project in
     * Monitor Scheduler Service
     * API Gateway
     * My Cloud Dashboard
+  
 * Frontend 
   * React JS
   * Server Sent Event (Event Source)

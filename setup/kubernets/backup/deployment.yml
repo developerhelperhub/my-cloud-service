@@ -1,0 +1,91 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: my-cloud-elasticsearch
+  labels:
+    app: my-cloud-elasticsearch
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: my-cloud-elasticsearch
+  template:
+    metadata:
+      labels:
+        app: my-cloud-elasticsearch
+    spec:
+      containers:
+        - name: my-cloud-elasticsearch
+          image: elasticsearch:7.7.1
+          volumeMounts: 
+            - name: my-cloud-vol-elasticsearch
+              mountPath: /usr/share/elasticsearch/data
+          env:
+            - name: ES_JAVA_OPTS
+              value: -Xms1g -Xmx1g
+            - name: discovery.type
+              value: single-node
+          ports:
+            - containerPort: 9200
+            - containerPort: 9300
+      initContainers:
+        - name: create 
+          image: busybox:1.28
+          command: ['mkdir', '/usr/share/elasticsearch/data/nodes/']
+          volumeMounts: 
+            - name: my-cloud-vol-elasticsearch
+              mountPath: /usr/share/elasticsearch/data
+        - name: file-permissions 
+          image: busybox:1.28 
+          command: ['chown', '-R', '1000:1000', '/usr/share/elasticsearch/']    
+          volumeMounts: 
+            - name: my-cloud-vol-elasticsearch
+              mountPath: /usr/share/elasticsearch/data
+      volumes:
+        - name: my-cloud-vol-elasticsearch
+          persistentVolumeClaim:
+            claimName: my-cloud-pvc-volume
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: my-cloud-elasticsearch
+spec:
+  selector:
+    app: my-cloud-elasticsearch
+  ports:
+    - name: http
+      protocol: TCP
+      port: 9200
+      targetPort: 9200
+    - name: transport
+      protocol: TCP
+      port: 9300
+      targetPort: 9300
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: my-cloud-pvc-volume
+spec:
+  storageClassName: manual
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 3Gi
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: my-cloud-pv-volume
+  labels:
+    type: local
+spec:
+  storageClassName: manual
+  capacity:
+    storage: 10Gi
+  accessModes:
+    - ReadWriteOnce
+  hostPath:
+    path: "/var/mycloud/volume"
