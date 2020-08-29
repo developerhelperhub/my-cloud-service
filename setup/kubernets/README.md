@@ -76,8 +76,24 @@ Enable the mongo search access outside of the cluster.
 kubectl port-forward service/mongodb 9200:9200 -n my-cloud-local
 ```
 
+#### Deploy the influxdb
 ```
-kubectl describe pvc pvc-mongodb -n my-cloud-local
+kubectl apply -f influxdb.yml
+
+kubectl get pvc
+
+kubectl get pvc pvc-influxdb -n my-cloud-local
+
+kubectl get deployment influxdb -n my-cloud-local
+
+kubectl get pods -n my-cloud-local
+
+kubectl get services -n my-cloud-local
+```
+
+Enable the mongodb search access outside of the cluster.
+```
+kubectl port-forward service/influxdb 8086:8086 -n my-cloud-local
 ```
 
 #### Other commands
@@ -113,4 +129,9 @@ Execute the bash command for specific container
 kubectl run busybox --rm -ti --image=busybox /bin/sh
 
 kubectl exec -it -v=6 mongodb-6d586d7b5b-rsf2k -n my-cloud-local  -- /bin/sh
+```
+
+
+```
+kubectl describe pvc pvc-mongodb -n my-cloud-local
 ```
