@@ -56,6 +56,30 @@ kubectl port-forward service/elasticsearch 9200:9200 -n my-cloud-local
 ```
 
 
+#### Deploy the mongodb
+```
+kubectl apply -f mongodb.yml
+
+kubectl get pvc
+
+kubectl get pvc pvc-mongodb -n my-cloud-local
+
+kubectl get deployment mongodb -n my-cloud-local
+
+kubectl get pods -n my-cloud-local
+
+kubectl get services -n my-cloud-local
+```
+
+Enable the mongo search access outside of the cluster.
+```
+kubectl port-forward service/mongodb 9200:9200 -n my-cloud-local
+```
+
+```
+kubectl describe pvc pvc-mongodb -n my-cloud-local
+```
+
 #### Other commands
 Get the cluster information
 ```
@@ -72,3 +96,21 @@ Checking the minikube status
 minikube status
 ```
 
+```
+kubectl get storageclasses.storage.k8s.io
+
+minikube addons list
+
+```
+
+You can also access the Init Container statuses programmatically by reading the status.initContainerStatuses field on the Pod Spec:
+```
+kubectl get pod/mongodb-7864f954b8-j2n2t -n my-cloud-local --template '{{.status.initContainerStatuses}}'
+```
+
+Execute the bash command for specific container
+```
+kubectl run busybox --rm -ti --image=busybox /bin/sh
+
+kubectl exec -it -v=6 mongodb-6d586d7b5b-rsf2k -n my-cloud-local  -- /bin/sh
+```

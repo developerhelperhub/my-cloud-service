@@ -4,12 +4,12 @@ metadata:
   name: pvc-elasticsearch
   namespace: my-cloud-local
   labels:
-    app.mycloud.io/name: presistent
+    app.mycloud.io/name: elasticsearch
     app.mycloud.io/version: 1.0.0
     app.mycloud.io/component: volume-claim
     app.mycloud.io/part-of: volume
 spec:
-  storageClassName: manual
+  # storageClassName: manual
   accessModes:
     - ReadWriteOnce
   resources:
@@ -90,7 +90,7 @@ metadata:
 spec:
   selector:
     app.mycloud.io/name: elasticsearch
-    
+
   ports:
     - name: http
       protocol: TCP

@@ -1,0 +1,84 @@
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: pvc-mongodb
+  namespace: my-cloud-local
+  labels:
+    app.mycloud.io/name: mongodb
+    app.mycloud.io/version: 1.0.0
+    app.mycloud.io/component: volume-claim
+    app.mycloud.io/part-of: volume
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 1Gi
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mongodb
+  namespace: my-cloud-local
+  labels:
+    app.mycloud.io/name: mongodb
+    app.mycloud.io/version: 1.0.0
+    app.mycloud.io/component: database
+    app.mycloud.io/part-of: backend
+
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app.mycloud.io/name: mongodb
+
+  template:
+    metadata:
+      labels:
+        app.mycloud.io/name: mongodb
+
+    spec:
+      containers:
+        - name: mongodb
+          image: mongo
+          volumeMounts: 
+            - name: vol-mongodb
+              mountPath: /data/db
+              
+          env:
+            - name: MONGO_INITDB_DATABASE
+              value: myidsrvdb
+            - name: MONGO_INITDB_ROOT_USERNAME
+              value: myidsrvdbuser
+            - name: MONGO_INITDB_ROOT_PASSWORD
+              value: myidsrvdbpwd@1234
+          ports:
+            - containerPort: 27017
+
+      volumes:
+        - name: vol-mongodb
+          persistentVolumeClaim:
+            claimName: pvc-mongodb
+
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: mongodb
+  namespace: my-cloud-local
+  labels:
+    app.mycloud.io/name: mongodb
+    app.mycloud.io/version: 1.0.0
+    app.mycloud.io/component: database
+    app.mycloud.io/part-of: backend
+
+spec:
+  selector:
+    app.mycloud.io/name: mongodb
+    
+  ports:
+    - name: transport
+      protocol: TCP
+      port: 27017
+      targetPort: 27017

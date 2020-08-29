@@ -16,7 +16,7 @@ metadata:
     app.mycloud.io/part-of: volume
     app.mycloud.io/type: local
 spec:
-  storageClassName: manual
+  # storageClassName: manual
   capacity:
     storage: 10Gi
   accessModes:
