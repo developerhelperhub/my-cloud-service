@@ -34,12 +34,15 @@ This repostiry contains the development of the my cloud service. This project in
   * Database
     * MongoDB
     * Influxdb
+    * Elasticsearch
   * ELK
     * Filebeat
     * Elasticsearch
     * Kibana
   * Kubernetes
     * Deployment Elastic Search
+    * Deployment MongoDB
+    * Deployment InfluxDB
     * In progress.........
   * Docker
     * Docker Compose
