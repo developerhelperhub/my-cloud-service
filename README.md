@@ -43,7 +43,8 @@ This repostiry contains the development of the my cloud service. This project in
     * Deployment Elastic Search
     * Deployment MongoDB
     * Deployment InfluxDB
-    * In progress.........
+    * All My Cloud Services
+      * (Not included the dashboard)
   * Docker
     * Docker Compose
     * Docker Hub
