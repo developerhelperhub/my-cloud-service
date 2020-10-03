@@ -27,6 +27,8 @@ eureka:
       defaultZone: http://${ENV_MYC_DISCOVERY_USERNAME}:${ENV_MYC_DISCOVERY_PASSWORD}@${ENV_MYC_DISCOVERY_HOST}:${ENV_MYC_DISCOVERY_PORT}/eureka/
     #register-with-eureka: false
     #fetch-registry: false
+  instance:
+    preferIpAddress: true
   
 
 management:

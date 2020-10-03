@@ -1,0 +1,110 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: monitor-scheduler
+  namespace: my-cloud-local
+  labels:
+    app.mycloud.io/name: monitor-scheduler
+    app.mycloud.io/version: 1.0.0
+    app.mycloud.io/component: micorserivce
+    app.mycloud.io/part-of: backend
+
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app.mycloud.io/name: monitor-scheduler
+
+  template:
+    metadata:
+      labels:
+        app.mycloud.io/name: monitor-scheduler
+
+    spec:
+      containers:
+        - name: monitor-scheduler
+          image: developerhelperhub/my-cloud-monitor-scheduler
+              
+          env:
+            - name: ENV_MYC_DISCOVERY_USERNAME
+              value: discovery
+            - name: ENV_MYC_DISCOVERY_PASSWORD
+              value: discoverypass
+            - name: ENV_MYC_DISCOVERY_HOST
+              value: discovery
+            - name: ENV_MYC_DISCOVERY_PORT
+              value: "8761"
+            - name: ENV_MYC_MONITOR_SCHD_MONGO_DB
+              value: myidsrvdb
+            - name: ENV_MYC_MONITOR_SCHD_MONGO_AUTH_DB
+              value: admin
+            - name: ENV_MYC_MONITOR_SCHD_MONGO_USERNAME
+              value: myidsrvdbuser
+            - name: ENV_MYC_MONITOR_SCHD_MONGO_PASSWORD
+              value: myidsrvdbpwd@1234
+            - name: ENV_MYC_MONITOR_SCHD_MONGO_PORT
+              value: "27017"
+            - name: ENV_MYC_MONITOR_SCHD_MONGO_HOST
+              value: mongodb
+            - name: ENV_MYC_MONITOR_SCHD_INFLUX_DB
+              value: mycloudmonitordb
+            - name: ENV_MYC_MONITOR_SCHD_INFLUX_USERNAME
+              value: todd
+            - name: ENV_MYC_MONITOR_SCHD_INFLUX_PASSWORD
+              value: influxdb4ever
+            - name: ENV_MYC_MONITOR_SCHD_INFLUX_HOST
+              value: influxdb
+            - name: ENV_MYC_MONITOR_SCHD_INFLUX_PORT
+              value: "8086"
+            - name: ENV_MYC_IDENTIY_CLIENT_ID
+              value: my-cloud-identity-credentials
+            - name: ENV_MYC_IDENTIY_CLIENT_SECRET
+              value: VkZpzzKa3uMq4vqg
+            - name: ENV_MYC_IDENTIY_HOST
+              value: identity
+            - name: ENV_MYC_IDENTIY_PORT
+              value: "8081"
+            - name: ENV_MYC_FILEBEAT_ELASTICSEARCH_HOSTS
+              value: '["elasticsearch:9200"]'
+            - name: ENV_MYC_FILEBEAT_LOGGING_LEVEL
+              value: info
+            - name: JAVA_OPTS
+              value: >
+                -Dspring.profiles.active=staging
+                -Djava.rmi.server.logCalls=true
+                -Djava.rmi.server.hostname=localhost
+                -Dcom.sun.management.jmxremote=true
+                -Dcom.sun.management.jmxremote.local.only=false 
+                -Dcom.sun.management.jmxremote.port=7005
+                -Dcom.sun.management.jmxremote.rmi.port=7004
+                -Dcom.sun.management.jmxremote.ssl=false 
+                -Dcom.sun.management.jmxremote.authenticate=false
+          ports:
+            - containerPort: 8088
+            - containerPort: 9005
+
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: monitor-scheduler
+  namespace: my-cloud-local
+  labels:
+    app.mycloud.io/name: monitor-scheduler
+    app.mycloud.io/version: 1.0.0
+    app.mycloud.io/component: micorserivce
+    app.mycloud.io/part-of: backend
+
+spec:
+  selector:
+    app.mycloud.io/name: monitor-scheduler
+    
+  ports:
+    - name: jmx-management
+      protocol: TCP
+      port: 9005
+      targetPort: 9005
+    - name: http
+      protocol: TCP
+      port: 8088
+      targetPort: 8087

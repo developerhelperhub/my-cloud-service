@@ -42,10 +42,10 @@ public class ElasticsearchService {
 
 	private final String ELASTIC_DATE_FORMAT = "yyyy-MM-dd HH:mm:ss";
 
-	@Value("${elasticsearch.pagsize.min}")
+	@Value("${mycloud.elasticsearch.pagsize.min}")
 	private String minPageSize;
 
-	@Value("${elasticsearch.pagsize.max}")
+	@Value("${mycloud.elasticsearch.pagsize.max}")
 	private String maxPageSize;
 
 	@Autowired

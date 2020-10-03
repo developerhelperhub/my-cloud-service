@@ -12,13 +12,6 @@ spring:
       port: ${ENV_MYC_MONITOR_SCHD_MONGO_PORT}
       host: ${ENV_MYC_MONITOR_SCHD_MONGO_HOST}
 
-influxdb:
-  database: ${ENV_MYC_MONITOR_SCHD_INFLUX_DB}
-  username: ${ENV_MYC_MONITOR_SCHD_INFLUX_USERNAME}
-  password: ${ENV_MYC_MONITOR_SCHD_INFLUX_PASSWORD}
-  port: ${ENV_MYC_MONITOR_SCHD_INFLUX_PORT}
-  host: ${ENV_MYC_MONITOR_SCHD_INFLUX_HOST}
-
 mycloud:
   oauth:
     id: identity-service
@@ -27,6 +20,12 @@ mycloud:
     grant-type: client_credentials
     scop: ADMIN
     access-token-uri: http://${ENV_MYC_IDENTIY_HOST}:${ENV_MYC_IDENTIY_PORT}/oauth/token
+  influxdb:
+	  database: ${ENV_MYC_MONITOR_SCHD_INFLUX_DB}
+	  username: ${ENV_MYC_MONITOR_SCHD_INFLUX_USERNAME}
+	  password: ${ENV_MYC_MONITOR_SCHD_INFLUX_PASSWORD}
+	  port: ${ENV_MYC_MONITOR_SCHD_INFLUX_PORT}
+	  host: ${ENV_MYC_MONITOR_SCHD_INFLUX_HOST}
 
 server:
   port: 8088

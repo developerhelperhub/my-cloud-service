@@ -18,25 +18,33 @@ public class InfluxDBConfiguration {
 
 	public static final String RETENTION_REAL_TIME_POLICY = "defaultRealTimePolicy";
 
-	@Value("${influxdb.host}")
+	@Value("${mycloud.influxdb.host}")
 	private String host;
 
-	@Value("${influxdb.port}")
+	@Value("${mycloud.influxdb.port}")
 	private String port;
 
-	@Value("${influxdb.username}")
+	@Value("${mycloud.influxdb.username}")
 	private String username;
 
-	@Value("${influxdb.password}")
+	@Value("${mycloud.influxdb.password}")
 	private String password;
 
-	@Value("${influxdb.database}")
+	@Value("${mycloud.influxdb.database}")
 	private String database;
-
+	
 	@Bean
 	public InfluxDB influxDB() {
+
 		final String url = "http://" + this.host + ":" + this.port;
 
+		
+		LOGGER.info("InfluxDB host: {}", this.host);
+		LOGGER.info("InfluxDB port: {}", this.port);
+		LOGGER.info("InfluxDB url: {}", url);
+		LOGGER.debug("InfluxDB username: {}", this.username);
+		LOGGER.debug("InfluxDB password: {}", this.password);
+		
 		InfluxDB influxDB = InfluxDBFactory.connect(url, this.username, this.password);
 
 		Pong response = influxDB.ping();

@@ -1,0 +1,92 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: identity
+  namespace: my-cloud-local
+  labels:
+    app.mycloud.io/name: identity
+    app.mycloud.io/version: 1.0.0
+    app.mycloud.io/component: micorserivce
+    app.mycloud.io/part-of: backend
+
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app.mycloud.io/name: identity
+
+  template:
+    metadata:
+      labels:
+        app.mycloud.io/name: identity
+
+    spec:
+      containers:
+        - name: identity
+          image: developerhelperhub/my-cloud-identity
+              
+          env:
+            - name: ENV_MYC_DISCOVERY_USERNAME
+              value: discovery
+            - name: ENV_MYC_DISCOVERY_PASSWORD
+              value: discoverypass
+            - name: ENV_MYC_DISCOVERY_HOST
+              value: discovery
+            - name: ENV_MYC_DISCOVERY_PORT
+              value: "8761"
+            - name: ENV_MYC_IDENTIY_MONGO_DB
+              value: myidsrvdb
+            - name: ENV_MYC_IDENTIY_MONGO_AUTH_DB
+              value: admin
+            - name: ENV_MYC_IDENTIY_MONGO_USERNAME
+              value: myidsrvdbuser
+            - name: ENV_MYC_IDENTIY_MONGO_PASSWORD
+              value: myidsrvdbpwd@1234
+            - name: ENV_MYC_IDENTIY_MONGO_PORT
+              value: "27017"
+            - name: ENV_MYC_IDENTIY_MONGO_HOST
+              value: mongodb
+            - name: ENV_MYC_FILEBEAT_ELASTICSEARCH_HOSTS
+              value: '["elasticsearch:9200"]'
+            - name: ENV_MYC_FILEBEAT_LOGGING_LEVEL
+              value: info
+            - name: JAVA_OPTS
+              value: >
+                -Dspring.profiles.active=staging
+                -Djava.rmi.server.logCalls=true
+                -Djava.rmi.server.hostname=localhost
+                -Dcom.sun.management.jmxremote=true
+                -Dcom.sun.management.jmxremote.local.only=false 
+                -Dcom.sun.management.jmxremote.port=7002
+                -Dcom.sun.management.jmxremote.rmi.port=7002
+                -Dcom.sun.management.jmxremote.ssl=false 
+                -Dcom.sun.management.jmxremote.authenticate=false
+          ports:
+            - containerPort: 8081
+            - containerPort: 9002
+
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: identity
+  namespace: my-cloud-local
+  labels:
+    app.mycloud.io/name: identity
+    app.mycloud.io/version: 1.0.0
+    app.mycloud.io/component: micorserivce
+    app.mycloud.io/part-of: backend
+
+spec:
+  selector:
+    app.mycloud.io/name: identity
+    
+  ports:
+    - name: jmx-management
+      protocol: TCP
+      port: 9002
+      targetPort: 9002
+    - name: http
+      protocol: TCP
+      port: 8081
+      targetPort: 8081

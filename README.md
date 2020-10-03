@@ -78,9 +78,12 @@ This repostiry contains the development of the my cloud service. This project in
 
 ## Run Commands
 
-#### Running all the services
-$ cd /setup
+#### Running all the services on Docker 
+$ cd /setup/docker
 $ docker-compose up
+
+#### Running all the services on Minikube of Kubernetes 
+Please refer the document of cd /setup/kubernetes
 
 #### Running My Cloud Dashboard
 $ cd /my-cloud-dashboard

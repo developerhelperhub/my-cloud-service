@@ -12,20 +12,20 @@ spring:
       port: ${ENV_MYC_MONITOR_MONGO_PORT}
       host: ${ENV_MYC_MONITOR_MONGO_HOST}
       
-influxdb:
-  database: ${ENV_MYC_MONITOR_INFLUX_DB}
-  username: ${ENV_MYC_MONITOR_INFLUX_USERNAME}
-  password: ${ENV_MYC_MONITOR_INFLUX_PASSWORD}
-  port: ${ENV_MYC_MONITOR_INFLUX_PORT}
-  host: ${ENV_MYC_MONITOR_INFLUX_HOST}
-
-elasticsearch:
-  host: ${ENV_MYC_ELASTICSEARCH_HOST}
-  port: ${ENV_MYC_ELASTICSEARCH_PORT}
-  cluster-name: ${ENV_MYC_ELASTICSEARCH_CLUSTER_NAME}
-  pagsize:
-    min: 10
-    max: 5000
+mycloud:
+	influxdb:
+	  database: ${ENV_MYC_MONITOR_INFLUX_DB}
+	  username: ${ENV_MYC_MONITOR_INFLUX_USERNAME}
+	  password: ${ENV_MYC_MONITOR_INFLUX_PASSWORD}
+	  port: ${ENV_MYC_MONITOR_INFLUX_PORT}
+	  host: ${ENV_MYC_MONITOR_INFLUX_HOST}
+  elasticsearch:
+	  host: ${ENV_MYC_ELASTICSEARCH_HOST}
+	  port: ${ENV_MYC_ELASTICSEARCH_PORT}
+	  cluster-name: ${ENV_MYC_ELASTICSEARCH_CLUSTER_NAME}
+	  pagsize:
+	    min: 10
+	    max: 5000
     
 server:
   port: 8087

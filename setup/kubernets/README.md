@@ -135,3 +135,17 @@ kubectl exec -it -v=6 mongodb-6d586d7b5b-rsf2k -n my-cloud-local  -- /bin/sh
 ```
 kubectl describe pvc pvc-mongodb -n my-cloud-local
 ```
+
+```
+kubectl get service discovery --watch -n my-cloud-local
+
+ kubectl exec discovery-6d6555d69f-748rk -n my-cloud-local  -- printenv | grep SERVICE
+
+ kubectl -n my-cloud-local get ep discovery
+```
+
+
+
+
+ kubectl -n my-cloud-local port-forward  service/elasticsearch 9200:9200
+ kubectl -n my-cloud-local port-forward  service/mongodb 27017:27017
