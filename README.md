@@ -128,8 +128,3 @@ $ docker-compose down
 * Identity User Page
 <img src="docs/screenshots/identity-user.png" width="1000" height="600">
 
-* Sample React Admin UI - Dashboard Page
-<img src="docs/screenshots/admin-sample-dashboard.png" width="1000" height="600">
-
-* Sample React Admin UI - Data Table Page
-<img src="docs/screenshots/admin-sample-datatable.png" width="1000" height="600">
