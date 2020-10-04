@@ -44,7 +44,8 @@ eureka:
   client:
     serviceUrl:
       defaultZone: http://${ENV_MYC_DISCOVERY_USERNAME}:${ENV_MYC_DISCOVERY_PASSWORD}@${ENV_MYC_DISCOVERY_HOST}:${ENV_MYC_DISCOVERY_PORT}/eureka/
-
+  instance:
+    preferIpAddress: true
 
 
       
