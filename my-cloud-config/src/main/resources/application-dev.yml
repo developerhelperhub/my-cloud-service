@@ -19,7 +19,13 @@ spring:
           username: ${ENV_MYC_CONFIG_SERVER_GIT_USERNAME}
           password: ${ENV_MYC_CONFIG_SERVER_GIT_PASSWORD}
 
-
+  main:
+    allow-bean-definition-overriding: true
+    
+mycloud:
+  identity:
+    jwt.sign-key: ${ENV_MYC_IDENTIY_CLIENT_JWT_SIGN_KEY}
+    
 server:
   port: 8089
   tomcat:

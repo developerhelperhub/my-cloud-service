@@ -19,9 +19,6 @@ public abstract class AbstractMyCloudDefaultResourceServerConfig extends Resourc
 
 	abstract protected String getResourceId();
 
-	@Value("${mycloud.identity.jwt.sign-key}")
-	private String jwtSignKey;
-
 	@Override
 	public void configure(ResourceServerSecurityConfigurer resources) throws Exception {
 		resources.resourceId(getResourceId()).stateless(false).tokenServices(tokenServices());
@@ -43,7 +40,7 @@ public abstract class AbstractMyCloudDefaultResourceServerConfig extends Resourc
 	@Bean
 	public JwtAccessTokenConverter accessTokenConverter() {
 		JwtAccessTokenConverter converter = new JwtAccessTokenConverter();
-		converter.setSigningKey(this.jwtSignKey);
+		converter.setSigningKey(getIdentityJwtSignKey());
 		return converter;
 	}
 
@@ -51,5 +48,7 @@ public abstract class AbstractMyCloudDefaultResourceServerConfig extends Resourc
 	public TokenStore tokenStore() {
 		return new JwtTokenStore(accessTokenConverter());
 	}
+
+	abstract public String getIdentityJwtSignKey();
 
 }
