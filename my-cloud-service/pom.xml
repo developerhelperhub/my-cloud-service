@@ -22,6 +22,11 @@
 
 	<dependencyManagement>
 		<dependencies>
+			<dependency>
+				<groupId>com.developerhelperhub.microservice.cloud</groupId>
+				<artifactId>my-cloud-client-config</artifactId>
+				<version>0.0.1-SNAPSHOT</version>
+			</dependency>
 
 			<!-- Override Spring Data release train provided by Spring Boot -->
 			<dependency>
@@ -86,6 +91,7 @@
 				<version>2.8</version>
 			</dependency>
 
+
 		</dependencies>
 
 	</dependencyManagement>
@@ -96,8 +102,10 @@
 		<module>../my-cloud-api-gateway</module>
 		<module>../my-cloud-monitor</module>
 		<module>../my-cloud-monitor-scheduler</module>
-		<!-- <module>../my-cloud-circuit-breaker</module> <module>../api-gateway-service</module> 
-			<module>../sales-service</module> <module>../inventory-service</module> <module>../client-application-service</module> -->
+		<module>../my-cloud-config</module>
+		<module>../my-cloud-client-config</module>
+
+		<!-- <module>../my-cloud-circuit-breaker</module> <module>../api-gateway-service</module> -->
 	</modules>
 
 </project>

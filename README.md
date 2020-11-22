@@ -10,6 +10,7 @@ This repostiry contains the development of the my cloud service. This project in
     * Netflix Circuit Breaker
     * Netflix Loadbalancer
     * Oauth2 Server and Resource
+    * Cloud Config
     * Spring Data
       * MongoDB
       * Elasticsearch 
@@ -31,6 +32,20 @@ This repostiry contains the development of the my cloud service. This project in
     * Jolokia
     * InfluxDB Java Client
     * Lombok
+  * Maven
+    * Module
+    * Dependency Management
+    * Dockerfile Maven Plugin
+  * My Cloud Service 
+    * Identity Service
+    * Discovery Service
+    * Config Server
+    * Monitor Service
+    * Monitor Scheduler Service
+    * API Gateway
+    * My Cloud Dashboard
+
+* Other Service and Frameworks
   * Database
     * MongoDB
     * Influxdb
@@ -52,18 +67,9 @@ This repostiry contains the development of the my cloud service. This project in
       * Build
       * Volume
       * Links
-  * Maven
-    * Module
-    * Dependency Management
-    * Dockerfile Maven Plugin
-  * My Cloud Service 
-    * Identity Service
-    * Discovery Service
-    * Monitor Service
-    * Monitor Scheduler Service
-    * API Gateway
-    * My Cloud Dashboard
-  
+  * Git Server
+    
+
 * Frontend 
   * React JS
   * Server Sent Event (Event Source)
@@ -78,6 +84,11 @@ This repostiry contains the development of the my cloud service. This project in
 #### In progress .....
 
 ## Run Commands
+
+#### Run the docker server localy
+  https://github.com/developerhelperhub/my-cloud-git-server/blob/master/README.md
+
+  All cloud configuration files are located : /step/my-cloud-config-repo. We have to commits those all files in the git server before run this project
 
 #### Running all the services on Docker 
 $ cd /setup/docker

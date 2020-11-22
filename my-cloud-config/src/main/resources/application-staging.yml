@@ -16,6 +16,7 @@ spring:
       server:
         git:
           uri: file://${ENV_MYC_CONFIG_SERVER_URI_PATH}/config-repo
+
       
 server:
   port: 8089

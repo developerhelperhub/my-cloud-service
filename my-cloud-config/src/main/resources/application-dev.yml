@@ -15,9 +15,9 @@ spring:
     config:
       server:
         git:
-          uri: ${ENV_MYC_CONFIG_SERVER_URI_PATH}/my-cloud-config-repo.git
-          username: ${ENV_MYC_CONFIG_SERVER_URI_USERNAME}
-          password: ${ENV_MYC_CONFIG_SERVER_URI_PASSWORD}
+          uri: ${ENV_MYC_CONFIG_SERVER_GIT_URI}
+          username: ${ENV_MYC_CONFIG_SERVER_GIT_USERNAME}
+          password: ${ENV_MYC_CONFIG_SERVER_GIT_PASSWORD}
 
 
 server:
