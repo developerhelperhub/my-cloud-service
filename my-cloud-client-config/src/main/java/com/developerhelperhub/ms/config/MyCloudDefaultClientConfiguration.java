@@ -4,29 +4,22 @@ import java.util.ArrayList;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.security.oauth2.client.OAuth2ClientProperties;
 import org.springframework.boot.autoconfigure.security.oauth2.client.OAuth2ClientProperties.Provider;
 import org.springframework.boot.autoconfigure.security.oauth2.client.OAuth2ClientProperties.Registration;
 import org.springframework.cloud.client.loadbalancer.LoadBalanced;
-import org.springframework.cloud.config.client.ConfigClientProperties;
-import org.springframework.cloud.config.client.ConfigServicePropertySourceLocator;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.core.env.Environment;
 import org.springframework.security.oauth2.client.OAuth2RestTemplate;
 import org.springframework.security.oauth2.client.token.grant.client.ClientCredentialsResourceDetails;
 import org.springframework.web.client.RestTemplate;
 
 @Configuration
-public class MyCloudDefaultClientServerConfiguration {
+public class MyCloudDefaultClientConfiguration {
 
-	private static final Logger LOGGER = LoggerFactory.getLogger(MyCloudDefaultClientServerConfiguration.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(MyCloudDefaultClientConfiguration.class);
 
 	private final String OAUTH_REGISTRATION_ID = "identity-service";
-
-	@Autowired
-	private Environment environment;
 
 	@Bean
 	public OAuth2ClientProperties oAuth2ClientProperties() {
@@ -68,34 +61,4 @@ public class MyCloudDefaultClientServerConfiguration {
 		return template;
 	}
 
-	@Bean
-	public ConfigClientProperties configClientProperties() {
-
-		ConfigClientProperties client = new ConfigClientProperties(this.environment);
-		client.setEnabled(true);
-
-		return client;
-	}
-
-	/**
-	 * In resources/META-INF, create a file called spring.factories and specify your
-	 * custom configuration, as shown in the following example: spring.factories.
-	 * 
-	 * org.springframework.cloud.bootstrap.BootstrapConfiguration =
-	 * com.developerhelperhub.ms.id.config.ConfigServerConfiguration
-	 * 
-	 * @return
-	 */
-
-	@Bean
-	public ConfigServicePropertySourceLocator configServicePropertySourceLocator() {
-
-		ConfigClientProperties clientProperties = configClientProperties();
-
-		ConfigServicePropertySourceLocator configServicePropertySourceLocator = new ConfigServicePropertySourceLocator(
-				clientProperties);
-		configServicePropertySourceLocator.setRestTemplate(identityRestTemplate());
-
-		return configServicePropertySourceLocator;
-	}
 }

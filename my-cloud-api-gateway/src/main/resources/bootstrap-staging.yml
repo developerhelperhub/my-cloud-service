@@ -25,6 +25,10 @@ spring:
   main:
     allow-bean-definition-overriding: true   
 
+mycloud:
+  identity:
+    jwt.sign-key: ${ENV_MYC_IDENTIY_CLIENT_JWT_SIGN_KEY}
+    
 server:
   port: 8085
   tomcat:
