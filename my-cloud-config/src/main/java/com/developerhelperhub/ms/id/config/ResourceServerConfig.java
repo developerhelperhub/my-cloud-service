@@ -2,10 +2,7 @@ package com.developerhelperhub.ms.id.config;
 
 import java.util.Arrays;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.cloud.client.loadbalancer.LoadBalanced;
-import org.springframework.cloud.config.client.ConfigServicePropertySourceLocator;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
@@ -20,20 +17,17 @@ import org.springframework.security.oauth2.provider.token.DefaultTokenServices;
 import org.springframework.security.oauth2.provider.token.TokenStore;
 import org.springframework.security.oauth2.provider.token.store.JwtAccessTokenConverter;
 import org.springframework.security.oauth2.provider.token.store.JwtTokenStore;
-import org.springframework.web.client.RestTemplate;
 
 @Configuration
-@Order(2)
+@Order(1)
 @EnableResourceServer
 public class ResourceServerConfig extends ResourceServerConfigurerAdapter {
 
-	private static final Logger LOGGER = LoggerFactory.getLogger(ResourceServerConfig.class);
-
-	private static final String RESOURCE_ID = "my_cloud_api_gateway_id";
+	private static final String RESOURCE_ID = "my_cloud_config_id";
 
 	@Override
 	public void configure(ResourceServerSecurityConfigurer resources) throws Exception {
-		resources.resourceId(RESOURCE_ID).stateless(false).tokenServices(tokenServices());
+		resources.resourceId(RESOURCE_ID).stateless(true).tokenServices(tokenServices());
 	}
 
 	@Override
@@ -58,7 +52,7 @@ public class ResourceServerConfig extends ResourceServerConfigurerAdapter {
 
 	@Bean
 	public TokenStore tokenStore() {
-		return new JwtTokenStore(accessTokenConverter());
+		JwtTokenStore store = new JwtTokenStore(accessTokenConverter());
+		return store;
 	}
-
 }

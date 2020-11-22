@@ -29,6 +29,7 @@ import ToolbarDropdownItem from '../components/dashboard/topbar/ToolbarDropdownI
 import ToolbarDropdownProfile from '../components/dashboard/topbar/ToolbarDropdownProfile'
 import ToolbarDropdownDivider from '../components/dashboard/topbar/ToolbarDropdownDivider'
 
+import ConfigurationPage from './ConfigurationPage'
 import DiscoveryPage from './DiscoveryPage'
 import MonitorPage from './monitor/MonitorPage'
 import DashboardHomePage from './DashboardHomePage'
@@ -59,6 +60,9 @@ class DashboardPage extends React.Component {
                                     // badge={{ label: "Pro", type: "badge-success" }} 
                                     />
                                     <SidebarMenuitem label="Monitor" href="/monitor" />
+
+                                    <SidebarMenuitem label="Configuration" href="/configuration" />
+                                    
                                 </SidebarSubmenu>
                             </SidebarDropdown>
 
@@ -203,6 +207,9 @@ class DashboardPage extends React.Component {
                         <MonitorPage />
                     </Route>
                     
+                    <Route exact path="/configuration">
+                        <ConfigurationPage />
+                    </Route>
                     
                     <Route exact path="/client">
                         <ClientPage />

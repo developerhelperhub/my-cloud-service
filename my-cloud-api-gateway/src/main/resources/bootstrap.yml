@@ -1,9 +1,16 @@
 spring:
   application:
     name: my-cloud-api-gateway
-  jmx:
-    enabled: true
+  cloud:
+    config:
+      uri: http://localhost:8089
+  
+  profiles: 
+    active: dev
 
+  main:
+    allow-bean-definition-overriding: true
+     
 server:
   port: 8085
   tomcat:
@@ -21,29 +28,7 @@ eureka:
       defaultZone: http://${ENV_MYC_DISCOVERY_USERNAME}:${ENV_MYC_DISCOVERY_PASSWORD}@${ENV_MYC_DISCOVERY_HOST}:${ENV_MYC_DISCOVERY_PORT}/eureka/
   instance:
     preferIpAddress: true
-
-zuul:
-  routes:
-    oauth:
-      path: /oauth/**
-      sensitiveHeaders: Cookie,Set-Cookie
-      serviceId: my-cloud-identity
-      stripPrefix: false
-    identity:
-      path: /identity/**
-      sensitiveHeaders: Cookie,Set-Cookie
-      serviceId: my-cloud-identity
-      stripPrefix: false
-    monitor:
-      path: /monitor/**
-      sensitiveHeaders: Cookie,Set-Cookie
-      serviceId: my-cloud-monitor
-      stripPrefix: false
-    discovery:
-      path: /discovery/**
-      sensitiveHeaders: Cookie,Set-Cookie
-      serviceId: my-cloud-discovery
-      stripPrefix: false
+    
 
 management:
   server:
