@@ -1,6 +1,6 @@
 # My Cloud Service 1.0
 
-This is one of the my dream expriement project to learn how to build my cloud platform with help of open source, its helps to run the microservie application under this platform. The experiement is which I am doing to integrate the all cloud related open services are integrating in this platform, its provides the reactie dashboard which can view and configure the micorservice or other services and also can run any cloud service platform.
+This is one of the my dream expriement project to learn how to build my cloud platform with help of open source, its helps to run the microservice application under this platform. The experiement is which I am doing to integrate the all cloud related open services will be integrated in this platform, its provides the reactie dashboard which can view and configure the micorservice or other services and also can run this any cloud service platform.
 
 ##### My goals is in this project to learn integrate the below functionality, which
 
