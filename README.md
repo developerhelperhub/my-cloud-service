@@ -1,6 +1,38 @@
 # My Cloud Service 1.0
 
-This repostiry contains the development of the my cloud service. This project includes reactive based monitor dashboard has been implemented.
+This is one of the my dream expriement project to learn how to build my cloud platform with help of open source, its helps to run the microservie application under this platform. The experiement is which I am doing to integrate the all cloud related open services are integrating in this platform, its provides the reactie dashboard which can view and configure the micorservice or other services and also can run any cloud service platform.
+
+##### My goals is in this project to learn integrate the below functionality, which
+
+* Discovery Service
+* API Gateway Configuration
+* Identity Service
+* Running the microservice containers
+* Monitor, Configuration, Deployment with help of Dashboard
+
+##### Currently available service are below:
+* Discovery Service
+* API Gateway
+* Identity Service
+* Montoring Service
+* React Dashboard
+
+## Run Commands
+
+Running all the services on Docker
+```
+$ cd /setup/docker
+$ docker-compose up
+```
+
+Running all the services on Minikube of Kubernetes 
+Please refer the document of cd /setup/kubernetes
+
+Running My Cloud Dashboard
+```
+$ cd /my-cloud-dashboard
+$ npm start
+```
 
 ## Technology
 * Backend 
@@ -56,13 +88,6 @@ This repostiry contains the development of the my cloud service. This project in
     * Module
     * Dependency Management
     * Dockerfile Maven Plugin
-  * My Cloud Service 
-    * Identity Service
-    * Discovery Service
-    * Monitor Service
-    * Monitor Scheduler Service
-    * API Gateway
-    * My Cloud Dashboard
   
 * Frontend 
   * React JS
@@ -76,23 +101,6 @@ This repostiry contains the development of the my cloud service. This project in
 
 
 #### In progress .....
-
-## Run Commands
-
-#### Running all the services on Docker 
-$ cd /setup/docker
-$ docker-compose up
-
-#### Running all the services on Minikube of Kubernetes 
-Please refer the document of cd /setup/kubernetes
-
-#### Running My Cloud Dashboard
-$ cd /my-cloud-dashboard
-$ npm start
-
-#### Stop all the services
-$ cd /setup
-$ docker-compose down
 
 ## Screens
 * Login Page
