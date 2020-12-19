@@ -28,12 +28,12 @@ public class MyCloudDefaultClientConfiguration {
 		return new OAuth2ClientProperties();
 	}
 
-	@Bean("nonLoadBalance")
-	public RestTemplate nonIdentityRestTemplate() {
+	@Bean("oAuthNonLoadBalance")
+	public OAuth2RestTemplate nonIdentityRestTemplate() {
 
 		OAuth2ClientProperties oauth2Properties = oAuth2ClientProperties();
 
-		RestTemplate template;
+		OAuth2RestTemplate template = null;
 
 		if (oauth2Properties.getRegistration().containsKey(OAUTH_REGISTRATION_ID)
 				&& oauth2Properties.getProvider().containsKey(OAUTH_REGISTRATION_ID)) {
@@ -55,21 +55,20 @@ public class MyCloudDefaultClientConfiguration {
 
 		} else {
 
-			LOGGER.warn("Oauth2 configuration not found!");
+			LOGGER.error("Oauth2 configuration not found!");
 
-			template = new RestTemplate();
 		}
 
 		return template;
 	}
 
-	@Bean("loadBalance")
 	@Primary
 	@LoadBalanced
-	public RestTemplate identityRestTemplate() {
+	@Bean("oAuthLoadBalance")
+	public OAuth2RestTemplate identityRestTemplate() {
 		OAuth2ClientProperties oauth2Properties = oAuth2ClientProperties();
 
-		RestTemplate template;
+		OAuth2RestTemplate template = null;
 
 		if (oauth2Properties.getRegistration().containsKey(OAUTH_REGISTRATION_ID)
 				&& oauth2Properties.getProvider().containsKey(OAUTH_REGISTRATION_ID)) {
@@ -91,9 +90,8 @@ public class MyCloudDefaultClientConfiguration {
 
 		} else {
 
-			LOGGER.warn("Oauth2 configuration not found!");
+			LOGGER.error("Oauth2 configuration not found!");
 
-			template = new RestTemplate();
 		}
 
 		return template;
