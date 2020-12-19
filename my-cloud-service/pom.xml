@@ -108,7 +108,7 @@
 		<module>../my-cloud-api-gateway</module>
 		<module>../my-cloud-monitor</module>
 		<module>../my-cloud-monitor-scheduler</module>
-		<module>../my-cloud-config</module>
+		<module>../my-cloud-config-server</module>
 		<module>../my-cloud-client-config</module>
 
 		<!-- <module>../my-cloud-circuit-breaker</module> <module>../api-gateway-service</module> -->

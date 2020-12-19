@@ -10,7 +10,7 @@
 	</parent>
 
 	<groupId>com.developerhelperhub.microservice.cloud</groupId>
-	<artifactId>my-cloud-config</artifactId>
+	<artifactId>my-cloud-config-server</artifactId>
 
 	<name>My Cloud Config Server</name>
 	<description>Demo project for Spring Boot</description>
