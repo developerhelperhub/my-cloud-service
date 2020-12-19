@@ -2,12 +2,11 @@ package com.developerhelperhub.ms.id.controller;
 
 import java.util.List;
 
-import javax.ws.rs.QueryParam;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.developerhelperhub.ms.id.model.monitor.AccessLogModel;
@@ -81,25 +80,25 @@ public class Controller {
 	}
 
 	@GetMapping(value = "/elasticsearch/search")
-	public ElastiSearchLogModel getEasticsearch(@QueryParam("indexName") String indexName,
-			@QueryParam("type") String type, @QueryParam("searchKey") String searchKey, @QueryParam("page") int page,
-			@QueryParam("size") int size, @QueryParam("order") String order, @QueryParam("fromDate") long fromDate,
-			@QueryParam("toDate") long toDate) {
+	public ElastiSearchLogModel getEasticsearch(@RequestParam("indexName") String indexName,
+			@RequestParam("type") String type, @RequestParam("searchKey") String searchKey, @RequestParam("page") int page,
+			@RequestParam("size") int size, @RequestParam("order") String order, @RequestParam("fromDate") long fromDate,
+			@RequestParam("toDate") long toDate) {
 		return elasticsearchService.search(indexName, type, searchKey, page, size, order, fromDate, toDate);
 	}
 
 	@GetMapping(value = "/logs/search")
-	public List<LogMessageModel> getEasticsearchLogs(@QueryParam("applicationId") String applicationId,
-			@QueryParam("searchKey") String searchKey, @QueryParam("size") int size, @QueryParam("order") String order,
-			@QueryParam("fromDate") long fromDate, @QueryParam("toDate") long toDate) {
+	public List<LogMessageModel> getEasticsearchLogs(@RequestParam("applicationId") String applicationId,
+			@RequestParam("searchKey") String searchKey, @RequestParam("size") int size, @RequestParam("order") String order,
+			@RequestParam("fromDate") long fromDate, @RequestParam("toDate") long toDate) {
 		return elasticsearchService.searchLogs(applicationId, searchKey, size, order, fromDate, toDate);
 	}
 
 	@GetMapping(value = "/access-logs/search")
-	public AccessLogModel getEasticsearchAccessLogs(@QueryParam("applicationId") String applicationId,
-			@QueryParam("searchKey") String searchKey, @QueryParam("size") int size, @QueryParam("order") String order,
-			@QueryParam("group") String group, @QueryParam("fromDate") long fromDate,
-			@QueryParam("toDate") long toDate) {
+	public AccessLogModel getEasticsearchAccessLogs(@RequestParam("applicationId") String applicationId,
+			@RequestParam("searchKey") String searchKey, @RequestParam("size") int size, @RequestParam("order") String order,
+			@RequestParam("group") String group, @RequestParam("fromDate") long fromDate,
+			@RequestParam("toDate") long toDate) {
 		return elasticsearchService.searchAccessLogs(applicationId, searchKey, size, order, group, fromDate, toDate);
 	}
 }

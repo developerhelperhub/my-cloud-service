@@ -1,6 +1,8 @@
 spring:
   application:
-    name: my-cloud-api-gateway
+    name: my-cloud-monitor-scheduler
+  jmx:
+    enabled: true
   cloud:
     config:
       uri: ${ENV_MYC_CONFIG_SERVER_URI_PATH}
@@ -9,7 +11,7 @@ spring:
       label: ${spring.profiles.active}
 
 server:
-  port: 8085
+  port: 8088
   tomcat:
     accesslog:
       enabled: true
@@ -18,6 +20,8 @@ server:
       buffered: false
       suffix: .log
       pattern: "%t|%a|%h|%p|%m|%U|%q|%s|%D|%T|%F|%l|%S|%I|%v|%u"
+  #servlet:
+  #  context-path: /monitor  
 
 eureka:
   client:
@@ -25,11 +29,10 @@ eureka:
       defaultZone: http://${ENV_MYC_DISCOVERY_USERNAME}:${ENV_MYC_DISCOVERY_PASSWORD}@${ENV_MYC_DISCOVERY_HOST}:${ENV_MYC_DISCOVERY_PORT}/eureka/
   instance:
     preferIpAddress: true
-    
-
+      
 management:
   server:
-    port: 9003
+    port: 9005
   endpoint:
     health:
       show-details: always
@@ -43,4 +46,4 @@ management:
         include:
           - info
           - health
-          - metrics 
+          - metrics
