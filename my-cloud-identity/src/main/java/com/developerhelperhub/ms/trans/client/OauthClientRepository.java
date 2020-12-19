@@ -1,4 +1,4 @@
-package com.developerhelperhub.ms.id.trans.client;
+package com.developerhelperhub.ms.trans.client;
 
 import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.stereotype.Repository;

@@ -1,4 +1,4 @@
-package com.developerhelperhub.ms.id;
+package com.developerhelperhub.ms;
 
 import java.util.Arrays;
 import java.util.HashSet;
@@ -9,8 +9,8 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
 
-import com.developerhelperhub.ms.id.trans.client.OauthClient;
-import com.developerhelperhub.ms.id.trans.user.User;
+import com.developerhelperhub.ms.trans.client.OauthClient;
+import com.developerhelperhub.ms.trans.user.User;
 
 @SpringBootApplication
 @EnableDiscoveryClient

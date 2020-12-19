@@ -3,28 +3,23 @@ spring:
     name: my-cloud-config
   jmx:
     enabled: true
-  data:
-    mongodb:
-      authentication-database: ${ENV_MYC_CONFIG_MONGO_AUTH_DB}
-      database: ${ENV_MYC_CONFIG_MONGO_DB}
-      username: ${ENV_MYC_CONFIG_MONGO_USERNAME}
-      password: ${ENV_MYC_CONFIG_MONGO_PASSWORD}
-      port: ${ENV_MYC_CONFIG_MONGO_PORT}
-      host: ${ENV_MYC_CONFIG_MONGO_HOST}
   cloud:
     config:
       server:
         git:
-          uri: file://${ENV_MYC_CONFIG_SERVER_URI_PATH}/config-repo
-  main:
-    allow-bean-definition-overriding: true
+          uri: ${ENV_MYC_CONFIG_SERVER_GIT_URI}
+          username: ${ENV_MYC_CONFIG_SERVER_GIT_USERNAME}
+          password: ${ENV_MYC_CONFIG_SERVER_GIT_PASSWORD}
     
-mycloud:
-  identity:
-    jwt.sign-key: ${ENV_MYC_IDENTIY_CLIENT_JWT_SIGN_KEY}
-    
+  security:
+    user:
+      name: configserver
+      password: OpskJh88229qqq
+
+  
 server:
   port: 8089
+
   tomcat:
     accesslog:
       enabled: true
@@ -43,8 +38,6 @@ eureka:
   instance:
     preferIpAddress: true
 
-
-      
 management:
   server:
     port: 9006

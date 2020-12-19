@@ -92,6 +92,12 @@
 			</dependency>
 
 
+			<dependency>
+				<groupId>com.developerhelperhub.microservice.cloud</groupId>
+				<artifactId>my-cloud-client-config</artifactId>
+				<version>0.0.1-SNAPSHOT</version>
+			</dependency>
+
 		</dependencies>
 
 	</dependencyManagement>

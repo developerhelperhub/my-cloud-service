@@ -6,7 +6,7 @@ services:
     volumes:
       - /var/mycloud/volume/git/repos:/var/www/git
     ports:
-      - '8087:80'
+      - '8090:80'
   my-cloud-mongodb:
     image: mongo
     container_name: my-cloud-mongodb

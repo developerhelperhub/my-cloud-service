@@ -1,4 +1,4 @@
-package com.developerhelperhub.ms.id.config;
+package com.developerhelperhub.ms.config;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -10,7 +10,7 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 
-import com.developerhelperhub.ms.id.trans.user.User;
+import com.developerhelperhub.ms.trans.user.User;
 
 @Order(1)
 @Configuration
@@ -29,8 +29,6 @@ public class WebSecurity extends WebSecurityConfigurerAdapter {
 	@Override
 	protected void configure(AuthenticationManagerBuilder auth) throws Exception {
 		auth.userDetailsService(user);
-
-		// auth.inMemoryAuthentication().withUser(username).password(passwordEncoder().encode(password)).roles("USER");
 	}
 
 	/**

@@ -1,4 +1,4 @@
-package com.developerhelperhub.ms.id.trans.user;
+package com.developerhelperhub.ms.trans.user;
 
 import java.util.Set;
 

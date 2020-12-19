@@ -3,14 +3,6 @@ spring:
     name: my-cloud-config
   jmx:
     enabled: true
-  data:
-    mongodb:
-      authentication-database: ${ENV_MYC_CONFIG_MONGO_AUTH_DB}
-      database: ${ENV_MYC_CONFIG_MONGO_DB}
-      username: ${ENV_MYC_CONFIG_MONGO_USERNAME}
-      password: ${ENV_MYC_CONFIG_MONGO_PASSWORD}
-      port: ${ENV_MYC_CONFIG_MONGO_PORT}
-      host: ${ENV_MYC_CONFIG_MONGO_HOST}
   cloud:
     config:
       server:
@@ -18,16 +10,15 @@ spring:
           uri: ${ENV_MYC_CONFIG_SERVER_GIT_URI}
           username: ${ENV_MYC_CONFIG_SERVER_GIT_USERNAME}
           password: ${ENV_MYC_CONFIG_SERVER_GIT_PASSWORD}
+  security:
+    user:
+      name: ${ENV_MYC_CONFIG_SERVER_USERNAME}
+      password: ${ENV_MYC_CONFIG_SERVER_PASSWORD}
 
-  main:
-    allow-bean-definition-overriding: true
-    
-mycloud:
-  identity:
-    jwt.sign-key: ${ENV_MYC_IDENTIY_CLIENT_JWT_SIGN_KEY}
-    
+  
 server:
   port: 8089
+
   tomcat:
     accesslog:
       enabled: true

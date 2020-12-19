@@ -1,4 +1,4 @@
-package com.developerhelperhub.ms.id.config;
+package com.developerhelperhub.ms.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -11,10 +11,5 @@ public class BeanConfiguration {
 	public BCryptPasswordEncoder passwordEncoder() {
 		return new BCryptPasswordEncoder();
 	}
-
-//	@Bean
-//	public HttpTraceRepository htttpTraceRepository() {
-//		return new InMemoryHttpTraceRepository();
-//	}
 
 }

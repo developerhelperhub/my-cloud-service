@@ -12,7 +12,7 @@
 	<groupId>com.developerhelperhub.microservice.cloud</groupId>
 	<artifactId>my-cloud-client-config</artifactId>
 
-	<name>My Cloud Common configuration</name>
+	<name>My Cloud Common Configuration</name>
 	<description>My cloud common configuration which are required in my cloud mciro services</description>
 
 	<dependencies>

@@ -1,4 +1,4 @@
-package com.developerhelperhub.ms.id.controller;
+package com.developerhelperhub.ms.controller;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -8,9 +8,9 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.developerhelperhub.ms.id.trans.client.OauthClientEntity;
-import com.developerhelperhub.ms.id.trans.client.OauthClientModel;
-import com.developerhelperhub.ms.id.trans.client.OauthClientRepository;
+import com.developerhelperhub.ms.trans.client.OauthClientEntity;
+import com.developerhelperhub.ms.trans.client.OauthClientModel;
+import com.developerhelperhub.ms.trans.client.OauthClientRepository;
 
 @RestController
 @RequestMapping("/identity/clients")

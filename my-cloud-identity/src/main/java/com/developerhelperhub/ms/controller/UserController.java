@@ -1,4 +1,4 @@
-package com.developerhelperhub.ms.id.controller;
+package com.developerhelperhub.ms.controller;
 
 import java.security.Principal;
 import java.util.ArrayList;
@@ -9,9 +9,9 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.developerhelperhub.ms.id.trans.user.UserEntity;
-import com.developerhelperhub.ms.id.trans.user.UserModel;
-import com.developerhelperhub.ms.id.trans.user.UserRepository;
+import com.developerhelperhub.ms.trans.user.UserEntity;
+import com.developerhelperhub.ms.trans.user.UserModel;
+import com.developerhelperhub.ms.trans.user.UserRepository;
 
 @RestController
 @RequestMapping("/identity/user")

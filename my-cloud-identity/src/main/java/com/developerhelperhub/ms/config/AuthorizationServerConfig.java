@@ -1,6 +1,7 @@
-package com.developerhelperhub.ms.id.config;
+package com.developerhelperhub.ms.config;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -14,7 +15,7 @@ import org.springframework.security.oauth2.provider.token.TokenStore;
 import org.springframework.security.oauth2.provider.token.store.JwtAccessTokenConverter;
 import org.springframework.security.oauth2.provider.token.store.JwtTokenStore;
 
-import com.developerhelperhub.ms.id.trans.client.OauthClient;
+import com.developerhelperhub.ms.trans.client.OauthClient;
 
 @Configuration
 @EnableAuthorizationServer
@@ -25,6 +26,9 @@ public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdap
 	private UserDetailsService userDetailsService;
 
 	private OauthClient oauthClientDetail;
+
+	@Value("${mycloud.identity.jwt.sign-key}")
+	private String jwtSignKey;
 
 	@Autowired
 	public AuthorizationServerConfig(AuthenticationManager authenticationManager, UserDetailsService userDetailsService,
@@ -53,7 +57,7 @@ public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdap
 	@Bean
 	public JwtAccessTokenConverter accessTokenConverter() {
 		JwtAccessTokenConverter converter = new JwtAccessTokenConverter();
-		converter.setSigningKey("123456");
+		converter.setSigningKey(this.jwtSignKey);
 		return converter;
 	}
 
@@ -65,11 +69,5 @@ public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdap
 	@Override
 	public void configure(ClientDetailsServiceConfigurer clients) throws Exception {
 		clients.withClientDetails(oauthClientDetail);
-
-//		clients.inMemory().withClient(clientID).secret(passwordEncoder.encode(clientSecret))
-//				.authorizedGrantTypes("authorization_code", "password", "refresh_token").scopes("user_info")
-//				.autoApprove(true).redirectUris(redirectURLs).refreshTokenValiditySeconds(83199)
-//				.accessTokenValiditySeconds(43199);
-
 	}
 }

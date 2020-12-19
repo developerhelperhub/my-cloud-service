@@ -4,30 +4,9 @@ spring:
   cloud:
     config:
       uri: ${ENV_MYC_CONFIG_SERVER_URI_PATH}
-  
-  security:
-    oauth2:
-      client:
-        registration:
-          identity-service:
-            provider: identity-service
-            client-id: ${ENV_MYC_IDENTIY_CLIENT_ID}
-            client-secret: ${ENV_MYC_IDENTIY_CLIENT_SECRET}
-            authorization-grant-type: client_credentials
-            scope:
-             - ADMIN
-        provider:
-          identity-service:
-            token-uri: ${ENV_MYC_IDENTIY_CLIENT_TOKEN_URI}
-
-# This requied to override the spring boot bean, 
-# eg: cloud config related bean to set the authentication
-  main:
-    allow-bean-definition-overriding: true   
-
-mycloud:
-  identity:
-    jwt.sign-key: ${ENV_MYC_IDENTIY_CLIENT_JWT_SIGN_KEY}
+      username: ${ENV_MYC_CONFIG_SERVER_USERNAME}
+      password: ${ENV_MYC_CONFIG_SERVER_PASSWORD}
+      label: ${spring.profiles.active}
     
 server:
   port: 8085

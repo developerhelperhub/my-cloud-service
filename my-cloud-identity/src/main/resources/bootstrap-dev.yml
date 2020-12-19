@@ -3,15 +3,13 @@ spring:
     name: my-cloud-identity
   jmx:
     enabled: true
-  data:
-    mongodb:
-      authentication-database: ${ENV_MYC_IDENTIY_MONGO_AUTH_DB}
-      database: ${ENV_MYC_IDENTIY_MONGO_DB}
-      username: ${ENV_MYC_IDENTIY_MONGO_USERNAME}
-      password: ${ENV_MYC_IDENTIY_MONGO_PASSWORD}
-      port: ${ENV_MYC_IDENTIY_MONGO_PORT}
-      host: ${ENV_MYC_IDENTIY_MONGO_HOST}
-
+  cloud:
+    config:
+      uri: ${ENV_MYC_CONFIG_SERVER_URI_PATH}
+      username: ${ENV_MYC_CONFIG_SERVER_USERNAME}
+      password: ${ENV_MYC_CONFIG_SERVER_PASSWORD}
+      label: ${spring.profiles.active}
+    
 server:
   port: 8081
   tomcat:
@@ -22,8 +20,6 @@ server:
       buffered: false
       suffix: .log
       pattern: "%t|%a|%h|%p|%m|%U|%q|%s|%D|%T|%F|%l|%S|%I|%v|%u"
-#  servlet:
-#    context-path: /identity
 
 eureka:
   client:
