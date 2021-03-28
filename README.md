@@ -99,17 +99,14 @@ $ npm start
       * Build
       * Volume
       * Links
-<<<<<<< HEAD
   * Maven
     * Module
     * Dependency Management
     * Dockerfile Maven Plugin
   
-=======
   * Git Server
     
 
->>>>>>> dev
 * Frontend 
   * React JS
   * Server Sent Event (Event Source)
@@ -123,8 +120,6 @@ $ npm start
 
 #### In progress .....
 
-<<<<<<< HEAD
-=======
 ## Run Commands
 
 #### Run the docker server localy
@@ -156,7 +151,6 @@ $ npm start
 $ cd /setup
 $ docker-compose down
 
->>>>>>> dev
 ## Screens
 * Login Page
 <img src="docs/screenshots/login.png" width="1000" height="600">
