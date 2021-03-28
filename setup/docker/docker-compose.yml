@@ -1,5 +1,12 @@
-version: '3'
+version: '2.4'
 services: 
+  my-cloud-git-server:
+    image: developerhelperhub/my-cloud-git-server
+    container_name: my-cloud-git-server
+    volumes:
+      - /var/mycloud/volume/git/repos:/usr/local/apache2/htdocs/git
+    ports:
+      - '8090:80'
   my-cloud-mongodb:
     image: mongo
     container_name: my-cloud-mongodb
@@ -42,6 +49,8 @@ services:
   my-cloud-discovery:
     image: developerhelperhub/my-cloud-discovery
     container_name: my-cloud-discovery
+    links:
+      - elasticsearch
     environment:
       - ENV_MYC_DISCOVERY_USERNAME=discovery
       - ENV_MYC_DISCOVERY_PASSWORD=discoverypass
@@ -49,6 +58,7 @@ services:
       - ENV_MYC_DISCOVERY_PORT=8761
       - ENV_MYC_FILEBEAT_ELASTICSEARCH_HOSTS=["elasticsearch:9200"]
       - ENV_MYC_FILEBEAT_LOGGING_LEVEL="info"
+      - ENV_MYC_DISCOVERY_JWT_SIGN_KEY=123456
       - |
         JAVA_OPTS=
         -Dspring.profiles.active=staging
@@ -63,25 +73,57 @@ services:
     ports:
       - '8761:8761'
       - '9001:9001'
-  my-cloud-identity:
-    image: developerhelperhub/my-cloud-identity
-    container_name: my-cloud-identity
+  my-cloud-config-server:
+    image: developerhelperhub/my-cloud-config-server
+    container_name: my-cloud-config-server
     links:
-      - my-cloud-mongodb
+      - elasticsearch
+      - my-cloud-git-server
       - my-cloud-discovery
     environment:
       - ENV_MYC_DISCOVERY_USERNAME=discovery
       - ENV_MYC_DISCOVERY_PASSWORD=discoverypass
       - ENV_MYC_DISCOVERY_HOST=my-cloud-discovery
       - ENV_MYC_DISCOVERY_PORT=8761
-      - ENV_MYC_IDENTIY_MONGO_DB=myidsrvdb
-      - ENV_MYC_IDENTIY_MONGO_AUTH_DB=admin
-      - ENV_MYC_IDENTIY_MONGO_USERNAME=myidsrvdbuser
-      - ENV_MYC_IDENTIY_MONGO_PASSWORD=myidsrvdbpwd@1234
-      - ENV_MYC_IDENTIY_MONGO_PORT=27017
-      - ENV_MYC_IDENTIY_MONGO_HOST=my-cloud-mongodb
       - ENV_MYC_FILEBEAT_ELASTICSEARCH_HOSTS=["elasticsearch:9200"]
       - ENV_MYC_FILEBEAT_LOGGING_LEVEL="info"
+      - ENV_MYC_CONFIG_SERVER_GIT_URI=http://my-cloud-git-server/my-cloud-config-repo.git
+#      - ENV_MYC_CONFIG_SERVER_GIT_USERNAME=-
+#      - ENV_MYC_CONFIG_SERVER_GIT_PASSWORD=-
+      - ENV_MYC_CONFIG_SERVER_USERNAME=configserver
+      - ENV_MYC_CONFIG_SERVER_PASSWORD=OpskJh88229qqq
+      - |
+        JAVA_OPTS=
+        -Dspring.profiles.active=staging
+        -Djava.rmi.server.logCalls=true
+        -Djava.rmi.server.hostname=localhost
+        -Dcom.sun.management.jmxremote=true
+        -Dcom.sun.management.jmxremote.local.only=false 
+        -Dcom.sun.management.jmxremote.port=7001
+        -Dcom.sun.management.jmxremote.rmi.port=7001
+        -Dcom.sun.management.jmxremote.ssl=false 
+        -Dcom.sun.management.jmxremote.authenticate=false
+    ports:
+      - '8089:8089'
+      - '9006:9006'
+  my-cloud-identity:
+    image: developerhelperhub/my-cloud-identity
+    container_name: my-cloud-identity
+    links:
+      - elasticsearch
+      - my-cloud-discovery
+      - my-cloud-config-server
+      - my-cloud-mongodb
+    environment:
+      - ENV_MYC_DISCOVERY_USERNAME=discovery
+      - ENV_MYC_DISCOVERY_PASSWORD=discoverypass
+      - ENV_MYC_DISCOVERY_HOST=my-cloud-discovery
+      - ENV_MYC_DISCOVERY_PORT=8761
+      - ENV_MYC_FILEBEAT_ELASTICSEARCH_HOSTS=["elasticsearch:9200"]
+      - ENV_MYC_FILEBEAT_LOGGING_LEVEL="info"
+      - ENV_MYC_CONFIG_SERVER_URI_PATH=http://my-cloud-config-server:8089
+      - ENV_MYC_CONFIG_SERVER_USERNAME=configserver
+      - ENV_MYC_CONFIG_SERVER_PASSWORD=OpskJh88229qqq
       - |
         JAVA_OPTS=
         -Dspring.profiles.active=staging
@@ -100,7 +142,9 @@ services:
     image: developerhelperhub/my-cloud-api-gateway
     container_name: my-cloud-api-gateway
     links:
+      - elasticsearch
       - my-cloud-discovery
+      - my-cloud-config-server
     environment:
       - ENV_MYC_DISCOVERY_USERNAME=discovery
       - ENV_MYC_DISCOVERY_PASSWORD=discoverypass
@@ -108,6 +152,9 @@ services:
       - ENV_MYC_DISCOVERY_PORT=8761
       - ENV_MYC_FILEBEAT_ELASTICSEARCH_HOSTS=["elasticsearch:9200"]
       - ENV_MYC_FILEBEAT_LOGGING_LEVEL="info"
+      - ENV_MYC_CONFIG_SERVER_URI_PATH=http://my-cloud-config-server:8089
+      - ENV_MYC_CONFIG_SERVER_USERNAME=configserver
+      - ENV_MYC_CONFIG_SERVER_PASSWORD=OpskJh88229qqq
       - |
         JAVA_OPTS=
         -Dspring.profiles.active=staging
@@ -131,27 +178,17 @@ services:
       - my-cloud-discovery
       - my-cloud-identity
       - elasticsearch
+      - my-cloud-config-server
     environment:
       - ENV_MYC_DISCOVERY_USERNAME=discovery
       - ENV_MYC_DISCOVERY_PASSWORD=discoverypass
       - ENV_MYC_DISCOVERY_HOST=my-cloud-discovery
       - ENV_MYC_DISCOVERY_PORT=8761
-      - ENV_MYC_MONITOR_MONGO_DB=myidsrvdb
-      - ENV_MYC_MONITOR_MONGO_AUTH_DB=admin
-      - ENV_MYC_MONITOR_MONGO_USERNAME=myidsrvdbuser
-      - ENV_MYC_MONITOR_MONGO_PASSWORD=myidsrvdbpwd@1234
-      - ENV_MYC_MONITOR_MONGO_PORT=27017
-      - ENV_MYC_MONITOR_MONGO_HOST=my-cloud-mongodb
-      - ENV_MYC_MONITOR_INFLUX_DB=mycloudmonitordb
-      - ENV_MYC_MONITOR_INFLUX_USERNAME=todd
-      - ENV_MYC_MONITOR_INFLUX_PASSWORD=influxdb4ever
-      - ENV_MYC_MONITOR_INFLUX_PORT=8086
-      - ENV_MYC_MONITOR_INFLUX_HOST=my-cloud-influxdb
       - ENV_MYC_FILEBEAT_ELASTICSEARCH_HOSTS=["elasticsearch:9200"]
       - ENV_MYC_FILEBEAT_LOGGING_LEVEL="info"
-      - ENV_MYC_ELASTICSEARCH_HOST=elasticsearch
-      - ENV_MYC_ELASTICSEARCH_PORT=9300
-      - ENV_MYC_ELASTICSEARCH_CLUSTER_NAME=docker-cluster
+      - ENV_MYC_CONFIG_SERVER_URI_PATH=http://my-cloud-config-server:8089
+      - ENV_MYC_CONFIG_SERVER_USERNAME=configserver
+      - ENV_MYC_CONFIG_SERVER_PASSWORD=OpskJh88229qqq
       - |
         JAVA_OPTS=
         -Dspring.profiles.active=staging
@@ -174,28 +211,17 @@ services:
       - my-cloud-influxdb
       - my-cloud-discovery
       - my-cloud-identity
+      - my-cloud-config-server
     environment:
       - ENV_MYC_DISCOVERY_USERNAME=discovery
       - ENV_MYC_DISCOVERY_PASSWORD=discoverypass
       - ENV_MYC_DISCOVERY_HOST=my-cloud-discovery
       - ENV_MYC_DISCOVERY_PORT=8761
-      - ENV_MYC_MONITOR_SCHD_MONGO_DB=myidsrvdb
-      - ENV_MYC_MONITOR_SCHD_MONGO_AUTH_DB=admin
-      - ENV_MYC_MONITOR_SCHD_MONGO_USERNAME=myidsrvdbuser
-      - ENV_MYC_MONITOR_SCHD_MONGO_PASSWORD=myidsrvdbpwd@1234
-      - ENV_MYC_MONITOR_SCHD_MONGO_PORT=27017
-      - ENV_MYC_MONITOR_SCHD_MONGO_HOST=my-cloud-mongodb
-      - ENV_MYC_MONITOR_SCHD_INFLUX_DB=mycloudmonitordb
-      - ENV_MYC_MONITOR_SCHD_INFLUX_USERNAME=todd
-      - ENV_MYC_MONITOR_SCHD_INFLUX_PASSWORD=influxdb4ever
-      - ENV_MYC_MONITOR_SCHD_INFLUX_PORT=8086
-      - ENV_MYC_MONITOR_SCHD_INFLUX_HOST=my-cloud-influxdb
-      - ENV_MYC_IDENTIY_CLIENT_ID=my-cloud-identity-credentials
-      - ENV_MYC_IDENTIY_CLIENT_SECRET=VkZpzzKa3uMq4vqg
-      - ENV_MYC_IDENTIY_HOST=my-cloud-identity
-      - ENV_MYC_IDENTIY_PORT=8081
       - ENV_MYC_FILEBEAT_ELASTICSEARCH_HOSTS=["elasticsearch:9200"]
       - ENV_MYC_FILEBEAT_LOGGING_LEVEL="info"
+      - ENV_MYC_CONFIG_SERVER_URI_PATH=http://my-cloud-config-server:8089
+      - ENV_MYC_CONFIG_SERVER_USERNAME=configserver
+      - ENV_MYC_CONFIG_SERVER_PASSWORD=OpskJh88229qqq
       - |
         JAVA_OPTS=
         -Dspring.profiles.active=staging

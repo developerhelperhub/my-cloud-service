@@ -730,4 +730,17 @@
       linear-gradient(to right, #2f3136, #2f3136);
   }
 
-  
+  /*-------------------- theme: code mirror ----------------------*/  
+
+  .chiller-theme .CodeMirror {
+    background: #2f3437;
+  }
+
+  .chiller-theme .CodeMirror .CodeMirror-gutters {
+    background-color: #404548;
+    border-right: 1px solid #404548;
+  }
+
+  .chiller-theme .CodeMirror pre.CodeMirror-line, .CodeMirror pre.CodeMirror-line-like {
+    color: #818896!important;
+  }
