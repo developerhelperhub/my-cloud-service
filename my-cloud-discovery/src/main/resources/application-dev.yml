@@ -1,4 +1,3 @@
-
 spring:
   application:
     name: my-cloud-discovery
@@ -9,6 +8,10 @@ spring:
       name: ${ENV_MYC_DISCOVERY_USERNAME}
       password: ${ENV_MYC_DISCOVERY_PASSWORD}
 
+mycloud:
+  identity:
+    jwt.sign-key: ${ENV_MYC_DISCOVERY_JWT_SIGN_KEY}
+    
 server:
   port: 8761
   tomcat:

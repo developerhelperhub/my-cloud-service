@@ -1,5 +1,6 @@
 package com.developerhelperhub.ms.config;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
@@ -16,39 +17,19 @@ import org.springframework.security.oauth2.provider.token.store.JwtTokenStore;
 @Configuration
 @Order(1)
 @EnableResourceServer
-public class ResourceServerConfig extends ResourceServerConfigurerAdapter {
+public class ResourceServerConfig extends AbstractMyCloudDefaultResourceServerConfig {
 
-	private static final String RESOURCE_ID = "my_cloud_discovery_id";
-
-	@Override
-	public void configure(ResourceServerSecurityConfigurer resources) throws Exception {
-		resources.resourceId(RESOURCE_ID).stateless(true).tokenServices(tokenServices());
-	}
+	@Value("${mycloud.identity.jwt.sign-key}")
+	private String jwtSignKey;
 
 	@Override
-	public void configure(HttpSecurity http) throws Exception {
-		http.anonymous().disable().authorizeRequests().antMatchers("/**").access("hasRole('ADMIN')")
-				.and().exceptionHandling().accessDeniedHandler(new OAuth2AccessDeniedHandler());
+	protected String getResourceId() {
+		return "my_cloud_discovery_id";
 	}
 
-	@Bean
-	public DefaultTokenServices tokenServices() {
-		DefaultTokenServices tokenServices = new DefaultTokenServices();
-		tokenServices.setTokenStore(tokenStore());
-		return tokenServices;
-	}
-
-	@Bean
-	public JwtAccessTokenConverter accessTokenConverter() {
-		JwtAccessTokenConverter converter = new JwtAccessTokenConverter();
-		converter.setSigningKey("123456");
-		return converter;
-	}
-
-	@Bean
-	public TokenStore tokenStore() {
-		JwtTokenStore store = new JwtTokenStore(accessTokenConverter());
-		return store;
+	@Override
+	public String getIdentityJwtSignKey() {
+		return jwtSignKey;
 	}
 
 }
