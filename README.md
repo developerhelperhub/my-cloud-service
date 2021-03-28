@@ -109,17 +109,18 @@ This is one of the my dream expriement project to learn how to build my cloud pl
   All cloud configuration files are located : /step/my-cloud-config-repo. We have to commits those all files in the git server before run this project
 
 #### Running all the services on Docker in different terminal with below order
-$ cd /setup/docker
-$ docker-compose up my-cloud-git-server
-$ docker-compose up my-cloud-mongodb
-$ docker-compose up my-cloud-influxdb
-$ docker-compose up elasticsearch
-$ docker-compose up my-cloud-discovery
-$ docker-compose up my-cloud-config-server
-$ docker-compose up my-cloud-identity
-$ docker-compose up my-cloud-api-gateway
-$ docker-compose up my-cloud-monitor
-$ docker-compose up my-cloud-monitor-scheduler
+
+* $ cd /setup/docker
+* $ docker-compose up my-cloud-git-server
+* $ docker-compose up my-cloud-mongodb
+* $ docker-compose up my-cloud-influxdb
+* $ docker-compose up elasticsearch
+* $ docker-compose up my-cloud-discovery
+* $ docker-compose up my-cloud-config-server
+* $ docker-compose up my-cloud-identity
+* $ docker-compose up my-cloud-api-gateway
+* $ docker-compose up my-cloud-monitor
+* $ docker-compose up my-cloud-monitor-scheduler
 
 #### Running all the services on Minikube of Kubernetes 
 Please refer the document of cd /setup/kubernetes
