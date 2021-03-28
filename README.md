@@ -17,23 +17,6 @@ This is one of the my dream expriement project to learn how to build my cloud pl
 * Montoring Service
 * React Dashboard
 
-## Run Commands
-
-Running all the services on Docker
-```
-$ cd /setup/docker
-$ docker-compose up
-```
-
-Running all the services on Minikube of Kubernetes 
-Please refer the document of cd /setup/kubernetes
-
-Running My Cloud Dashboard
-```
-$ cd /my-cloud-dashboard
-$ npm start
-```
-
 ## Technology
 * Backend 
   * Spring Boot Framework 
@@ -103,10 +86,8 @@ $ npm start
     * Module
     * Dependency Management
     * Dockerfile Maven Plugin
-  
   * Git Server
     
-
 * Frontend 
   * React JS
   * Server Sent Event (Event Source)
