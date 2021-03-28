@@ -3,6 +3,7 @@ package com.developerhelperhub.ms.controller;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -40,7 +41,7 @@ public class Controller {
 		return application.getApplication();
 	}
 
-	@GetMapping(value = "/stream/applications/all")
+	@GetMapping(value = "/stream/applications/all", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
 	public Flux<List<ApplicationModel>> streamApplications() {
 		return application.streamApplication();
 	}
@@ -50,7 +51,7 @@ public class Controller {
 		return monitorService.getInfo(application);
 	}
 
-	@GetMapping(value = "/stream/applications/{application}/info")
+	@GetMapping(value = "/stream/applications/{application}/info", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
 	public Flux<ApplicationInfoModel> streamInfo(
 			@PathVariable(value = "application", required = true) String application) {
 		return monitorService.streamInfo(application);
@@ -62,7 +63,7 @@ public class Controller {
 		return monitorService.getInstances(application);
 	}
 
-	@GetMapping(value = "/stream/instances/{application}")
+	@GetMapping(value = "/stream/instances/{application}", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
 	public Flux<List<ApplicationInstanceModel>> streamInstances(
 			@PathVariable(value = "application", required = true) String application) {
 		return monitorService.streamInstances(application);
@@ -73,7 +74,7 @@ public class Controller {
 		return monitorService.getInstanceInfo(id);
 	}
 
-	@GetMapping(value = "/stream/instances/{id}/info")
+	@GetMapping(value = "/stream/instances/{id}/info", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
 	public Flux<ApplicationInstanceInfoModel> streamInstanceInfo(
 			@PathVariable(value = "id", required = true) String id) {
 		return monitorService.streamInstanceInfo(id);
@@ -81,24 +82,25 @@ public class Controller {
 
 	@GetMapping(value = "/elasticsearch/search")
 	public ElastiSearchLogModel getEasticsearch(@RequestParam("indexName") String indexName,
-			@RequestParam("type") String type, @RequestParam("searchKey") String searchKey, @RequestParam("page") int page,
-			@RequestParam("size") int size, @RequestParam("order") String order, @RequestParam("fromDate") long fromDate,
-			@RequestParam("toDate") long toDate) {
+			@RequestParam("type") String type, @RequestParam("searchKey") String searchKey,
+			@RequestParam("page") int page, @RequestParam("size") int size, @RequestParam("order") String order,
+			@RequestParam("fromDate") long fromDate, @RequestParam("toDate") long toDate) {
 		return elasticsearchService.search(indexName, type, searchKey, page, size, order, fromDate, toDate);
 	}
 
 	@GetMapping(value = "/logs/search")
 	public List<LogMessageModel> getEasticsearchLogs(@RequestParam("applicationId") String applicationId,
-			@RequestParam("searchKey") String searchKey, @RequestParam("size") int size, @RequestParam("order") String order,
-			@RequestParam("fromDate") long fromDate, @RequestParam("toDate") long toDate) {
+			@RequestParam("searchKey") String searchKey, @RequestParam("size") int size,
+			@RequestParam("order") String order, @RequestParam("fromDate") long fromDate,
+			@RequestParam("toDate") long toDate) {
 		return elasticsearchService.searchLogs(applicationId, searchKey, size, order, fromDate, toDate);
 	}
 
 	@GetMapping(value = "/access-logs/search")
 	public AccessLogModel getEasticsearchAccessLogs(@RequestParam("applicationId") String applicationId,
-			@RequestParam("searchKey") String searchKey, @RequestParam("size") int size, @RequestParam("order") String order,
-			@RequestParam("group") String group, @RequestParam("fromDate") long fromDate,
-			@RequestParam("toDate") long toDate) {
+			@RequestParam("searchKey") String searchKey, @RequestParam("size") int size,
+			@RequestParam("order") String order, @RequestParam("group") String group,
+			@RequestParam("fromDate") long fromDate, @RequestParam("toDate") long toDate) {
 		return elasticsearchService.searchAccessLogs(applicationId, searchKey, size, order, group, fromDate, toDate);
 	}
 }

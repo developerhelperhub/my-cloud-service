@@ -68,7 +68,8 @@ class MonitorLogTabPage extends React.Component {
             + '&searchKey=' + this.state.search 
             + '&size=' + pageSize
             + '&fromDate=' + this.state.fromDate.getTime()
-            + '&toDate=' + this.state.toDate.getTime();
+            + '&toDate=' + this.state.toDate.getTime()
+            + '&order=desc';
 
         const response = await AppApiRepo.fetch(path, 'GET', {
             'Content-Type': 'application/json',

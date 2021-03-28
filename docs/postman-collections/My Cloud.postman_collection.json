@@ -581,11 +581,11 @@
 							]
 						},
 						"url": {
-							"raw": "localhost:8081/oauth/token",
+							"raw": "localhost:8085/oauth/token",
 							"host": [
 								"localhost"
 							],
-							"port": "8081",
+							"port": "8085",
 							"path": [
 								"oauth",
 								"token"
@@ -1093,6 +1093,44 @@
 					"response": []
 				},
 				{
+					"name": "stream-applications all",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{accessToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": []
+						},
+						"url": {
+							"raw": "http://localhost:8087/monitor/applications/all",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8087",
+							"path": [
+								"monitor",
+								"applications",
+								"all"
+							]
+						}
+					},
+					"response": []
+				},
+				{
 					"name": "applications info by id",
 					"protocolProfileBehavior": {
 						"disableBodyPruning": true
@@ -1295,7 +1333,7 @@
 							"formdata": []
 						},
 						"url": {
-							"raw": "http://localhost:8087/monitor/logs/search?applicationId=my-cloud-discovery&searchKey=&size=100&fromDate=1595071861000&toDate=1595076952671",
+							"raw": "http://localhost:8087/monitor/logs/search?applicationId=my-cloud-discovery&searchKey=&size=100&fromDate=1595071861000&toDate=1595076952671&order=desc",
 							"protocol": "http",
 							"host": [
 								"localhost"
@@ -1326,6 +1364,10 @@
 								{
 									"key": "toDate",
 									"value": "1595076952671"
+								},
+								{
+									"key": "order",
+									"value": "desc"
 								}
 							]
 						}
