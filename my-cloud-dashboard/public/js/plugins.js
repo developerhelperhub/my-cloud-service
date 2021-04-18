@@ -1,7 +1,17 @@
 
+
 function loadDataTable(id, data) {
     return $(id).DataTable(data);
 };
+
+function formDataTableActionEdit(e, id) {
+    window.formScreen.actionEdit(e, id);
+};
+
+function formDataTableActionDelete(e, id) {
+    window.formScreen.actionDelete(e, id);
+};
+
 
 function d3LinesChart(value) {
 

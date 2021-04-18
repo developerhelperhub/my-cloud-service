@@ -1,14 +1,5 @@
 import React from 'react';
 
-import Table from './Table'
-import TableHead from './TableHead'
-import TableBody from './TableBody'
-import TableTr from './TableTr'
-import TableTd from './TableTd'
-import TableTh from './TableTh'
-
-
-
 class DataTable extends React.Component {
 
     constructor(props) {
@@ -31,8 +22,7 @@ class DataTable extends React.Component {
                 columnDefs: this.props.data.columnDefs
             });
 
-            table
-                .on('click', 'tbody tr', function () {
+            table.on('click', 'tbody tr', function () {
                     if (self.props.onclick != undefined) {
                         self.props.onclick(table.row(this).data());
                     }

@@ -142,7 +142,8 @@
     padding: 0px;
   }
 
-  .page-content-wrapper .page-content .page-panel .header .panel-icon {
+  .page-content-wrapper .page-content .page-panel .header .panel-icon,
+  .page-content-wrapper .page-content .panel-icon {
     border-radius: 2px;
     border-style: solid;
     border-width: 1px;
@@ -150,7 +151,8 @@
     width: 30px;
   }
 
-  .page-content-wrapper .page-content .page-panel .header .panel-icon .panel-icon-font{
+  .page-content-wrapper .page-content .page-panel .header .panel-icon .panel-icon-font,
+  .page-content-wrapper .page-content .panel-icon .panel-icon-font {
     width: 100%;
     text-align: center;
   }
