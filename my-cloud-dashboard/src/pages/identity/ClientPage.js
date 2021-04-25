@@ -13,129 +13,6 @@ import DataTable from '../../components/table/DataTable'
 
 import AppApiRepo from '../../common/AppApiRepo'
 
-
-// class ClientPage extends React.Component {
-
-//     constructor(props) {
-//         super(props);
-
-//         this.refreshTable = this.refreshTable.bind(this);
-//         this.actionAdd = this.showAddScreen.bind(this);
-//         this.showEditScreen = this.showEditScreen.bind(this);
-//         this.showDeleteScreen = this.showDeleteScreen.bind(this);
-
-//         window.clientPage = this;
-
-//         this.state = {
-//             addScreen: false,
-//             tableData: {
-//                 columnDefs: [
-//                     {
-//                         render: function (data, type, row) {
-//                             return '<div class="panel-icon">'
-//                                     + '<span class="panel-icon-font fa fa-edit" onclick="formDataTableEdit(event)" ></span>'
-//                                 +'</div>';
-//                         },
-//                         targets: 6
-//                     }
-//                 ],
-//                 head: [
-//                     { title: "Id", width: "20%" },
-//                     { title: "Grand Types", width: "20%" },
-//                     { title: "Scops", width: "20%" },
-//                     { title: "Redirect URI", width: "40%" },
-//                     { title: "Access Token", width: "20%" },
-//                     { title: "Refresh Token", width: "20%" },
-//                     { title: "Actions", width: "20%" },
-//                 ],
-//                 body: []
-//             }
-//         }
-
-
-//     }
-
-//     showDeleteScreen() {
-//         console.log("delete");
-//     }
-
-//     showEditScreen() {
-//         console.log("edit");
-//     }
-
-//     showAddScreen() {
-
-//         this.setState({
-//             addScreen: this.state.addScreen ? false : true
-//         });
-//     }
-
-//     async refreshTable() {
-
-//         const response = await AppApiRepo.fetch('/identity/clients/', 'GET', {
-//             'Content-Type': 'application/json',
-//             'Authorization': AppApiRepo.getToken(),
-//         })
-
-//         const tableData = this.state.tableData;
-//         const body = [];
-
-//         if (response.status == 200) {
-
-//             response.data.forEach(data => {
-//                 var colums = [];
-
-//                 colums.push(data.clientId);
-//                 colums.push(data.authorizedGrantTypes);
-//                 colums.push(data.scope);
-//                 colums.push(data.registeredRedirectUri);
-//                 colums.push(data.accessTokenValiditySeconds);
-//                 colums.push(data.refreshTokenValiditySeconds);
-//                 colums.push(data.clientId);
-
-//                 body.push(colums);
-//             });
-
-//             tableData.body = body;
-//         }
-
-//         this.setState({
-//             tableData: tableData
-//         })
-
-//     }
-
-//     async componentDidMount() {
-//         this.refreshTable();
-//     }
-
-//     componentDidCatch() {
-//         this.forceUpdate();
-//     }
-
-//     render() {
-
-//         let screen = this.state.addScreen ? <div>hello</div> : <DataTable id="example1" width="100%" data={this.state.tableData} />;
-
-//         return (
-//             <PageContent>
-//                 <Row>
-//                     <PagePanel cols="col-xxl-7 col-lg-12" >
-//                         <PagePanelHead title="Client">
-//                             <PagePanelIcon icon="fa fa-plus" event={this.showAddScreen}></PagePanelIcon>
-//                             <PagePanelIcon icon="fa fa-refresh" event={this.refreshTable}></PagePanelIcon>
-//                         </PagePanelHead>
-//                         <PagePanelBody>
-//                             <div>{screen}</div>
-//                         </PagePanelBody>
-//                     </PagePanel>
-//                 </Row>
-//             </PageContent>
-//         );
-
-//     }
-// }
-
 class ClientPage extends React.Component {
 
     constructor(props) {
@@ -223,20 +100,60 @@ class ClientPage extends React.Component {
 
     render() {
         return (<Form title="Client" data={this.state.formData}>
-            <div class="form-group">
-                <label for="exampleInputEmail1">Email address</label>
-                <input type="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Enter email" />
-                <small id="emailHelp" class="form-text text-muted">We'll never share your email with anyone else.</small>
+
+            <div class="form-floating">
+                <input type="text" class="form-control" placeholder="Client Id" />
+                <label for="floatingInput">Client Id</label>
             </div>
-            <div class="form-group">
-                <label for="exampleInputPassword1">Password</label>
-                <input type="password" class="form-control" id="exampleInputPassword1" placeholder="Password" />
+
+
+            {/* <div class="form-group">
+                <label for="clientId">Client Id</label>
+                <input type="text" class="form-control" id="clientId" aria-describedby="clientIdHelp" placeholder="Enter client id" />
             </div>
+
             <div class="form-group form-check">
-                <input type="checkbox" class="form-check-input" id="exampleCheck1" />
-                <label class="form-check-label" for="exampleCheck1">Check me out</label>
+                <input type="checkbox" class="form-check-input" id="secretRequired" />
+                <label class="form-check-label" for="secretRequired">Secret Required</label>
             </div>
-            <button type="submit" class="btn btn-primary">Submit</button>
+
+            
+
+            <div class="form-group">
+                <label for="clientSecret">Client Secret</label>
+                <input type="password" class="form-control" id="clientSecret" placeholder="Enter client secret" />
+            </div>
+
+            <div class="form-group">
+                <label for="resourceIds">Resource Ids</label>
+                <select class="form-control" id="resourceIds">
+                    <option>1</option>
+                    <option>2</option>
+                    <option>3</option>
+                    <option>4</option>
+                    <option>5</option>
+                </select>
+            </div>
+
+            <div class="form-group form-check">
+                <input type="checkbox" class="form-check-input" id="scoped" />
+                <label class="form-check-label" for="scoped">Scoped</label>
+            </div>
+
+            <div class="form-group">
+                <label for="resourceIds">Scopes</label>
+                <select class="form-control" id="Sscopes">
+                    <option>1</option>
+                    <option>2</option>
+                    <option>3</option>
+                    <option>4</option>
+                    <option>5</option>
+                </select>
+            </div>
+
+            
+
+            <button type="submit" class="btn btn-primary">Submit</button> */}
         </Form>)
     }
 }

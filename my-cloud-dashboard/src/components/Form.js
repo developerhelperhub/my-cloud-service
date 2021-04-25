@@ -104,7 +104,7 @@ class Form extends React.Component {
 
         var screen = "";
 
-        if(!this.state.showAddScreen) {
+        if(this.state.showAddScreen) {
 
             this.state.tableData.body =  this.props.data.tableData.body;
 

@@ -10,7 +10,7 @@ class ToolbarDropdownProfile extends React.Component {
 
     return (
       <li class="nav-item dropdown">
-        <a class="nav-link" href="#" id={this.props.id} data-toggle="dropdown" aria-expanded="false">
+        <a class="nav-link dropdown-toggle" href="#" id={this.props.id} data-bs-toggle="dropdown" aria-expanded="false">
 
           <span>{this.props.title}</span>
           <span class="online">

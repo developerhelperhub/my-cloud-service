@@ -91,7 +91,7 @@ class DashboardPage extends React.Component {
 
                 <PageContentWrapper>
                     <Topbar>
-                        <ToolbarIcon align="mr-auto">
+                        <ToolbarIcon align="me-auto">
                             <ToolbarItem icon="fa fa-search" />
                         </ToolbarIcon>
 
