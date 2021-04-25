@@ -41,8 +41,8 @@ class DashboardHomePage extends React.Component {
         return (
             <PageContent>
                 <Row>
-                    <Widget icon="fa fa-cube" numcount={this.state.data.totalApplications} title="Applications" subtitle="Running applications" cols="col-xxl-7 col-lg-3" />
-                    <Widget icon="fa fa-cubes" numcount={this.state.data.totalInstances} title="Instances" subtitle="Running instances" cols="col-xxl-7 col-lg-3" />
+                    <Widget icon="fa fa-cube" numcount={this.state.data.totalApplications} title="Applications" subtitle="Running applications" cols="col-xxl-3 col-lg-3" />
+                    <Widget icon="fa fa-cubes" numcount={this.state.data.totalInstances} title="Instances" subtitle="Running instances" cols="col-xxl-3 col-lg-3" />
                 </Row>
             </PageContent>
         );

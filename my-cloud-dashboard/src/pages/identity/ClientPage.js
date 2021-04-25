@@ -1,5 +1,9 @@
 import React from 'react';
-import Form from '../../components/Form'
+import Form from '../../components/form/Form'
+import Input from '../../components/form/Input'
+import Checkbox from '../../components/form/Checkbox'
+import Select from '../../components/form/Select'
+
 
 import PageContent from '../../components/dashboard/PageContent'
 import Row from '../../components/dashboard/Row'
@@ -20,6 +24,8 @@ class ClientPage extends React.Component {
 
         this.actionRefresh = this.actionRefresh.bind(this);
         this.actionAdd = this.actionAdd.bind(this);
+        this.actionSubmit = this.actionSubmit.bind(this);
+        this.actionClear = this.actionClear.bind(this);
 
         this.state = {
             formData: {
@@ -29,6 +35,8 @@ class ClientPage extends React.Component {
                     refresh: this.actionRefresh,
                     delete: this.actionDelete,
                     edit: this.actionEdit,
+                    submit: this.actionSubmit,
+                    clear: this.actionClear,
                 },
 
                 tableData: {
@@ -44,6 +52,14 @@ class ClientPage extends React.Component {
                 }
             }
         }
+    }
+
+    async actionSubmit(e) {
+        console.log('submit');
+    }
+
+    async actionClear(e) {
+        console.log('clear');
     }
 
     async actionRefresh(e) {
@@ -99,61 +115,58 @@ class ClientPage extends React.Component {
     }
 
     render() {
-        return (<Form title="Client" data={this.state.formData}>
-
-            <div class="form-floating">
-                <input type="text" class="form-control" placeholder="Client Id" />
-                <label for="floatingInput">Client Id</label>
+        return (<Form title="Client" data={this.state.formData} >
+            <div class="row">
+                <div class="col">
+                    <Input type="text" id="id" label="Id" />
+                </div>
+                <div class="col">
+                    <Checkbox id="secretRequired" label="Secret Required" />
+                </div>
+                <div class="col">
+                    <Input type="password" id="id" label="Secret" />
+                </div>
+            </div>
+            <div class="row">
+                <div class="col">
+                    <Select id="resourceIds" label="Resource Ids" values={["my_cloud_identity_id", "my_cloud_api_gateway_id",
+				"my_cloud_discovery_id", "my_cloud_circuit_breaker_id", "inventory_service_resource_id",
+				"api_gateway_resource_id", "sales_service_resource_id", "my_cloud_monitor_id"]}/>
+                </div>
+                <div class="col">
+                    <Checkbox id="scop" label="Scop" />
+                </div>
+                <div class="col">
+                    <Select id="scops" label="Scops" values={["user_info", "ADMIN"]}/>
+                </div>
             </div>
 
-
-            {/* <div class="form-group">
-                <label for="clientId">Client Id</label>
-                <input type="text" class="form-control" id="clientId" aria-describedby="clientIdHelp" placeholder="Enter client id" />
+            <div class="row">
+                <div class="col">
+                    <Select id="authorizedGrantTypes" label="Authorized Grant Types" values={["authorization_code", "password", "refresh_token", "client_credentials"]} />
+                </div>
+                <div class="col">
+                    <Input type="text" id="registeredRedirectUri" label="Registered Redirect Uri (Comma separator)" />
+                </div>
+                <div class="col">
+                    <Select id="grantedAuthorities" label="Granted Authorities" values={["USER", "ADMIN"]}/>
+                </div>
             </div>
 
-            <div class="form-group form-check">
-                <input type="checkbox" class="form-check-input" id="secretRequired" />
-                <label class="form-check-label" for="secretRequired">Secret Required</label>
+            <div class="row">
+                <div class="col">
+                    <Input type="text" id="accessTokenValiditySeconds" label="Access Token Validity Seconds" />
+                </div>
+                <div class="col">
+                    <Input type="text" id="refreshTokenValiditySeconds" label="Refresh Validity Seconds" />
+                </div>
+                <div class="col">
+                    <Checkbox id="autoApprove" label="Auto Approve" />
+                </div>
             </div>
+
 
             
-
-            <div class="form-group">
-                <label for="clientSecret">Client Secret</label>
-                <input type="password" class="form-control" id="clientSecret" placeholder="Enter client secret" />
-            </div>
-
-            <div class="form-group">
-                <label for="resourceIds">Resource Ids</label>
-                <select class="form-control" id="resourceIds">
-                    <option>1</option>
-                    <option>2</option>
-                    <option>3</option>
-                    <option>4</option>
-                    <option>5</option>
-                </select>
-            </div>
-
-            <div class="form-group form-check">
-                <input type="checkbox" class="form-check-input" id="scoped" />
-                <label class="form-check-label" for="scoped">Scoped</label>
-            </div>
-
-            <div class="form-group">
-                <label for="resourceIds">Scopes</label>
-                <select class="form-control" id="Sscopes">
-                    <option>1</option>
-                    <option>2</option>
-                    <option>3</option>
-                    <option>4</option>
-                    <option>5</option>
-                </select>
-            </div>
-
-            
-
-            <button type="submit" class="btn btn-primary">Submit</button> */}
         </Form>)
     }
 }

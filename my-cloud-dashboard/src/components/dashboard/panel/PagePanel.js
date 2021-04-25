@@ -39,7 +39,7 @@ class PagePanel extends React.Component {
 
       // </div>
 
-      <div class={panelClass}>
+      <div class={panelClass} >
         <div class="body" style={{ height: bodyHeight }}>
           {childrens}
         </div>

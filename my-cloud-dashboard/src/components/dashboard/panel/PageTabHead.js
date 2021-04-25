@@ -31,7 +31,7 @@ class PageTabHead extends React.Component {
 
 
     return (
-      <a class={classNavItemLink} onClick={this.onClick} id={this.props.id} data-toggle="tab" href={this.props.href} role="tab" aria-controls={this.props.controls} aria-selected={selected}>
+      <a class={classNavItemLink} onClick={this.onClick} id={this.props.id} data-bs-toggle="tab" href={this.props.href} role="tab" aria-controls={this.props.controls} aria-selected={selected}>
         {this.props.title}
       </a>
     );

@@ -714,7 +714,7 @@
   .chiller-theme div.dataTables_wrapper div.dataTables_filter input,
   .chiller-theme div.dataTables_wrapper div.dataTables_paginate li.paginate_button,
   .chiller-theme div.dataTables_wrapper div.dataTables_paginate a.page-link,
-  .chiller-theme .form-control, 
+  .chiller-theme .form-control, .chiller-theme .form-select, 
   .chiller-theme  button, 
   .chiller-theme .form-control:focus,
   .chiller-theme .react-datepicker-wrapper input {

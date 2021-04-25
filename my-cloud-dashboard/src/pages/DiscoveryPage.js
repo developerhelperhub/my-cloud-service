@@ -121,11 +121,11 @@ class DiscoveryPage extends React.Component {
         return (
             <PageContent>
                 <Row>
-                    <Widget icon="fa fa-cube" numcount={this.state.totalApplications} title="Applications" subtitle="Running applications" cols="col-xxl-7 col-lg-3" />
-                    <Widget icon="fa fa-cubes" numcount={this.state.totalInstances} title="Instances" subtitle="Running instances" cols="col-xxl-7 col-lg-3" />
+                    <Widget icon="fa fa-cube" numcount={this.state.totalApplications} title="Applications" subtitle="Running applications" cols="col-xxl-3 col-lg-3" />
+                    <Widget icon="fa fa-cubes" numcount={this.state.totalInstances} title="Instances" subtitle="Running instances" cols="col-xxl-3 col-lg-3" />
                 </Row>
                 <Row>
-                    <PagePanel cols="col-xxl-7 col-lg-12" >
+                    <PagePanel cols="col-xxl-12 col-lg-12" >
                         <PagePanelHead title="Applications">
                             <PagePanelIcon icon="fa fa-refresh" event={this.refreshTable}></PagePanelIcon>
                         </PagePanelHead>
