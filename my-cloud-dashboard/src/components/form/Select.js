@@ -21,9 +21,6 @@ class Select extends React.Component {
             });
         }
 
-        console.log(this.props.values);
-        console.log(values);
-
         return (<div class="form-floating">
             <select class="form-select" id={this.props.id}>
 
